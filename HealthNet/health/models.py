@@ -1,8 +1,8 @@
 from django.db import models
-from django.contrib.auth import models as auth_models
+from django.contrib.auth.models import AbstractUser
 
 
-class User(auth_models.User):
+class User(AbstractUser):
     date_of_birth = models.DateField()
 
     def __str__(self):
