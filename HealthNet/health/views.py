@@ -10,3 +10,6 @@ def index(request):
 
 def login(request):
     return render(request, 'login.html', None)
+
+def schedule(request):
+    return render(request, 'schedule.html', None)
