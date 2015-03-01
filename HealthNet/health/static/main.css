@@ -33,7 +33,7 @@ body {
     position: relative;
     font-size: 16px;
     height: auto;
-    padding: 10px 20px;
+    padding: 10px 10px;
 }
 
 .form-control-focus {
@@ -44,8 +44,9 @@ body {
     position: relative;
     padding: 200px;
 }
+
 .btn .btn-info {
-    text-align: right;
+    align: right;
     position: relative;
     padding: 200px;
 }
