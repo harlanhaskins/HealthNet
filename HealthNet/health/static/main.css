@@ -36,6 +36,11 @@ body {
   }
 }
 
+.button {
+  position: relative;
+  padding: 10px;
+}
+
 input[type="text"] {
   margin-bottom: -1px;
   border-bottom-left-radius: 0;
