@@ -1,6 +1,4 @@
 
-//This is for the sign in css
-
 body {
     background: #eee !important;
     padding-top: 70px;
@@ -64,8 +62,6 @@ input[type="password"] {
     border-top-right-radius: 0;
 }
 
-//This is for the Sign Up CSS
-
 #wrap{
     background-image: -ms-linear-gradient(top, #FFFFFF 0%, #D3D8E8 100%);
     /* Mozilla Firefox */
@@ -82,59 +78,59 @@ input[type="password"] {
     background-attachment: fixed;
 }
 legend{
-	color:#141823;
-	font-size:25px;
-	font-weight:bold;
+    color:#141823;
+    font-size:25px;
+    font-weight:bold;
 }
 
 .signup-btn {
-  background: #79bc64;
-  background-image: -webkit-linear-gradient(top, #79bc64, #578843);
-  background-image: -moz-linear-gradient(top, #79bc64, #578843);
-  background-image: -ms-linear-gradient(top, #79bc64, #578843);
-  background-image: -o-linear-gradient(top, #79bc64, #578843);
-  background-image: linear-gradient(to bottom, #79bc64, #578843);
-  -webkit-border-radius: 4;
-  -moz-border-radius: 4;
-  border-radius: 4px;
-  text-shadow: 0px 1px 0px #898a88;
-  -webkit-box-shadow: 0px 0px 0px #a4e388;
-  -moz-box-shadow: 0px 0px 0px #a4e388;
-  box-shadow: 0px 0px 0px #a4e388;
-  font-family: Arial;
-  color: #ffffff;
-  font-size: 20px;
-  padding: 10px 20px 10px 20px;
-  border: solid #3b6e22  1px;
-  text-decoration: none;
+    background: #79bc64;
+    background-image: -webkit-linear-gradient(top, #79bc64, #578843);
+    background-image: -moz-linear-gradient(top, #79bc64, #578843);
+    background-image: -ms-linear-gradient(top, #79bc64, #578843);
+    background-image: -o-linear-gradient(top, #79bc64, #578843);
+    background-image: linear-gradient(to bottom, #79bc64, #578843);
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    text-shadow: 0px 1px 0px #898a88;
+    -webkit-box-shadow: 0px 0px 0px #a4e388;
+    -moz-box-shadow: 0px 0px 0px #a4e388;
+    box-shadow: 0px 0px 0px #a4e388;
+    font-family: Arial;
+    color: #ffffff;
+    font-size: 20px;
+    padding: 10px 20px 10px 20px;
+    border: solid #3b6e22  1px;
+    text-decoration: none;
 }
 
 .signup-btn:hover {
-  background: #79bc64;
-  background-image: -webkit-linear-gradient(top, #79bc64, #5e7056);
-  background-image: -moz-linear-gradient(top, #79bc64, #5e7056);
-  background-image: -ms-linear-gradient(top, #79bc64, #5e7056);
-  background-image: -o-linear-gradient(top, #79bc64, #5e7056);
-  background-image: linear-gradient(to bottom, #79bc64, #5e7056);
-  text-decoration: none;
+    background: #79bc64;
+    background-image: -webkit-linear-gradient(top, #79bc64, #5e7056);
+    background-image: -moz-linear-gradient(top, #79bc64, #5e7056);
+    background-image: -ms-linear-gradient(top, #79bc64, #5e7056);
+    background-image: -o-linear-gradient(top, #79bc64, #5e7056);
+    background-image: linear-gradient(to bottom, #79bc64, #5e7056);
+    text-decoration: none;
 }
 
 .navbar-default .navbar-brand{
-	color:#fff;
-	font-size:30px;
-	font-weight:bold;
+    color:#fff;
+    font-size:30px;
+    font-weight:bold;
 }
 
 .form .form-control { margin-bottom: 10px; }
 
 @media (min-width:768px) {
-	#home{
-		margin-top:50px;
-	}
+    #home{
+        margin-top:50px;
+    }
 
-	#home .slogan{
-		color: #0e385f;
-		line-height: 29px;
-		font-weight:bold;
-	}
+    #home .slogan{
+        color: #0e385f;
+        line-height: 29px;
+        font-weight:bold;
+    }
 }
