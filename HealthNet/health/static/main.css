@@ -29,6 +29,9 @@ body {
   padding: 10px;
   font-size: 16px;
   position: relative;
+  &:focus {
+	z-index: 2;
+  }
 }
 
 .form-control {
@@ -45,7 +48,10 @@ body {
 
 .btn btn-primary, .btn btn-info{
   position: relative;
-  padding: 100px;
+  padding: 200px;
+}
+.btn btn-info{
+  text-align: right;
 }
 
 input[type="text"] {
