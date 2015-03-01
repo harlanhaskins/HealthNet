@@ -22,7 +22,9 @@ class Doctor(User):
         return Appointment.objects.filter(doctor=self)
 
     def patients(self):
-        return map(lambda a: a.patient, self.schedule())
+        # returns a unique list of all Patient objects that have appointments
+        # with this doctor.
+        return list(set(map(lambda a: a.patient, self.schedule())))
 
 
 class Insurance(models.Model):
