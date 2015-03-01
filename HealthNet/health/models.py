@@ -22,7 +22,7 @@ class Doctor(User):
         return Appointment.objects.filter(doctor=self)
 
     def patients(self):
-        return map(self.schedule(), lambda a: a.patient)
+        return map(lambda a: a.patient, self.schedule())
 
 
 class Insurance(models.Model):
