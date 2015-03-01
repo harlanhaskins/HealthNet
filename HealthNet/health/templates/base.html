@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="{% static 'main.css' %}"
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <title>{% block title %}HealthNet{% endblock %}</title>
+    {% block extra %}
+    {% endblock %}
 </head>
 <body>
     {% include 'navbar.html' %}

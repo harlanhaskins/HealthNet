@@ -5,5 +5,6 @@ from . import views
 urlpatterns = patterns('',
     (r'login/?$', auth_views.login),
     (r'schedule/?$', views.schedule),
+    (r'signup/?$', views.signup),
     (r'/?$', views.index),
 )
