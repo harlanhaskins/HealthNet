@@ -8,9 +8,6 @@ def index(request):
     return render(request, 'index.html', {"user":request.user})
 
 
-def login(request):
-    return render(request, 'login.html', None)
-
-
+@login_required
 def schedule(request):
     return render(request, 'schedule.html', None)
