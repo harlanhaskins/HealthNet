@@ -18,9 +18,11 @@ class Patient(User):
 
 
 class Doctor(User):
+    def schedule(self):
+        return Appointment.objects.filter(doctor=self)
+
     def patients(self):
-        return map(Appointment.objects.filter(doctor=self),
-            lambda a: a.patient)
+        return map(self.schedule(), lambda a: a.patient)
 
 
 class Insurance(models.Model):
