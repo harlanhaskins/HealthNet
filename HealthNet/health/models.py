@@ -4,6 +4,8 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     date_of_birth = models.DateField()
+    phone_number = models.CharField(max_length=30)
+    REQUIRED_FIELDS = ['date_of_birth', 'phone_number']
 
     def __str__(self):
         return self.first_name + " " + self.last_name
