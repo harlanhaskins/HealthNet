@@ -8,8 +8,11 @@ class User(AbstractUser):
 
     REQUIRED_FIELDS = ['date_of_birth', 'phone_number', 'email']
 
-    def __str__(self):
+    def __repr__(self):
         return self.first_name + " " + self.last_name
+
+    def schedule(self):
+        return Appointment.objects.filter(patient=self)
 
 
 class Insurance(models.Model):
