@@ -11,8 +11,16 @@ class User(AbstractUser):
     def __repr__(self):
         return self.first_name + " " + self.last_name
 
+
+class Patient(User):
     def schedule(self):
         return Appointment.objects.filter(patient=self)
+
+
+class Doctor(User):
+    def patients(self):
+        return map(Appointment.objects.filter(doctor=self),
+            lambda a: a.patient)
 
 
 class Insurance(models.Model):
@@ -21,8 +29,8 @@ class Insurance(models.Model):
 
 
 class Appointment(models.Model):
-    patient = models.ForeignKey(User, related_name="patient")
-    doctor = models.ForeignKey(User, related_name="doctor")
+    patient = models.ForeignKey(Patient)
+    doctor = models.ForeignKey(Doctor)
 
 
 class Unit(models.Model):
@@ -31,6 +39,7 @@ class Unit(models.Model):
 
 
 class Prescription(models.Model):
+    patient = models.ForeignKey(Patient)
     name = models.CharField(max_length=200)
     dosage = models.FloatField()
     unit = models.ForeignKey(Unit)
