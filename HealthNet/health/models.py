@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib import admin
+from datetime import timedelta
 from django.contrib.auth.models import AbstractUser
 
 
@@ -12,7 +14,13 @@ class User(AbstractUser):
         return self.get_full_name()
 
 
+class Insurance(models.Model):
+    policy_number = models.CharField(max_length=200)
+    company = models.CharField(max_length=200)
+
+
 class Patient(User):
+    insurance = models.ForeignKey(Insurance, null=True)
     def schedule(self):
         return Appointment.objects.filter(patient=self)
 
@@ -26,14 +34,17 @@ class Doctor(User):
         # with this doctor.
         return list(set(map(lambda a: a.patient, self.schedule())))
 
+    def is_free(self, date, duration):
+        schedule = self.schedule()
+        end = date + duration
+        for appointment in schedule:
+            appointment_end = (appointment.date +
+                              timedelta(seconds=appointment.duration))
+            if (date <= appointment.date <= end or
+                    appointment.date <= date <= appointment_end):
+                return False
+        return True
 
-class Insurance(models.Model):
-    patient = models.ForeignKey(Patient)
-    policy_number = models.CharField(max_length=200)
-    company = models.CharField(max_length=200)
-
-    def __repr__(self):
-        return "%s for %s", self.company, self.patient
 
 class Appointment(models.Model):
     patient = models.ForeignKey(Patient)
