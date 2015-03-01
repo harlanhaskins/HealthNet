@@ -25,13 +25,11 @@ body {
 }
 
 .checkbox {
+  position: relative;
   font-weight: normal;
   padding: 10px;
   font-size: 16px;
-  position: relative;
-  &:focus {
-	z-index: 2;
-  }
+  height: auto;
 }
 
 .form-control {
@@ -46,12 +44,14 @@ body {
   }
 }
 
-.btn btn-primary, .btn btn-info{
+.btn btn-primary {
   position: relative;
   padding: 200px;
 }
-.btn btn-info{
+.btn btn-info {
   text-align: right;
+  position: float;
+  padding: 200px;
 }
 
 input[type="text"] {
