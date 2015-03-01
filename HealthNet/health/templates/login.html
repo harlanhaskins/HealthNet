@@ -1,16 +1,19 @@
 {% extends base.html %}
 {% block content %}
-
+<body>
 <div class = "LoginWrap">
   <form class = "sign-in">
-      <h2 class = "form-signin-heading">Please login</h2>
-      <input type = "text" class="form-control" name="username" placeholder="Email Address" required="" autofocus="" />
-      <input type = "password" class="form-control" name="password" placeholder="Password" required=""/>
+      <h2 class = "heading">Please login</h2>
+      <input type = "text" class = "form-control" name = "username" placeholder = "Username" required = "" autofocus = "" />
+      <input type = "password" class = "form-control" name = "password" placeholder = "Password" required = ""/>
       <label class = "checkbox">
-          <input type = "checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
+          <input type = "checkbox" value = "remember-me" id = "rememberMe" name = "rememberMe"> Remember Me
       </label>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+      <button class = "button" type = "submit">Login</button>
+      <button class = "reset" type = "reset">Reset</button>
+      <button class = "signup" type = "signup">Sign-Up</button>
   </form>
 </div>
-
+</body>
 {% endblock %}
+
