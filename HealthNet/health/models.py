@@ -18,8 +18,8 @@ class Insurance(models.Model):
 
 
 class Appointment(models.Model):
-    patient = models.ForeignKey(User, related_name="User")
-    doctor = models.ForeignKey(User, related_name="Doctor")
+    patient = models.ForeignKey(User, related_name="patient")
+    doctor = models.ForeignKey(User, related_name="doctor")
 
 
 class Unit(models.Model):
