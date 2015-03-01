@@ -1,28 +1,21 @@
-
-legend {
-    color:#141823;
-    font-size:25px;
-    font-weight:bold;
+.form {
+    margin-top: 80px;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 20px;
 }
 
-.navbar-default .navbar-brand{
-    color:#fff;
-    font-size:30px;
-    font-weight:bold;
+input[type="text"] {
+    margin-bottom: 5px;
 }
 
-.form .form-control {
-    margin-bottom: 10px;
+.password {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
-@media (min-width:768px) {
-    #home{
-        margin-top:50px;
-    }
-
-    #home .slogan {
-        color: #0e385f;
-        line-height: 29px;
-        font-weight:bold;
-    }
+.confirm-password {
+    margin-top: -1px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }

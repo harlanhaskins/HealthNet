@@ -1,0 +1,43 @@
+
+.sign-in {
+    max-width: 380px;
+    padding: 15px 35px 45px;
+    margin: 0 auto;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.sign-in, .checkbox {
+    margin-bottom: 10px;
+}
+
+.form-control{
+@include box-sizing(border-box);
+    margin-bottom: 10px;
+}
+
+.form-control-focus {
+    z-index: 2;
+}
+
+.btn .btn-primary {
+    position: relative;
+    padding: 200px;
+}
+.btn .btn-info {
+    float: right;
+    position: relative;
+    padding: 200px;
+}
+
+input[type="text"] {
+    margin-bottom: -1px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
