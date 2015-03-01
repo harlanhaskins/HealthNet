@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class = "signin-wrap">
-  <form class = "sign-in" action="" method="post">
+  <form class = "sign-in" action="/health/verify_login" method="post">
       {% csrf_token %}
       <h2 class = "heading">Please Sign In</h2>
       <input type = "text" class = "form-control" name = "username" placeholder = "Username" required = "" autofocus = "" />
