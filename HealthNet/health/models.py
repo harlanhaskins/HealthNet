@@ -79,3 +79,8 @@ class Prescription(models.Model):
         # "20mg of Ibuprofen for Jane Doe"
         return ("%s %f%s for %s" %
             self.name, self.dosage, self.unit.abbreviation, self.patient)
+
+
+class Log(models.Model):
+    description = models.CharField(max_length=200)
+    date = models.DateTimeField()
