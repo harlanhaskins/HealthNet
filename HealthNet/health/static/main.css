@@ -9,6 +9,10 @@ body {
   margin-bottom: 80px;
 }
 
+.heading {
+  text-align: center;
+}
+
 .sign-in {
   max-width: 380px;
   padding: 15px 35px 45px;
@@ -36,7 +40,7 @@ body {
   }
 }
 
-.button {
+.btn btn-primary, .btn btn-info{
   position: relative;
   padding: 100px;
 }
