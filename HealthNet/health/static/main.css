@@ -1,16 +1,16 @@
 
 
 body {
-	background: #eee !important;
+    background: #eee !important;
 }
 
-.LoginWrap {
-  margin-top: 80px;
-  margin-bottom: 80px;
+.signin-wrap {
+    margin-top: 80px;
+    margin-bottom: 80px;
 }
 
 .heading {
-  text-align: center;
+    text-align: center;
 }
 
 .sign-in {
@@ -22,18 +22,18 @@ body {
 }
 
 .sign-in, .checkbox {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .form-control{
-  @include box-sizing(border-box);
+@include box-sizing(border-box);
 }
 
 .form-control, .checkbox {
-  position: relative;
-  font-size: 16px;
-  height: auto;
-  padding: 10px 20px;
+    position: relative;
+    font-size: 16px;
+    height: auto;
+    padding: 10px 20px;
 }
 
 .form-control-focus {
@@ -41,23 +41,23 @@ body {
 }
 
 .btn .btn-primary {
-  position: relative;
-  padding: 200px;
+    position: relative;
+    padding: 200px;
 }
 .btn .btn-info {
-  text-align: right;
-  position: relative;
-  padding: 200px;
+    text-align: right;
+    position: relative;
+    padding: 200px;
 }
 
 input[type="text"] {
-  margin-bottom: -1px;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
+    margin-bottom: -1px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 input[type="password"] {
-  margin-bottom: 20px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+    margin-bottom: 20px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
