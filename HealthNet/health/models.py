@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib import admin
 from datetime import timedelta
 from django.contrib.auth.models import AbstractUser
 
@@ -24,6 +23,10 @@ class Patient(User):
     def schedule(self):
         return Appointment.objects.filter(patient=self)
 
+    class Meta:
+        verbose_name = "Patient"
+        verbose_name_plural = "Patients"
+
 
 class Doctor(User):
     def schedule(self):
@@ -44,6 +47,10 @@ class Doctor(User):
                     appointment.date <= date <= appointment_end):
                 return False
         return True
+
+    class Meta:
+        verbose_name = "Doctor"
+        verbose_name_plural = "Doctors"
 
 
 class Appointment(models.Model):
