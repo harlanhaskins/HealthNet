@@ -33,7 +33,7 @@ body {
     position: relative;
     font-size: 16px;
     height: auto;
-    padding: 10px 10px;
+    padding: 10px 20px;
 }
 
 .form-control-focus {
@@ -44,9 +44,8 @@ body {
     position: relative;
     padding: 200px;
 }
-
 .btn .btn-info {
-    align: right;
+    float: right;
     position: relative;
     padding: 200px;
 }
@@ -58,7 +57,7 @@ input[type="text"] {
 }
 
 input[type="password"] {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
