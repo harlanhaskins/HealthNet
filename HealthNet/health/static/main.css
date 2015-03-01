@@ -21,25 +21,20 @@ body {
   border: 1px solid rgba(0,0,0,0.1);
 
 .sign-in, .checkbox {
-  margin-bottom: 30px;
+  margin-bottom: 80px;
 }
 
-.checkbox {
-  position: relative;
-  font-weight: normal;
-  padding: 10px;
-  font-size: 16px;
-  height: auto;
+.form control{
+  @include box-sizing(border-box);
 }
 
-.form-control {
+.form-control, .checkbox {
   position: relative;
   font-size: 16px;
   height: auto;
   padding: 10px 20px;
-  @include box-sizing(border-box);
 
-  &:focus {
+  focus {
 	z-index: 2;
   }
 }
@@ -49,8 +44,8 @@ body {
   padding: 200px;
 }
 .btn btn-info {
-  text-align: right;
-  position: float;
+  align: right;
+  position: relative;
   padding: 200px;
 }
 
