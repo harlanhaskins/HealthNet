@@ -28,13 +28,18 @@ class Doctor(User):
 
 
 class Insurance(models.Model):
+    patient = models.ForeignKey(Patient)
     policy_number = models.CharField(max_length=200)
     company = models.CharField(max_length=200)
 
+    def __repr__(self):
+        return "%s for %s", self.company, self.patient
 
 class Appointment(models.Model):
     patient = models.ForeignKey(Patient)
     doctor = models.ForeignKey(Doctor)
+    date = models.DateTimeField()
+    duration = models.IntegerField()
 
 
 class Unit(models.Model):
@@ -42,6 +47,7 @@ class Unit(models.Model):
     abbreviation = models.CharField(max_length=200)
 
     def __repr__(self):
+        # "grams (g)"
         return "%s (%s)" % self.name, self.abbreviation
 
 
@@ -52,5 +58,6 @@ class Prescription(models.Model):
     unit = models.ForeignKey(Unit)
 
     def __repr__(self):
-        return ("%02.02f%s %s for %s" % self.dosage, self.unit.abbreviation,
-            self.name, self.patient.get_full_name())
+        # "20mg of Ibuprofen for Jane Doe"
+        return ("%s %f%s for %s" %
+            self.name, self.dosage, self.unit.abbreviation, self.patient)
