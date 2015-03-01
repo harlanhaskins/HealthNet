@@ -20,12 +20,15 @@ body {
   background-color: #fff;
   border: 1px solid rgba(0,0,0,0.1);
 
-.form-signin-heading, .checkbox {
+.sign-in, .checkbox {
   margin-bottom: 30px;
 }
 
 .checkbox {
   font-weight: normal;
+  padding: 10px;
+  font-size: 16px;
+  position: relative;
 }
 
 .form-control {
