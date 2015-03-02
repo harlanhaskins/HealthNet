@@ -11,9 +11,9 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="{% ifequal request.path '/'%}active{% endifequal %}"><a href="{% url 'health:index' %}">Home</a></li>
-                <li class="{% ifequal request.path 'schedule/'%}active{% endifequal %}"><a href="{% url 'health:schedule' %}">Schedule</a></li>
-                <li class="{% ifequal request.path 'prescriptions/'%}active{% endifequal %}"><a href="{% url 'health:prescriptions' %}">Prescriptions</a></li>
+                <li class="{% ifequal navbar 'home'%}active{% endifequal %}"><a href="{% url 'health:index' %}">Home</a></li>
+                <li class="{% ifequal navbar 'schedule'%}active{% endifequal %}"><a href="{% url 'health:schedule' %}">Schedule</a></li>
+                <li class="{% ifequal navbar 'prescriptions'%}active{% endifequal %}"><a href="{% url 'health:prescriptions' %}">Prescriptions</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="{% url 'health:logout' %}">Sign Out</a></li>

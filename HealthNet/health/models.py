@@ -12,30 +12,12 @@ class User(AbstractUser):
     def __repr__(self):
         return self.get_full_name()
 
-
-class Insurance(models.Model):
-    policy_number = models.CharField(max_length=200)
-    company = models.CharField(max_length=200)
-
-
-class Patient(User):
-    insurance = models.ForeignKey(Insurance, null=True)
     def schedule(self):
+        if self.groups.filter(name="Doctor"):
+            Appointment.objects.filter(doctor=self)
+        elif self.groups.filter(name="Nurse"):
+            return []
         return Appointment.objects.filter(patient=self)
-
-    class Meta:
-        verbose_name = "Patient"
-        verbose_name_plural = "Patients"
-
-
-class Doctor(User):
-    def schedule(self):
-        return Appointment.objects.filter(doctor=self)
-
-    def patients(self):
-        # returns a unique list of all Patient objects that have appointments
-        # with this doctor.
-        return list(set(map(lambda a: a.patient, self.schedule())))
 
     def is_free(self, date, duration):
         schedule = self.schedule()
@@ -48,14 +30,15 @@ class Doctor(User):
                 return False
         return True
 
-    class Meta:
-        verbose_name = "Doctor"
-        verbose_name_plural = "Doctors"
+
+class Insurance(models.Model):
+    policy_number = models.CharField(max_length=200)
+    company = models.CharField(max_length=200)
 
 
 class Appointment(models.Model):
-    patient = models.ForeignKey(Patient)
-    doctor = models.ForeignKey(Doctor)
+    patient = models.ForeignKey(User, related_name='Patient')
+    doctor = models.ForeignKey(User, related_name='Doctor')
     date = models.DateTimeField()
     duration = models.IntegerField()
 
@@ -64,21 +47,15 @@ class Unit(models.Model):
     name = models.CharField(max_length=200)
     abbreviation = models.CharField(max_length=200)
 
-    def __repr__(self):
-        # "grams (g)"
-        return "%s (%s)" % self.name, self.abbreviation
-
 
 class Prescription(models.Model):
-    patient = models.ForeignKey(Patient)
+    patient = models.ForeignKey(User)
     name = models.CharField(max_length=200)
     dosage = models.FloatField()
     unit = models.ForeignKey(Unit)
 
-    def __repr__(self):
-        # "20mg of Ibuprofen for Jane Doe"
-        return ("%s %f%s for %s" %
-            self.name, self.dosage, self.unit.abbreviation, self.patient)
+    def full_dosage(self):
+        return str(self.dosage) + self.unit.abbreviation
 
 
 class Log(models.Model):

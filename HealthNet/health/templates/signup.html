@@ -12,6 +12,7 @@
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <form action="" method="post" accept-charset="utf-8" class="form" role="form">
+                    {% csrf_token %}
                     <legend>Sign Up</legend>
                     <div class="row">
                         <div class="col-xs-6 col-md-6">
@@ -22,6 +23,7 @@
                         </div>
                     </div>
                     <input type="text" name="email" class="form-control" placeholder="Email" required = "" />
+                    <input type="text" name="phone" class="form-control" placeholder="Phone Number" required = "" />
                     <input type="password" name="password" class="form-control password" placeholder="Password"  required = "" />
                     <input type="password" name="confirm_password" class="form-control confirm-password" placeholder="Confirm Password" required = "" />
                     <br />
@@ -31,7 +33,7 @@
                             <input type="text" name="company" class="form-control" placeholder="Company"  />
                         </div>
                         <div class="col-xs-6 col-md-6">
-                            <input type="text" name="policy_number" class="form-control" placeholder="Policy Number"  />
+                            <input type="text" name="policy" class="form-control" placeholder="Policy Number"  />
                         </div>
                     </div>
                     <br />
