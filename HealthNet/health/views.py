@@ -1,14 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.decorators import login_required
+import datetime
 
 @login_required
 def index(request):
     return render(request, 'index.html', {"user": request.user})
-
-
-def signup(request):
-    return render(request, 'signup.html')
 
 
 def login_view(request):
@@ -29,6 +26,21 @@ def logout_view(request):
 @login_required
 def prescriptions(request):
     return render(request, 'prescriptions.html')
+
+signup_context = {
+    "year_range": range(1900, datetime.date.today().year + 1),
+    "day_range": range(1, 32),
+    "months": [
+        "Jan", "Feb", "Mar", "Apr",
+        "May", "Jun", "Jul", "Aug",
+        "Sep", "Oct", "Nov", "Dec"
+    ]
+}
+
+
+def signup(request):
+    return render(request, 'signup.html', signup_context)
+
 
 @login_required
 def schedule(request):
