@@ -9,7 +9,7 @@
 
 {% block content %}
 <div class="form-wrap">
-  <form class="sign-in" action="/health/verify_login" method="post">
+  <form class="sign-in" action="{% url 'health:login' %}" method="post">
       {% csrf_token %}
       <legend>Sign In</legend>
       <input type="text" class="form-control" name="username" placeholder="Username" required="" autofocus="" />
