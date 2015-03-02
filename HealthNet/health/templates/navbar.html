@@ -15,9 +15,11 @@
                 <li class="{% ifequal navbar 'schedule'%}active{% endifequal %}"><a href="{% url 'health:schedule' %}">Schedule</a></li>
                 <li class="{% ifequal navbar 'prescriptions'%}active{% endifequal %}"><a href="{% url 'health:prescriptions' %}">Prescriptions</a></li>
             </ul>
+        {% if user.is_authenticated %}
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="{% url 'health:logout' %}">Sign Out</a></li>
             </ul>
+        {% endif %}
         </div>
     </div>
 </nav>
