@@ -1,6 +1,5 @@
 from django.shortcuts import render, RequestContext
 from django.contrib.auth.decorators import login_required
-from datetime import date
 
 @login_required
 def index(request):
