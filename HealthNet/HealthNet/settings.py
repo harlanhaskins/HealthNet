@@ -78,7 +78,7 @@ USE_TZ = True
 
 AUTH_USER_MODEL = 'health.User'
 
-LOGIN_URL = '/health/login/'
+LOGIN_URL = '/login/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/

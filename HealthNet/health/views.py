@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout, login, authenticate
-from django.contrib.auth.decorators import login_required
-import datetime
+from django.contrib.auth.decorators import login_required, user_passes_test
 from . import sanitizer
+from . import checks
 from .models import *
+from .decorators import *
+import datetime
 
 
 @login_required
@@ -31,6 +33,7 @@ def logout_view(request):
     return redirect('health:index')
 
 @login_required
+@logged('viewed prescriptions')
 def prescriptions(request):
     context = {
         "navbar":"prescriptions",
@@ -77,9 +80,22 @@ def signup(request):
 
 
 @login_required
+@logged('viewed schedule')
 def schedule(request):
     context = {
         "navbar":"schedule",
         "user": request.user
     }
     return render(request, 'schedule.html', context)
+
+@login_required
+@user_passes_test(checks.admin_check)
+@logged("viewed logs")
+def logs(request):
+    context = {
+        "navbar": "logs",
+        "user": request.user,
+        "logs": Log.objects.all().order_by('-date')
+    }
+    return render(request, 'logs.html', context)
+

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}System Logs{% endblock %}
+{% block content %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead></thead>
+            <tbody>
+            {% for log in logs %}
+                <tr>
+                    <td>{{ log.full_description }}</td>
+                    <td>{{ log.date }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

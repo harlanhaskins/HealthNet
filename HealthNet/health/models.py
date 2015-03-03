@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import timedelta
+from datetime import datetime, timedelta
 from django.contrib.auth.models import AbstractUser
 
 
@@ -61,5 +61,11 @@ class Prescription(models.Model):
 
 
 class Log(models.Model):
-    description = models.CharField(max_length=200)
+    user = models.ForeignKey(User)
+    action = models.CharField(max_length=200)
     date = models.DateTimeField()
+
+    def full_description(self):
+        return "{name} ({email}) {action}".format(name=self.user.get_full_name(),
+                                                  email=self.user.email,
+                                                  action=self.action)
