@@ -16,7 +16,7 @@
                 {% for prescription in user.prescription_set.all %}
                     <tr>
                         <td>{{ prescription.name }}</td>
-                        <td>{{ prescription.full_dosage }}</td>
+                        <td>{{ prescription.dosage }}{{ prescription.unit.abbreviation }}</td>
                         <td>{{ prescription.directions }}</td>
                     </tr>
                 {% endfor %}

@@ -56,16 +56,8 @@ class Prescription(models.Model):
     directions = models.CharField(max_length=1000)
     unit = models.ForeignKey(Unit)
 
-    def full_dosage(self):
-        return str(self.dosage) + self.unit.abbreviation
-
 
 class Log(models.Model):
     user = models.ForeignKey(User)
     action = models.CharField(max_length=200)
     date = models.DateTimeField()
-
-    def full_description(self):
-        return "{name} ({email}) {action}".format(name=self.user.get_full_name(),
-                                                  email=self.user.email,
-                                                  action=self.action)
