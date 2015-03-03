@@ -10,4 +10,3 @@ urlpatterns = patterns('',
     url(r'signup/?$', views.signup, name='signup'),
     url(r'/?$', views.index, name='index'),
 )
-

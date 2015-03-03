@@ -53,6 +53,7 @@ class Prescription(models.Model):
     patient = models.ForeignKey(User)
     name = models.CharField(max_length=200)
     dosage = models.FloatField()
+    directions = models.CharField(max_length=1000)
     unit = models.ForeignKey(Unit)
 
     def full_dosage(self):
