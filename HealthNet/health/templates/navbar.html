@@ -11,19 +11,25 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="{% ifequal navbar 'home'%}active{% endifequal %}"><a href="{% url 'health:index' %}">Home</a></li>
-                <li class="{% ifequal navbar 'schedule'%}active{% endifequal %}"><a href="{% url 'health:schedule' %}">Schedule</a></li>
-                <li class="{% ifequal navbar 'prescriptions'%}active{% endifequal %}"><a href="{% url 'health:prescriptions' %}">Prescriptions</a></li>
-                {% if user.is_superuser %}
-                <li class="{% ifequal navbar 'logs'%}active{% endifequal %}"><a href="{% url 'health:logs' %}">System Logs</a></li>
+                {% if user.is_authenticated %}
+                    <li class="{% ifequal navbar 'home'%}active{% endifequal %}"><a href="{% url 'health:index' %}">Home</a></li>
+                    <li class="{% ifequal navbar 'schedule'%}active{% endifequal %}"><a href="{% url 'health:schedule' %}">Schedule</a></li>
+                    <li class="{% ifequal navbar 'prescriptions'%}active{% endifequal %}"><a href="{% url 'health:prescriptions' %}">Prescriptions</a></li>
+                    {% if user.is_superuser %}
+                        <li class="{% ifequal navbar 'logs'%}active{% endifequal %}"><a href="{% url 'health:logs' %}">System Logs</a></li>
+                    {% endif %}
                 {% endif %}
             </ul>
-        {% if user.is_authenticated %}
-            <ul class="nav navbar-nav navbar-right">
-                <li><p class="navbar-text">Signed in as {{ user.get_full_name }}</p></li>
-                <li><a href="{% url 'health:logout' %}">Sign Out</a></li>
-            </ul>
-        {% endif %}
+            {% if user.is_authenticated %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li><p class="navbar-text">Signed in as {{ user.get_full_name }}</p></li>
+                    <li><a href="{% url 'health:logout' %}">Sign Out</a></li>
+                </ul>
+            {% else %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="{% url 'health:login' %}">Sign In</a></li>
+                </ul>
+            {% endif %}
         </div>
     </div>
 </nav>
