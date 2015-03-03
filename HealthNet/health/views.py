@@ -14,8 +14,8 @@ def index(request):
 
 def login_view(request):
     if request.POST:
-        username = request.POST.get("username", None)
-        password = request.POST.get("password", None)
+        username = request.POST.get("username")
+        password = request.POST.get("password")
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
@@ -45,22 +45,22 @@ signup_context = {
 
 def signup(request):
     if request.POST:
-        password = request.POST.get("password", None)
-        firstname = request.POST.get("firstname", None)
-        lastname = request.POST.get("lastname", None)
+        password = request.POST.get("password")
+        firstname = request.POST.get("firstname")
+        lastname = request.POST.get("lastname")
 
-        email = request.POST.get("email", None)
-        phone = sanitizer.sanitize_phone(request.POST.get("phone", None))
-        month = int(request.POST.get("month", None))
-        day = int(request.POST.get("day", None))
-        year = int(request.POST.get("year", None))
+        email = request.POST.get("email")
+        phone = sanitizer.sanitize_phone(request.POST.get("phone"))
+        month = int(request.POST.get("month"))
+        day = int(request.POST.get("day"))
+        year = int(request.POST.get("year"))
         date = datetime.date(month=month, day=day, year=year)
         user = User.objects.create_user(email, email=email, password=password,
             date_of_birth=date, phone_number=phone, first_name=firstname,
                 last_name=lastname)
         if user is not None:
-            policy = request.POST.get("policy", None)
-            company = request.POST.get("company", None)
+            policy = request.POST.get("policy")
+            company = request.POST.get("company")
             insurance = Insurance.objects.create(policy_number=policy,
                 company=company, patient=user)
             if insurance is not None:
