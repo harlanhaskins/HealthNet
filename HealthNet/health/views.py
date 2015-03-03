@@ -14,11 +14,14 @@ def index(request):
 
 def login_view(request):
     if request.POST:
-        username = request.POST.get("username")
+        email = request.POST.get("email")
         password = request.POST.get("password")
-        user = authenticate(username=username, password=password)
+        user = authenticate(username=email, password=password)
+        remember = request.POST.get("remember")
         if user is not None:
             login(request, user)
+            if remember is not None:
+                request.session.set_expiry(0)
             return redirect('health:index')
     return render(request, 'registration/login.html')
 

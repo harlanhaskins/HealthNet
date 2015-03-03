@@ -12,10 +12,10 @@
   <form class="sign-in" action="{% url 'health:login' %}" method="post">
       {% csrf_token %}
       <legend>Sign In</legend>
-      <input type="text" class="form-control" name="username" placeholder="Username" required="" autofocus="" />
-      <input type="password" class="form-control" name="password" placeholder="Password" required=""/>
+      <input type="text" class="form-control" name="email" placeholder="Email" required autofocus />
+      <input type="password" class="form-control" name="password" placeholder="Password" required/>
       <label class="checkbox">
-          <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"/> Remember Me
+          <input type="checkbox" name="remember" checked/>&nbsp;Remember Me
       </label>
       <button class="btn btn-primary" type="submit">Sign In</button>
       <a class="btn btn-info" href="{% url 'health:signup' %}" role="button">Sign Up</a>
