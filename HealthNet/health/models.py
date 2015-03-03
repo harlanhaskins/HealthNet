@@ -7,7 +7,8 @@ class User(AbstractUser):
     date_of_birth = models.DateField()
     phone_number = models.CharField(max_length=30)
 
-    REQUIRED_FIELDS = ['date_of_birth', 'phone_number', 'email']
+    REQUIRED_FIELDS = ['date_of_birth', 'phone_number', 'email', 'first_name',
+                       'last_name']
 
     def __repr__(self):
         return self.get_full_name()
