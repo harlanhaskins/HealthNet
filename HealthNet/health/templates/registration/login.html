@@ -18,7 +18,7 @@
           <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"/> Remember Me
       </label>
       <button class="btn btn-primary" type="submit">Sign In</button>
-      <button class="btn btn-info" type="button">Sign Up</button>
+      <a class="btn btn-info" href="{% url 'health:signup' %}" role="button">Sign Up</a>
   </form>
 </div>
 {% endblock %}
