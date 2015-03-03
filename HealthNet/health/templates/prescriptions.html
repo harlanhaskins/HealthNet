@@ -1,24 +1,27 @@
 {% extends 'base.html' %}
 {% block title %}Prescriptions{% endblock %}
 {% block content %}
-<div class="table-responsive">
-<table class="table table-bordered table-striped" data-cache="false" data-height="299">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Dosage</th>
-            <th>Directions</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for prescription in user.prescription_set.all %}
-        <tr>
-            <td>{{ prescription.name }}</td>
-            <td>{{ prescription.full_dosage }}</td>
-            <td>{{ prescription.directions }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-</div>
+    <div class="table-responsive">
+        {% for user in users %}
+            <table class="table table-bordered table-striped">
+                <legend>Prescriptions for {{ user.get_full_name }}</legend>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Dosage</th>
+                    <th>Directions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for prescription in user.prescription_set.all %}
+                    <tr>
+                        <td>{{ prescription.name }}</td>
+                        <td>{{ prescription.full_dosage }}</td>
+                        <td>{{ prescription.directions }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    </div>
 {% endblock %}

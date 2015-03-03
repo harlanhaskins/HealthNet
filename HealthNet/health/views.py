@@ -32,8 +32,12 @@ def logout_view(request):
 
 @login_required
 def prescriptions(request):
-    return render(request, 'prescriptions.html', {"user": request.user,
-                                                  "navbar":"prescriptions"})
+    context = {
+        "navbar":"prescriptions",
+        "users": (User.objects.all() if request.user.is_superuser
+                else [request.user])
+    }
+    return render(request, 'prescriptions.html', context)
 
 signup_context = {
     "year_range": range(1900, datetime.date.today().year + 1),
@@ -74,5 +78,8 @@ def signup(request):
 
 @login_required
 def schedule(request):
-    return render(request, 'schedule.html', {"user": request.user,
-                                             "navbar":"schedule"})
+    context = {
+        "navbar":"schedule",
+        "user": request.user
+    }
+    return render(request, 'schedule.html', context)
