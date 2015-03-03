@@ -50,17 +50,21 @@ def signup(request):
         lastname = request.POST.get("lastname", None)
 
         email = request.POST.get("email", None)
-        # insurance_policy = request.POST.get("policy", None)
-        # insurance_company = request.POST.get("company", None)
         phone = sanitizer.sanitize_phone(request.POST.get("phone", None))
         month = int(request.POST.get("month", None))
         day = int(request.POST.get("day", None))
         year = int(request.POST.get("year", None))
         date = datetime.date(month=month, day=day, year=year)
-        if User.objects.create_user(email, email=email, password=password,
+        user = User.objects.create_user(email, email=email, password=password,
             date_of_birth=date, phone_number=phone, first_name=firstname,
-                last_name=lastname):
-            return redirect('health:index')
+                last_name=lastname)
+        if user is not None:
+            policy = request.POST.get("policy", None)
+            company = request.POST.get("company", None)
+            insurance = Insurance.objects.create(policy_number=policy,
+                company=company, patient=user)
+            if insurance is not None:
+                return redirect('health:index')
 
     return render(request, 'signup.html', signup_context)
 

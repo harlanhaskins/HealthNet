@@ -34,6 +34,7 @@ class User(AbstractUser):
 class Insurance(models.Model):
     policy_number = models.CharField(max_length=200)
     company = models.CharField(max_length=200)
+    patient = models.ForeignKey(User)
 
 
 class Appointment(models.Model):
