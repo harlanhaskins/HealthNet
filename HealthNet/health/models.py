@@ -80,6 +80,19 @@ class Prescription(models.Model):
     unit = models.ForeignKey(Unit)
 
 
+class Hospital(models.Model):
+    name = models.CharField(max_length=200)
+    address = models.CharField(max_length=200)
+    city = models.CharField(max_length=200)
+    state = models.CharField(max_length=2)
+    zipcode = models.CharField(max_length=20)
+    
+    def __repr__(self):
+        # "St. Jude Hospital at 1 Hospital Road, Waterbury, CT 06470"
+        return ("%s at %s, %s, %s %s" % self.name, self.address, self.city,
+                self.state, self.zipcode)
+
+
 class Log(models.Model):
     user = models.ForeignKey(User)
     action = models.CharField(max_length=200)
