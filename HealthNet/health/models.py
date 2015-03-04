@@ -10,10 +10,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['date_of_birth', 'phone_number', 'email', 'first_name',
                        'last_name']
 
-    def __repr__(self):
-        return self.get_full_name()
-
-    def patients(self):
+    def all_patients(self):
         if self.is_superuser:
             # Admins can see all users as patients.
             return User.objects.all()
@@ -27,6 +24,9 @@ class User(AbstractUser):
         else:
             # Users can only see themselves.
             return [self]
+
+    def active_patients(self):
+        return self.all_patients().filter(is_active=True)
 
     def schedule(self):
         if self.groups.filter(name="Doctor"):

@@ -37,7 +37,7 @@ def logout_view(request):
 def prescriptions(request):
     context = {
         "navbar":"prescriptions",
-        "users": request.user.patients()
+        "user": request.user
     }
     return render(request, 'prescriptions.html', context)
 
