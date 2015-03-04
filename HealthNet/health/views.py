@@ -37,8 +37,7 @@ def logout_view(request):
 def prescriptions(request):
     context = {
         "navbar":"prescriptions",
-        "users": (User.objects.all() if request.user.is_superuser
-                else [request.user])
+        "users": request.user.patients()
     }
     return render(request, 'prescriptions.html', context)
 

@@ -13,21 +13,40 @@ class User(AbstractUser):
     def __repr__(self):
         return self.get_full_name()
 
+    def patients(self):
+        if self.is_superuser:
+            # Admins can see all users as patients.
+            return User.objects.all()
+        elif self.groups.filter(name="Doctor"):
+            # Doctors get all users who have active appointments.
+            # Map Appointment.patient over the list of appointments
+            # to get all patients associated with appointments, then
+            # put them into a set and back into a list to get rid of duplicates.
+            return list(set(map(Appointment.patient,
+                        Appointment.objects.filter(doctor=self).values())))
+        else:
+            # Users can only see themselves.
+            return [self]
+
     def schedule(self):
         if self.groups.filter(name="Doctor"):
-            Appointment.objects.filter(doctor=self)
-        elif self.groups.filter(name="Nurse"):
-            return []
+            # Doctors see all appointments for which they are needed.
+            return Appointment.objects.filter(doctor=self)
+        elif self.groups.filter(name="Nurse") or self.is_superuser:
+            # Nurses and admins see all appointments.
+            return Appointment.objects.all()
+        # Patients see all appointments
         return Appointment.objects.filter(patient=self)
 
     def is_free(self, date, duration):
         schedule = self.schedule()
         end = date + duration
         for appointment in schedule:
-            appointment_end = (appointment.date +
-                              timedelta(seconds=appointment.duration))
+            # If the dates intersect (meaning one starts while the other is
+            # in progress) then the person is not free at the provided date
+            # and time.
             if (date <= appointment.date <= end or
-                    appointment.date <= date <= appointment_end):
+                    appointment.date <= date <= appointment.end()):
                 return False
         return True
 
@@ -43,6 +62,9 @@ class Appointment(models.Model):
     doctor = models.ForeignKey(User, related_name='Doctor')
     date = models.DateTimeField()
     duration = models.IntegerField()
+
+    def end(self):
+        return self.date + timedelta(seconds=self.duration)
 
 
 class Unit(models.Model):
