@@ -62,6 +62,17 @@
                         </div>
                     </div>
                     <br />
+                    <label>Hospital</label>
+                    <div class="row">
+                        <div class="col-xs-4 col-md-4">
+                            <select name="hospital" class="form-control">
+                                {% for hospital in hospitals %}
+                                    <option value="{{ hospital.pk }}">{{ hospital.name }} at {{ hospital.address }}, {{ hospital.city }}, {{ hospital.state }} {{ hospital.zipcode }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <br />
                     <button class="btn btn-lg btn-primary btn-block signup-btn" type="submit">Create my account</button>
                 </form>
             </div>

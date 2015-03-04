@@ -3,12 +3,26 @@ from datetime import datetime, timedelta
 from django.contrib.auth.models import AbstractUser
 
 
+class Hospital(models.Model):
+    name = models.CharField(max_length=200)
+    address = models.CharField(max_length=200)
+    city = models.CharField(max_length=200)
+    state = models.CharField(max_length=2)
+    zipcode = models.CharField(max_length=20)
+
+    def __repr__(self):
+        # "St. Jude Hospital at 1 Hospital Road, Waterbury, CT 06470"
+        return ("%s at %s, %s, %s %s" % self.name, self.address, self.city,
+                self.state, self.zipcode)
+
+
 class User(AbstractUser):
     date_of_birth = models.DateField()
     phone_number = models.CharField(max_length=30)
+    hospital = models.ForeignKey(Hospital, null=True)
 
     REQUIRED_FIELDS = ['date_of_birth', 'phone_number', 'email', 'first_name',
-                       'last_name']
+                       'last_name', 'hospital']
 
     def all_patients(self):
         if self.is_superuser:
@@ -78,19 +92,6 @@ class Prescription(models.Model):
     dosage = models.FloatField()
     directions = models.CharField(max_length=1000)
     unit = models.ForeignKey(Unit)
-
-
-class Hospital(models.Model):
-    name = models.CharField(max_length=200)
-    address = models.CharField(max_length=200)
-    city = models.CharField(max_length=200)
-    state = models.CharField(max_length=2)
-    zipcode = models.CharField(max_length=20)
-    
-    def __repr__(self):
-        # "St. Jude Hospital at 1 Hospital Road, Waterbury, CT 06470"
-        return ("%s at %s, %s, %s %s" % self.name, self.address, self.city,
-                self.state, self.zipcode)
 
 
 class Log(models.Model):

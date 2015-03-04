@@ -41,7 +41,7 @@ def prescriptions(request):
     }
     return render(request, 'prescriptions.html', context)
 
-signup_context = {
+static_signup_context = {
     "year_range": range(1900, datetime.date.today().year + 1),
     "day_range": range(1, 32),
     "months": [
@@ -64,9 +64,11 @@ def signup(request):
         day = int(request.POST.get("day"))
         year = int(request.POST.get("year"))
         date = datetime.date(month=month, day=day, year=year)
+        hospital_key = int(request.POST.get("hospital"))
+        hospital = Hospital.objects.get(pk=hospital_key)
         user = User.objects.create_user(email, email=email, password=password,
             date_of_birth=date, phone_number=phone, first_name=firstname,
-                last_name=lastname)
+                last_name=lastname, hospital=hospital)
         if user is not None:
             policy = request.POST.get("policy")
             company = request.POST.get("company")
@@ -74,7 +76,8 @@ def signup(request):
                 company=company, patient=user)
             if insurance is not None:
                 return redirect('health:index')
-
+    signup_context = dict(static_signup_context)
+    signup_context['hospitals'] = Hospital.objects.all()
     return render(request, 'signup.html', signup_context)
 
 
