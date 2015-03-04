@@ -40,21 +40,21 @@
                     <label>Birth Date</label>
                     <div class="row">
                         <div class="col-xs-4 col-md-4">
-                            <select name="month" class="form-control input-lg">
+                            <select name="month" class="form-control">
                                 {% for month in months %}
                                     <option value="{{ forloop.counter }}">{{ month }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="col-xs-4 col-md-4">
-                            <select name="day" class="form-control input-lg">
+                            <select name="day" class="form-control">
                                 {% for i in day_range %}
                                     <option value="{{ i }}">{{ i }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="col-xs-4 col-md-4">
-                            <select name="year" class="form-control input-lg">
+                            <select name="year" class="form-control">
                                 {% for i in year_range %}
                                     <option value="{{ i }}">{{ i }}</option>
                                 {% endfor %}
