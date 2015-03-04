@@ -64,7 +64,7 @@
                     <br />
                     <label>Hospital</label>
                     <div class="row">
-                        <div class="col-xs-4 col-md-4">
+                        <div class="col-lg-12">
                             <select name="hospital" class="form-control">
                                 {% for hospital in hospitals %}
                                     <option value="{{ hospital.pk }}">{{ hospital.name }} at {{ hospital.address }}, {{ hospital.city }}, {{ hospital.state }} {{ hospital.zipcode }}</option>
