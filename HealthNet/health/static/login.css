@@ -11,27 +11,28 @@
     margin-bottom: 10px;
 }
 
-.form-control{
+.form-control {
 @include box-sizing(border-box);
     margin-bottom: 10px;
-}
-
-.form-control-focus {
-    z-index: 2;
 }
 
 .btn .btn-primary {
     position: relative;
     padding: 200px;
 }
+
 .btn .btn-info {
     float: right;
     position: relative;
     padding: 200px;
 }
 
+.checkbox {
+    margin-left: 20px;
+}
+
 input[type="text"] {
-    margin-bottom: -1px;
+    margin-bottom: -2px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
