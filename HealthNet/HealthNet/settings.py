@@ -24,7 +24,10 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [] if DEBUG else [
+    '.djangomaintained.com',
+    '.djangomaintained.com.'
+]
 
 
 # Application definition
