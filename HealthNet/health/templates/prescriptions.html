@@ -2,6 +2,7 @@
 {% block title %}Prescriptions{% endblock %}
 {% block content %}
     <div class="table-responsive">
+    {% timezone 'America/New York' %}
         {% for user in user.active_patients %}
             <table class="table table-bordered table-striped">
                 <legend>Prescriptions for {{ user.get_full_name }}</legend>
@@ -23,5 +24,6 @@
                 </tbody>
             </table>
         {% endfor %}
+    {% endtimezone %}
     </div>
 {% endblock %}
