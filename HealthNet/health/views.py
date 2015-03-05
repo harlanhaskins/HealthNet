@@ -25,7 +25,7 @@ def login_view(request):
             if remember is not None:
                 request.session.set_expiry(0)
             return redirect('health:index')
-    return render(request, 'registration/login.html')
+    return render(request, 'registration/login.html', {'navbar':'login'})
 
 
 def logout_view(request):
