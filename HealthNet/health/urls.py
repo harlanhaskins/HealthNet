@@ -9,5 +9,5 @@ urlpatterns = patterns('',
     url(r'prescriptions/?$', views.prescriptions, name='prescriptions'),
     url(r'signup/?$', views.signup, name='signup'),
     url(r'logs/?$', views.logs, name='logs'),
-    url(r'/?$', views.index, name='index'),
+    url(r'^/?$', views.index, name='index'),
 )
