@@ -1,27 +1,7 @@
 
-body {
-    background: #eee !important;
-}
-
-legend {
-    color: #141823;
-    font-size: 25px;
-    font-weight: bold;
-}
-
 .form-wrap {
     margin-top: 80px;
     margin-bottom: 80px;
-}
-
-.form {
-    background-color: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 20px;
-}
-
-.heading {
-    text-align: center;
 }
 
 .form-control, .checkbox {
@@ -29,8 +9,4 @@ legend {
     height: auto;
     padding: 10px 20px;
     font-size: 1.5rem;
-}
-
-.navbar-text {
-    color: #eee;
 }
