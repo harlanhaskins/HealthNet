@@ -9,6 +9,7 @@ import datetime
 
 
 @login_required
+@logged('viewed home')
 def index(request):
     return render(request, 'index.html', {"user": request.user,
                                           "navbar":"home"})
