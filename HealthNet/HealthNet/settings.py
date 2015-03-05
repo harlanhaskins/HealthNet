@@ -84,3 +84,5 @@ LOGIN_URL = '/login/'
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+
+SESSION_COOKIE_SECURE = True
