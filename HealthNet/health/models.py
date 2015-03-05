@@ -37,7 +37,7 @@ class User(AbstractUser):
                         Appointment.objects.filter(doctor=self).values())))
         else:
             # Users can only see themselves.
-            return User.objects.get(pk=self.pk)
+            return User.objects.filter(pk=self.pk)
 
     def active_patients(self):
         return self.all_patients().filter(is_active=True)
