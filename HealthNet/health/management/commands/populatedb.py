@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from health.models import *
 import datetime
 
+
 class Command(BaseCommand):
     args = '<foo bar ...>'
     help = 'our help string comes here'

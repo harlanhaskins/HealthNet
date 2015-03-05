@@ -85,4 +85,4 @@ LOGIN_URL = '/login/'
 
 STATIC_URL = '/static/'
 
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = not DEBUG
