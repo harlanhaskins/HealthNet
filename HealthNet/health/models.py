@@ -33,8 +33,9 @@ class User(AbstractUser):
             # Map Appointment.patient over the list of appointments
             # to get all patients associated with appointments, then
             # put them into a set and back into a list to get rid of duplicates.
-            return list(set(map(Appointment.patient,
-                        Appointment.objects.filter(doctor=self).values())))
+            return map(Appointment.patient,
+                       (Appointment.objects.filter(doctor=self)
+                                           .distinct('patient')))
         else:
             # Users can only see themselves.
             return User.objects.filter(pk=self.pk)
