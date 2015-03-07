@@ -31,6 +31,7 @@ def login_user_from_form(request, body):
     password = body.get("password")
     if not all([email, password]):
         return None, "You must provide a username and password."
+    email = email.lower()  # all emails are lowercase in the database.
     user = authenticate(username=email, password=password)
     remember = body.get("remember")
     if user is None:
