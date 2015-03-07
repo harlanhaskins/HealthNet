@@ -42,6 +42,8 @@ def prescriptions(request):
     }
     return render(request, 'prescriptions.html', context)
 
+# This should be evaluated once; these are the static values sent
+# to the signup form to populate year, month, and day.
 static_signup_context = {
     "year_range": range(1900, datetime.date.today().year + 1),
     "day_range": range(1, 32),
@@ -54,34 +56,61 @@ static_signup_context = {
 
 
 def signup(request):
-    if request.POST:
-        password = request.POST.get("password")
-        firstname = request.POST.get("firstname")
-        lastname = request.POST.get("lastname")
-
-        email = request.POST.get("email")
-        phone = sanitizer.sanitize_phone(request.POST.get("phone"))
-        month = int(request.POST.get("month"))
-        day = int(request.POST.get("day"))
-        year = int(request.POST.get("year"))
-        date = datetime.date(month=month, day=day, year=year)
-        hospital_key = int(request.POST.get("hospital"))
-        hospital = Hospital.objects.get(pk=hospital_key)
-        if not User.objects.filter(email=email).exists():
-            user = User.objects.create_user(email, email=email,
-                password=password, date_of_birth=date, phone_number=phone,
-                first_name=firstname, last_name=lastname, hospital=hospital)
-            if user is not None:
-                policy = request.POST.get("policy")
-                company = request.POST.get("company")
-                insurance = Insurance.objects.create(policy_number=policy,
-                    company=company, patient=user)
-                if insurance is not None:
-                    return redirect('health:index')
     signup_context = dict(static_signup_context)
+    if request.POST:
+        user, message = create_user_from_form(request.POST)
+        if user:
+            email = request.POST.get('email')
+            password = request.POST.get('password')
+            if authenticate(email=email, password=password) is not None:
+                login(request, user)
+                return redirect('health:index')
+            else:
+                return render(redirect('health:login'))
+        elif message:
+            signup_context['error_message'] = message
     signup_context['hospitals'] = Hospital.objects.all()
     return render(request, 'signup.html', signup_context)
 
+
+# create_user_from_form(body: dict) -> (user: User?, message: String?)
+def create_user_from_form(body):
+    """
+    :param body: The POST body from the request.
+    :return: A tuple containing the User if successfully created,
+             or a failure message if the operation failed.
+    """
+    password = body.get("password")
+    firstname = body.get("firstname")
+    lastname = body.get("lastname")
+
+    email = body.get("email")
+    phone = sanitizer.sanitize_phone(body.get("phone"))
+    month = int(body.get("month"))
+    day = int(body.get("day"))
+    year = int(body.get("year"))
+    date = datetime.date(month=month, day=day, year=year)
+    hospital_key = int(body.get("hospital"))
+    hospital = Hospital.objects.get(pk=hospital_key)
+    if not all([password, firstname, lastname,
+                email, phone, month, day, year, date]):
+        return None, "All fields are required."
+    if User.objects.filter(email=email).exists():
+        return None, "A user with that email already exists."
+
+    user = User.objects.create_user(email, email=email,
+        password=password, date_of_birth=date, phone_number=phone,
+        first_name=firstname, last_name=lastname, hospital=hospital)
+    if user is None:
+        return None, "We could not create that user. Please try again."
+    policy = body.get("policy")
+    company = body.get("company")
+    insurance = Insurance.objects.create(policy_number=policy,
+        company=company, patient=user)
+    if not insurance:
+        user.delete()
+        return None, "We could not create that user. Please try again."
+    return user, None
 
 @login_required
 @logged('viewed schedule')
