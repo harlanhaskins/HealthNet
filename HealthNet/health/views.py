@@ -67,7 +67,7 @@ def signup(request):
         date = datetime.date(month=month, day=day, year=year)
         hospital_key = int(request.POST.get("hospital"))
         hospital = Hospital.objects.get(pk=hospital_key)
-        if not User.objects.get(email=email):
+        if not User.objects.filter(email=email).exists():
             user = User.objects.create_user(email, email=email,
                 password=password, date_of_birth=date, phone_number=phone,
                 first_name=firstname, last_name=lastname, hospital=hospital)
