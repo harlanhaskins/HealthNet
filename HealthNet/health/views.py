@@ -60,13 +60,7 @@ def signup(request):
     if request.POST:
         user, message = create_user_from_form(request.POST)
         if user:
-            email = request.POST.get('email')
-            password = request.POST.get('password')
-            if authenticate(email=email, password=password) is not None:
-                login(request, user)
-                return redirect('health:index')
-            else:
-                return render(redirect('health:login'))
+            return redirect('health:login')
         elif message:
             signup_context['error_message'] = message
     signup_context['hospitals'] = Hospital.objects.all()
