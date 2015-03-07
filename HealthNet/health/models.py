@@ -30,12 +30,9 @@ class User(AbstractUser):
             return User.objects.all()
         elif self.groups.filter(name="Doctor"):
             # Doctors get all users who have active appointments.
-            # Map Appointment.patient over the list of appointments
-            # to get all patients associated with appointments, then
-            # put them into a set and back into a list to get rid of duplicates.
-            return map(Appointment.patient,
-                       (Appointment.objects.filter(doctor=self)
-                                           .distinct('patient')))
+            return (Appointment.objects.filter(doctor=self)
+                                       .distinct('patient')
+                                       .values('patient'))
         else:
             # Users can only see themselves.
             return User.objects.filter(pk=self.pk)
