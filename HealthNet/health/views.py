@@ -16,18 +16,29 @@ def index(request):
 
 
 def login_view(request):
+    context = {'navbar':'login'}
     if request.POST:
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        user = authenticate(username=email, password=password)
-        remember = request.POST.get("remember")
-        if user is not None:
-            login(request, user)
-            if remember is not None:
-                request.session.set_expiry(0)
+        user, message = login_user_from_form(request, request.POST)
+        if user:
             return redirect('health:index')
-    return render(request, 'registration/login.html', {'navbar':'login'})
+        elif message:
+            context['error_message'] = message
+    return render(request, 'login.html', context)
 
+
+def login_user_from_form(request, body):
+    email = body.get("email")
+    password = body.get("password")
+    if not all([email, password]):
+        return None, "You must provide a username and password."
+    user = authenticate(username=email, password=password)
+    remember = body.get("remember")
+    if user is None:
+        return None, "Invalid username or password."
+    login(request, user)
+    if remember is not None:
+        request.session.set_expiry(0)
+    return user, None
 
 def logout_view(request):
     logout(request)
@@ -89,9 +100,9 @@ def create_user_from_form(body):
     if not all([password, firstname, lastname,
                 email, phone, month, day, year, date]):
         return None, "All fields are required."
+    email = email.lower()  # lowercase the email before adding it to the db.
     if User.objects.filter(email=email).exists():
         return None, "A user with that email already exists."
-
     user = User.objects.create_user(email, email=email,
         password=password, date_of_birth=date, phone_number=phone,
         first_name=firstname, last_name=lastname, hospital=hospital)

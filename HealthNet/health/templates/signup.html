@@ -11,12 +11,7 @@
     <div class="form-wrap">
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
-                {% if error_message %}
-                    <div class="alert alert-warning alert-dismissible" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        {{ error_message }}
-                    </div>
-                {% endif %}
+            {% include 'error.html' %}
                 <form action="" method="post" accept-charset="utf-8" class="form" role="form">
                     {% csrf_token %}
                     <legend>Sign Up</legend>
