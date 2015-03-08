@@ -72,7 +72,7 @@ def full_signup_context(request):
             "Sep", "Oct", "Nov", "Dec"
         ]
     }
-    if request.user.is_superuser:
+    if request.user and request.user.is_superuser:
         context['hospitals'] = Hospital.objects.all()
         context['groups'] = Group.objects.all()
     return context

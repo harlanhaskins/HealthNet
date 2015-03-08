@@ -7,7 +7,7 @@
             <tbody>
             {% for log in logs %}
                 <tr>
-                    <td>{{ log.user.get_full_name }} ({{ log.user.email }}) {{ log.action }}</td>
+                    <td><a href="{% url 'health:profile' log.user.pk %}">{{ log.user.get_full_name }}</a> ({{ log.user.email }}) {{ log.action }}</td>
                     <td>{{ log.date }}</td>
                 </tr>
             {% endfor %}
