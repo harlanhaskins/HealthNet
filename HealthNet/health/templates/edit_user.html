@@ -51,7 +51,7 @@
     </div>
 </div>
 <br />
-{% if not user or logged_in_user.is_superuser %}
+{% if not logged_in_user or logged_in_user.is_superuser %}
     <div class="row">
         <div class="col-lg-4">
             <label>Account Type</label>
