@@ -11,7 +11,7 @@
 </div>
 <input type="text" name="email" value="{{ user.email }}" class="form-control" placeholder="Email" required = "" />
 <input type="text" name="phone" value="{{ user.phone_number }}"  class="form-control" placeholder="Phone Number" required = "" />
-{% if not user %}
+{% if not logged_in_user %}
     <input type="password" name="password" class="form-control password" placeholder="Password"  required = "" />
     <input type="password" name="confirm_password" class="form-control confirm-password" placeholder="Confirm Password" required = "" />
 {% endif %}
