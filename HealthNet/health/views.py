@@ -102,6 +102,8 @@ def create_user_from_form(body):
                 email, phone, month, day, year, date]):
         return None, "All fields are required."
     email = email.lower()  # lowercase the email before adding it to the db.
+    if not sanitizer.email_is_valid(email):
+        return None, "Invalid email."
     if User.objects.filter(email=email).exists():
         return None, "A user with that email already exists."
     user = User.objects.create_user(email, email=email,

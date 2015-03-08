@@ -11,8 +11,8 @@
     <div class="form-wrap">
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
-                {% include 'error.html' %}
                 <form action="" method="post" accept-charset="utf-8" class="form" role="form">
+                    {% include 'error.html' %}
                     {% csrf_token %}
                     <legend>Sign Up</legend>
                     <div class="row">
