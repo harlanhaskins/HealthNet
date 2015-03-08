@@ -1,18 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth import logout, login, authenticate
+from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required, user_passes_test
-from . import sanitizer
+from . import form_utilities
 from . import checks
 from .models import *
 from .decorators import *
 import datetime
-
-
-@login_required
-@logged('viewed home')
-def index(request):
-    return render(request, 'index.html', {"user": request.user,
-                                          "navbar":"home"})
 
 
 def login_view(request):
@@ -20,7 +15,7 @@ def login_view(request):
     if request.POST:
         user, message = login_user_from_form(request, request.POST)
         if user:
-            return redirect('health:index')
+            return redirect('health:my_profile')
         elif message:
             context['error_message'] = message
     return render(request, 'login.html', context)
@@ -41,9 +36,10 @@ def login_user_from_form(request, body):
         request.session.set_expiry(0)
     return user, None
 
+
 def logout_view(request):
     logout(request)
-    return redirect('health:index')
+    return redirect('health:login')
 
 @login_required
 @logged('viewed prescriptions')
@@ -54,32 +50,34 @@ def prescriptions(request):
     }
     return render(request, 'prescriptions.html', context)
 
-# This should be evaluated once; these are the static values sent
-# to the signup form to populate year, month, and day.
-static_signup_context = {
-    "year_range": range(1900, datetime.date.today().year + 1),
-    "day_range": range(1, 32),
-    "months": [
-        "Jan", "Feb", "Mar", "Apr",
-        "May", "Jun", "Jul", "Aug",
-        "Sep", "Oct", "Nov", "Dec"
-    ]
-}
-
 
 def signup(request):
-    signup_context = dict(static_signup_context)
+    context = full_signup_context(request)
     if request.POST:
         user, message = create_user_from_form(request.POST)
         if user:
             return redirect('health:login')
         elif message:
-            signup_context['error_message'] = message
-    signup_context['hospitals'] = Hospital.objects.all()
-    return render(request, 'signup.html', signup_context)
+            context['error_message'] = message
+    return render(request, 'signup.html', context)
 
 
-# create_user_from_form(body: dict) -> (user: User?, message: String?)
+def full_signup_context(request):
+    context = {
+        "year_range": range(1900, datetime.date.today().year + 1),
+        "day_range": range(1, 32),
+        "months": [
+            "Jan", "Feb", "Mar", "Apr",
+            "May", "Jun", "Jul", "Aug",
+            "Sep", "Oct", "Nov", "Dec"
+        ]
+    }
+    if request.user.is_superuser:
+        context['hospitals'] = Hospital.objects.all()
+        context['groups'] = Group.objects.all()
+    return context
+
+
 def create_user_from_form(body):
     """
     :param body: The POST body from the request.
@@ -91,7 +89,8 @@ def create_user_from_form(body):
     lastname = body.get("lastname")
 
     email = body.get("email")
-    phone = sanitizer.sanitize_phone(body.get("phone"))
+    group = body.get("group")
+    phone = form_utilities.sanitize_phone(body.get("phone"))
     month = int(body.get("month"))
     day = int(body.get("day"))
     year = int(body.get("year"))
@@ -102,7 +101,7 @@ def create_user_from_form(body):
                 email, phone, month, day, year, date]):
         return None, "All fields are required."
     email = email.lower()  # lowercase the email before adding it to the db.
-    if not sanitizer.email_is_valid(email):
+    if not form_utilities.email_is_valid(email):
         return None, "Invalid email."
     if User.objects.filter(email=email).exists():
         return None, "A user with that email already exists."
@@ -118,7 +117,26 @@ def create_user_from_form(body):
     if not insurance:
         user.delete()
         return None, "We could not create that user. Please try again."
+    group = Group.objects.get(pk=group)
+    group.user_set.add(user)
     return user, None
+
+@login_required
+def my_profile(request):
+    return redirect('health:profile', request.user.pk)
+
+@login_required
+@logged("viewed profile")
+def profile(request, user_id):
+    context = full_signup_context(request)
+    requested_user = get_object_or_404(User, pk=user_id)
+    is_editing_own_profile = requested_user == request.user
+    if not is_editing_own_profile and not request.user.is_superuser:
+        raise PermissionDenied
+    context["user"] = requested_user
+    context["logged_in_user"] = request.user
+    context["navbar"] = "my_profile" if is_editing_own_profile else "profile"
+    return render(request, 'profile.html', context)
 
 @login_required
 @logged('viewed schedule')
@@ -128,6 +146,10 @@ def schedule(request):
         "user": request.user
     }
     return render(request, 'schedule.html', context)
+
+
+def modify_user_from_form(form):
+    pass
 
 @login_required
 @user_passes_test(checks.admin_check)

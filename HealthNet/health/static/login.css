@@ -1,18 +1,4 @@
-
-.sign-in {
-    max-width: 380px;
-    padding: 15px 35px 45px;
-    margin: 0 auto;
-    background-color: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
 .sign-in, .checkbox {
-    margin-bottom: 10px;
-}
-
-.form-control {
-@include box-sizing(border-box);
     margin-bottom: 10px;
 }
 

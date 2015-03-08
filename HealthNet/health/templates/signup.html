@@ -2,82 +2,13 @@
 {% load staticfiles %}
 
 {% block title %}Sign Up{% endblock %}
+{% block legend %}Sign Up{% endblock %}
 
 {% block extra %}
     <link rel="stylesheet" href="{% static 'signup.css' %}">
 {% endblock %}
 
 {% block content %}
-    <div class="form-wrap">
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3">
-                <form action="" method="post" accept-charset="utf-8" class="form" role="form">
-                    {% include 'error.html' %}
-                    {% csrf_token %}
-                    <legend>Sign Up</legend>
-                    <div class="row">
-                        <div class="col-xs-6 col-md-6">
-                            <input type="text" name="firstname" class="form-control" placeholder="First Name" required = "" />
-                        </div>
-                        <div class="col-xs-6 col-md-6">
-                            <input type="text" name="lastname" class="form-control" placeholder="Last Name"  required = ""/>
-                        </div>
-                    </div>
-                    <input type="text" name="email" class="form-control" placeholder="Email" required = "" />
-                    <input type="text" name="phone" class="form-control" placeholder="Phone Number" required = "" />
-                    <input type="password" name="password" class="form-control password" placeholder="Password"  required = "" />
-                    <input type="password" name="confirm_password" class="form-control confirm-password" placeholder="Confirm Password" required = "" />
-                    <br />
-                    <label>Insurance Information</label>
-                    <div class="row">
-                        <div class="col-xs-6 col-md-6">
-                            <input type="text" name="company" class="form-control" placeholder="Company"  />
-                        </div>
-                        <div class="col-xs-6 col-md-6">
-                            <input type="text" name="policy" class="form-control" placeholder="Policy Number"  />
-                        </div>
-                    </div>
-                    <br />
-                    <label>Birth Date</label>
-                    <div class="row">
-                        <div class="col-xs-4 col-md-4">
-                            <select name="month" class="form-control">
-                                {% for month in months %}
-                                    <option value="{{ forloop.counter }}">{{ month }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-xs-4 col-md-4">
-                            <select name="day" class="form-control">
-                                {% for i in day_range %}
-                                    <option value="{{ i }}">{{ i }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-xs-4 col-md-4">
-                            <select name="year" class="form-control">
-                                {% for i in year_range %}
-                                    <option value="{{ i }}">{{ i }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <br />
-                    <label>Hospital</label>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <select name="hospital" class="form-control">
-                                {% for hospital in hospitals %}
-                                    <option value="{{ hospital.pk }}">{{ hospital.name }} at {{ hospital.address }}, {{ hospital.city }}, {{ hospital.state }} {{ hospital.zipcode }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <br />
-                    <button class="btn btn-lg btn-primary btn-block signup-btn" type="submit">Create my account</button>
-                </form>
-            </div>
-        </div>
-    </div>
+    {% include 'edit_user.html' %}
 {% endblock %}
 

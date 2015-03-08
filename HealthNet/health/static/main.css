@@ -9,4 +9,13 @@
     height: auto;
     padding: 10px 20px;
     font-size: 1.5rem;
+@include box-sizing(border-box);
+    margin-bottom: 10px;
+}
+
+form {
+    max-width: 540px;
+    padding: 15px 35px 45px;
+    margin: 0 auto;
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }

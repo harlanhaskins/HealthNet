@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ user.get_full_name }}'s Profile{% endblock %}
+
+{% block legend %}{% include 'user_link.html' %}'s Profile{% endblock %}
+
+{% block button_text %}Save Changes{% endblock %}
+
+{% block content %}
+    {% include 'edit_user.html' %}
+{% endblock %}

@@ -13,9 +13,3 @@ input[type="text"] {
     border-top-right-radius: 0;
 }
 
-form {
-    max-width: 540px;
-    padding: 15px 35px 45px;
-    margin: 0 auto;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}

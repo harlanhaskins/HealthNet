@@ -3,25 +3,29 @@
 {% block content %}
     <div class="table-responsive">
         {% for user in user.active_patients %}
-            <table class="table table-bordered table-striped">
-                <legend>Prescriptions for {{ user.get_full_name }}</legend>
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Dosage</th>
-                    <th>Directions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for prescription in user.prescription_set.all %}
+            {% if user.prescription_set.all %}
+                <table class="table table-bordered table-striped">
+                    <legend>Prescriptions for {% include 'user_link.html' %}</legend>
+                    <thead>
                     <tr>
-                        <td>{{ prescription.name }}</td>
-                        <td>{{ prescription.dosage }}{{ prescription.unit.abbreviation }}</td>
-                        <td>{{ prescription.directions }}</td>
+                        <th>Name</th>
+                        <th>Dosage</th>
+                        <th>Directions</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {% for prescription in user.prescription_set.all %}
+                        <tr>
+                            <td>{{ prescription.name }}</td>
+                            <td>{{ prescription.dosage }}{{ prescription.unit.abbreviation }}</td>
+                            <td>{{ prescription.directions }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <h2 class="text-center"> No prescriptions for {% include 'user_link.html' %}</h2>
+            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}

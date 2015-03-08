@@ -1,0 +1,87 @@
+<div class="form-wrap">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <form action="" method="post" accept-charset="utf-8" class="form" role="form">
+                {% include 'error.html' %}
+                {% csrf_token %}
+                <legend>{% block legend %}{% endblock %}</legend>
+                <div class="row">
+                    <div class="col-xs-6 col-md-6">
+                        <input type="text" name="firstname" value="{{ user.first_name }}" class="form-control" placeholder="First Name" required />
+                    </div>
+                    <div class="col-xs-6 col-md-6">
+                        <input type="text" name="lastname" value="{{ user.last_name }}" class="form-control" placeholder="Last Name"  required />
+                    </div>
+                </div>
+                <input type="text" name="email" value="{{ user.email }}" class="form-control" placeholder="Email" required = "" />
+                <input type="text" name="phone" value="{{ user.phone_number }}"  class="form-control" placeholder="Phone Number" required = "" />
+                {% if not user %}
+                    <input type="password" name="password" class="form-control password" placeholder="Password"  required = "" />
+                    <input type="password" name="confirm_password" class="form-control confirm-password" placeholder="Confirm Password" required = "" />
+                {% endif %}
+                <br />
+                <label>Insurance Information</label>
+                <div class="row">
+                    <div class="col-xs-6 col-md-6">
+                        <input type="text" name="company" value="{{ user.insurance_set.first.company }}" class="form-control" placeholder="Company"  />
+                    </div>
+                    <div class="col-xs-6 col-md-6">
+                        <input type="text" name="policy" value="{{ user.insurance_set.first.policy_number }}" class="form-control" placeholder="Policy Number"  />
+                    </div>
+                </div>
+                <br />
+                <label>Birth Date</label>
+                <div class="row">
+                    <div class="col-xs-4 col-md-4">
+                        <select name="month" class="form-control">
+                            {% for month in months %}
+                                <option {% if user.date_of_birth.month == month %}selected="selected"{% endif %} value="{{ forloop.counter }}">{{ month }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xs-4 col-md-4">
+                        <select name="day" class="form-control">
+                            {% for i in day_range %}
+                                <option {% if user.date_of_birth.day == day %}selected="selected"{% endif %} value="{{ i }}">{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xs-4 col-md-4">
+                        <select name="year" class="form-control">
+                            {% for i in year_range %}
+                                <option {% if user.date_of_birth.year == year %}selected="selected"{% endif %} value="{{ i }}">{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <br />
+            {% if not user or user.is_superuser %}
+                <div class="row">
+                    <div class="col-lg-4">
+                        <label>Account Type</label>
+                        <select name="group" class="form-control">
+                            {% for group in groups %}
+                                <option value="{{ group.pk }}">{{ group.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-8">
+                        <label>Hospital</label>
+                        <select name="hospital" class="form-control">
+                            {% for hospital in hospitals %}
+                                <option value="{{ hospital.pk }}">{{ hospital.name }} at {{ hospital.address }}, {{ hospital.city }}, {{ hospital.state }} {{ hospital.zipcode }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <br />
+            {% endif %}
+                <button class="btn btn-lg btn-primary btn-block signup-btn" type="submit">
+                    {% block button_text %}
+                        Create My Account
+                    {% endblock %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

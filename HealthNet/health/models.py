@@ -28,7 +28,7 @@ class User(AbstractUser):
         if self.is_superuser:
             # Admins can see all users as patients.
             return User.objects.all()
-        elif self.groups.filter(name="Doctor"):
+        elif self.groups.filter(name="Doctor").exists():
             # Doctors get all users who have active appointments.
             return (Appointment.objects.filter(doctor=self)
                                        .distinct('patient')
@@ -41,12 +41,9 @@ class User(AbstractUser):
         return self.all_patients().filter(is_active=True)
 
     def schedule(self):
-        if self.groups.filter(name="Doctor"):
+        if self.groups.filter(name="Doctor").exists():
             # Doctors see all appointments for which they are needed.
             return Appointment.objects.filter(doctor=self)
-        elif self.groups.filter(name="Nurse") or self.is_superuser:
-            # Nurses and admins see all appointments.
-            return Appointment.objects.all()
         # Patients see all appointments
         return Appointment.objects.filter(patient=self)
 
