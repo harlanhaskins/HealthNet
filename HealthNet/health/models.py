@@ -31,6 +31,16 @@ class User(AbstractUser):
                        'last_name', 'hospital']
 
     def all_patients(self):
+        """
+        Returns all patients relevant for a given user.
+        If the user is a doctor:
+            Returns all patients with active appointments with the doctor.
+        If the user is a patient:
+            Returns themself.
+        If the user is an admin:
+            Returns all patients in the database.
+        :return:
+        """
         if self.is_superuser:
             # Admins can see all users as patients.
             return Group.objects.get(name='Patient').user_set.all()
@@ -44,19 +54,38 @@ class User(AbstractUser):
             return User.objects.filter(pk=self.pk)
 
     def active_patients(self):
+        """
+        Same as all_patients, but only patients that are active.
+        :return: All active patients relevant to the current user.
+        """
         return self.all_patients().filter(is_active=True)
 
     def schedule(self):
-        if self.groups.filter(name="Doctor").exists():
+        """
+        :return: All appointments for which this person is needed.
+        """
+        if self.is_superuser:
+            return Appointment.objects.all()
+        elif self.groups.filter(name="Doctor").exists():
             # Doctors see all appointments for which they are needed.
             return Appointment.objects.filter(doctor=self)
         # Patients see all appointments
         return Appointment.objects.filter(patient=self)
 
     def is_patient(self):
+        """
+        :return: True if the user belongs to the Patient group.
+        """
         return self.groups.filter(name="Patient").exists()
 
     def is_free(self, date, duration):
+        """
+        Checks the user's schedule for a given date and duration to see if
+        the user does not have an appointment at that time.
+        :param date:
+        :param duration:
+        :return:
+        """
         schedule = self.schedule()
         end = date + duration
         for appointment in schedule:
@@ -76,6 +105,9 @@ class Appointment(models.Model):
     duration = models.IntegerField()
 
     def end(self):
+        """
+        :return: A datetime representing the end of the appointment.
+        """
         return self.date + timedelta(seconds=self.duration)
 
 

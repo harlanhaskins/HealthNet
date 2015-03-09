@@ -124,6 +124,11 @@ def full_signup_context():
 
 def create_user_from_form(body):
     """
+    Creates a user and validates all of the fields, in turn.
+    If there is a failure in any validation, the returned tuple contains
+    None and a failure message.
+    If validation succeeds and the user can be created, then the returned tuple
+    contains the user and None for a failure message.
     :param body: The POST body from the request.
     :return: A tuple containing the User if successfully created,
              or a failure message if the operation failed.
@@ -167,11 +172,32 @@ def create_user_from_form(body):
 
 @login_required
 def my_profile(request):
+    """
+    Gets the primary key of the current user and redirects to the profile view
+    for the logged-in user.
+    :param request:
+    :return:
+    """
     return redirect('health:profile', request.user.pk)
 
 @login_required
 @logged("profile")
 def profile(request, user_id):
+    """
+    Checks if the logged-in user has permission to modify the requested user.
+    If not, raises a PermissionDenied which Django catches by redirecting to
+    a 403 page.
+
+    If requested via GET:
+        Renders a page containing all the user's fields pre-filled-in
+        with their information.
+    If requested via POST:
+        modifies the values and redirects to the same page, with the new values.
+    :param request: The Django request.
+    :param user_id: The user id being requested. This is part of the URL:
+    /users/<user_id>/
+    :return:
+    """
     requested_user = get_object_or_404(User, pk=user_id)
     is_editing_own_profile = requested_user == request.user
     if not is_editing_own_profile and not request.user.is_superuser:
@@ -189,6 +215,15 @@ def profile(request, user_id):
 
 
 def modify_user_from_form(body, user):
+    """
+    Looks through all of models.User's fields and, if they're supplied and
+    different from the existing values, and updates them. There is special
+    behavior for changing groups, because the user must first be removed from
+    the old group and added to the new.
+
+    :param body: The form POST body.
+    :param user: The user being modified.
+    """
     email = body.get("email")
     if email and user.email != email:
         user.email = email
@@ -230,26 +265,62 @@ def modify_user_from_form(body, user):
             group.save()
     user.save()
 
+
+def create_appointment_from_form(body, user):
+    """
+    Validates the provided fields for an appointment request and creates one
+    if all fields are valid.
+    :param body: The HTTP form body containing the fields.
+    :param user: The user intending to create the appointment.
+    :return: A tuple containing either a valid appointment or failure message.
+    """
+    date_string = body.get("date")
+    try:
+        parsed = dateparse.parse_datetime(date_string)
+        if not parsed:
+            return None, "Invalid date or time."
+    except ValueError:
+        return None, "Invalid date or time."
+    duration = int(body.get("duration"))
+    doctor_id = int(body.get("doctor"))
+    doctor = Group.objects.get(name="Doctor").user_set.get(pk=doctor_id)
+    if not doctor.is_free(parsed, duration):
+        return None, "The doctor is not free at that time." +\
+                     " Please specify a different time."
+    appointment = Appointment.objects.create(date=parsed, duration=duration,
+                                             doctor=doctor, patient=user)
+    if not appointment:
+        return None, "We could not create the appointment. Please try again."
+    return appointment, None
+
+
 @login_required
 @logged('schedule')
 def schedule(request):
-    if request.POST:
-        date_string = request.POST.get("date")
-        parsed = dateparse.parse_datetime(date_string)
-        duration = int(request.POST.get("duration"))
-        doctor_id = int(request.POST.get("doctor"))
-        doctor = Group.objects.get(name="Doctor").user_set.get(pk=doctor_id)
-        appointment = Appointment.objects.create(date=parsed, duration=duration,
-                                                 doctor=doctor, patient=request.user)
-        if appointment:
-            return redirect('health:schedule')
+    """
+    If requested with GET:
+        Renders a page with an HTML form allowing the user to add an appointment
+        with an existing doctor.
+        Also shows a table of the existing appointments for the logged-in user.
+    If requested with POST:
+        Looks for the form fields rendered by the template and creates an
+        Appointment object corresponding to the fields provided.
+    :param request:
+    :return:
+    """
+
     context = {
         "navbar":"schedule",
         "user": request.user,
         "doctors": Group.objects.get(name="Doctor").user_set.all()
     }
-    return render(request, 'schedule.html', context)
 
+    if request.POST:
+        appointment, message = create_appointment_from_form(request.POST,
+                                                            request.user)
+        if message:
+            context['error_message'] = message
+    return render(request, 'schedule.html', context)
 
 @login_required
 @user_passes_test(checks.admin_check)

@@ -9,6 +9,9 @@ class Command(BaseCommand):
     help = 'our help string comes here'
 
     def _create_users(self):
+        """
+        Creates many users in the database.
+        """
         h = Hospital.objects.create(name="University of Rochester Medical Center",
                                     address="601 Elmwood Ave", state="New York", city="Rochester",
                                     zipcode="14620")
@@ -25,7 +28,7 @@ class Command(BaseCommand):
         doctors = Group.objects.create(name="Doctor")
         nurses = Group.objects.create(name="Nurse")
 
-        email = "harlan@harlanhaskins.com"
+        email = "admin@djangomaintained.com"
         admin = User.objects.create_superuser('admin', email=email, first_name="Administrator",
                 last_name="Jones", password="SuperSecurePassword1234", phone_number="8649189255",
                 hospital=h, date_of_birth=datetime.date(year=1995, month=4, day=27))
@@ -33,6 +36,16 @@ class Command(BaseCommand):
         email = "jd@sacredheart.org"
         doctor = User.objects.create_superuser(email, email=email, first_name="John",
                  last_name="Dorian", password="SuperSecurePassword1234", phone_number="18005553333",
+                 hospital=h, date_of_birth=datetime.date(year=1980, month=6, day=7))
+        doctors.user_set.add(doctor)
+        email = "turk@sacredheart.org"
+        doctor = User.objects.create_superuser(email, email=email, first_name="Christopher",
+                 last_name="Turkleton", password="SuperSecurePassword1234", phone_number="18005553333",
+                 hospital=h, date_of_birth=datetime.date(year=1980, month=6, day=7))
+        doctors.user_set.add(doctor)
+        email = "drcox@sacredheart.org"
+        doctor = User.objects.create_superuser(email, email=email, first_name="Perry",
+                 last_name="Cox", password="SuperSecurePassword1234", phone_number="18005553333",
                  hospital=h, date_of_birth=datetime.date(year=1980, month=6, day=7))
         doctors.user_set.add(doctor)
 
