@@ -135,7 +135,7 @@ def profile(request, user_id):
         modify_user_from_form(request.POST, request.user)
         return redirect('health:profile', user_id)
 
-    context = full_signup_context(request)
+    context = full_signup_context()
     context["user"] = requested_user
     context["logged_in_user"] = request.user
     context["navbar"] = "my_profile" if is_editing_own_profile else "profile"
