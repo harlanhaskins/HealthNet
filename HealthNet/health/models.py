@@ -1,6 +1,6 @@
 from django.db import models
-from datetime import datetime, timedelta
-from django.contrib.auth.models import AbstractUser
+from datetime import timedelta
+from django.contrib.auth.models import AbstractUser, Group
 
 
 class Hospital(models.Model):
@@ -33,7 +33,7 @@ class User(AbstractUser):
     def all_patients(self):
         if self.is_superuser:
             # Admins can see all users as patients.
-            return User.objects.all()
+            return Group.objects.get(name='Patient').user_set.all()
         elif self.groups.filter(name="Doctor").exists():
             # Doctors get all users who have active appointments.
             return (Appointment.objects.filter(doctor=self)
