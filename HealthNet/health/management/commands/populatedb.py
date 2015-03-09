@@ -34,13 +34,13 @@ class Command(BaseCommand):
         doctor = User.objects.create_superuser(email, email=email, first_name="John",
                  last_name="Dorian", password="poopsatan666", phone_number="18005553333",
                  hospital=h, date_of_birth=datetime.date(year=1980, month=6, day=7))
-        doctors.add(doctor)
+        doctors.user_set.add(doctor)
 
         email = "carla@sacredheart.org"
         nurse = User.objects.create_superuser(email, email=email, first_name="Carla",
                 last_name="Turkleton", password="poopsatan666", phone_number="18005553333",
                 hospital=h, date_of_birth=datetime.date(year=1976, month=3, day=9))
-        nurses.add(nurse)
+        nurses.user_set.add(nurse)
 
         insurance = Insurance.objects.create(company="Hobo Sal's Used Needle Emporium",
                                              policy_number="8675309")
@@ -49,7 +49,7 @@ class Command(BaseCommand):
                   last_name="Theroc-Johnson", password="poopsatan666", phone_number="18005553333",
                   hospital=h, date_of_birth=datetime.date(year=1991, month=3, day=29), insurance=insurance)
 
-        patients.add(patient)
+        patients.user_set.add(patient)
 
     def handle(self, *args, **options):
         self._create_users()
