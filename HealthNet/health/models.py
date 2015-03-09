@@ -16,6 +16,11 @@ class Hospital(models.Model):
                 self.state, self.zipcode)
 
 
+class Insurance(models.Model):
+    policy_number = models.CharField(max_length=200)
+    company = models.CharField(max_length=200)
+
+
 class User(AbstractUser):
     date_of_birth = models.DateField()
     phone_number = models.CharField(max_length=30)
@@ -62,11 +67,6 @@ class User(AbstractUser):
                     appointment.date <= date <= appointment.end()):
                 return False
         return True
-
-
-class Insurance(models.Model):
-    policy_number = models.CharField(max_length=200)
-    company = models.CharField(max_length=200)
 
 
 class Appointment(models.Model):
