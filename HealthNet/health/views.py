@@ -204,7 +204,7 @@ def profile(request, user_id):
         raise PermissionDenied
 
     if request.POST:
-        modify_user_from_form(request.POST, request.user)
+        modify_user_from_form(request.POST, requested_user)
         return redirect('health:profile', user_id)
 
     context = full_signup_context()
@@ -306,7 +306,6 @@ def schedule(request):
         Looks for the form fields rendered by the template and creates an
         Appointment object corresponding to the fields provided.
     :param request:
-    :return:
     """
 
     context = {
@@ -318,7 +317,9 @@ def schedule(request):
     if request.POST:
         appointment, message = create_appointment_from_form(request.POST,
                                                             request.user)
-        if message:
+        if appointment:
+            return redirect('health:schedule')
+        elif message:
             context['error_message'] = message
     return render(request, 'schedule.html', context)
 

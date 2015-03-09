@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth.models import AbstractUser, Group
 
@@ -87,7 +88,10 @@ class User(AbstractUser):
         :return:
         """
         schedule = self.schedule()
-        end = date + duration
+        date = timezone.make_aware(date,
+                                  timezone.get_default_timezone())
+        end = timezone.make_aware(date + timedelta(seconds=duration),
+                                  timezone.get_default_timezone())
         for appointment in schedule:
             # If the dates intersect (meaning one starts while the other is
             # in progress) then the person is not free at the provided date
@@ -108,7 +112,8 @@ class Appointment(models.Model):
         """
         :return: A datetime representing the end of the appointment.
         """
-        return self.date + timedelta(seconds=self.duration)
+        return timezone.make_aware(self.date + timedelta(seconds=self.duration),
+                                   timezone.get_default_timezone())
 
 
 class Unit(models.Model):
