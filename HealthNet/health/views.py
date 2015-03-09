@@ -52,7 +52,7 @@ def prescriptions(request):
 
 
 def signup(request):
-    context = full_signup_context(request)
+    context = full_signup_context()
     if request.POST:
         user, message = create_user_from_form(request.POST)
         if user:
@@ -62,19 +62,18 @@ def signup(request):
     return render(request, 'signup.html', context)
 
 
-def full_signup_context(request):
-    context = {
+def full_signup_context():
+    return {
         "year_range": range(1900, datetime.date.today().year + 1),
         "day_range": range(1, 32),
         "months": [
             "Jan", "Feb", "Mar", "Apr",
             "May", "Jun", "Jul", "Aug",
             "Sep", "Oct", "Nov", "Dec"
-        ]
+        ],
+        "hospitals": Hospital.objects.all(),
+        "groups": Group.objects.all()
     }
-    context['hospitals'] = Hospital.objects.all()
-    context['groups'] = Group.objects.all()
-    return context
 
 
 def create_user_from_form(body):
