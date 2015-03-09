@@ -8,15 +8,27 @@
                 <input type='datetime-local' class="form-control" />
                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
                 </span>
-            </div>
-        </div>
-    </div>
-    <div class='col-md-5'>
-        <div class="form-group">
-            <div class='input-group date' id='datetimepicker1'>
-                <input type='datetime-local' class="form-control" />
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-                </span>
+                <table class="table table-bordered table-striped">
+                    <legend>Schedule for {% include 'user_link.html' %}</legend>
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Doctor</th>
+                        <th>Date</th>
+                        <th>Duration</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for Appointment in user.prescription_set.all %}
+                        <tr>
+                            <td>{{ Appointment.patient }}</td>
+                            <td>{{ Appointment.doctor }}</td>
+                            <td>{{ Appointment.date }}</td>
+                            <td>{{Appointment.duration}}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
