@@ -1,36 +1,71 @@
 {% extends 'base.html' %}
 {% block title %}Schedule{% endblock %}
 {% block content %}
-<div class="container">
-    <div class='col-md-5'>
-        <div class="form-group">
-            <div class='input-group date' id='datetimepicker'>
-                <input type='datetime-local' class="form-control" />
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-                </span>
-                <table class="table table-bordered table-striped">
-                    <legend>Schedule for {% include 'user_link.html' %}</legend>
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Doctor</th>
-                        <th>Date</th>
-                        <th>Duration</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for Appointment in user.prescription_set.all %}
-                        <tr>
-                            <td>{{ Appointment.patient }}</td>
-                            <td>{{ Appointment.doctor }}</td>
-                            <td>{{ Appointment.date }}</td>
-                            <td>{{Appointment.duration}}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+    <div class="form-wrap">
+        <form action="" method="post" accept-charset="utf-8" class="form" role="form">
+            {% csrf_token %}
+            <legend>Add an Appointment</legend>
+
+            <label>Time and Date</label>
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <div class='input-group' id='datetimepicker'>
+                        <input type='datetime-local' class="form-control" name="date" />
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                    </div>
+                </div>
             </div>
-        </div>
+            <br />
+            <label>Duration</label>
+            <div class="row">
+                <div class="col-xs-8 col-md-8">
+                    <div class="input-group" id="duration">
+                        <input type="number" name="duration" class="form-control" value="30" />
+                        <span class="input-group-addon">minutes</span>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <label>Doctor</label>
+            <div class="row">
+                <div class="col-xs-6 col-md-6">
+                    <select name="doctor" class="form-control">
+                        {% for doctor in doctors %}
+                            <option value="{{ doctor.pk }}">{{ doctor.get_full_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <button class="btn btn-lg btn-primary btn-block signup-btn" type="submit">Add Appointment</button>
+            </div>
+        </form>
     </div>
-</div>
+    {% if user.schedule %}
+        <table class="table table-bordered table-striped">
+            <legend>Schedule for {% include 'user_link.html' %}</legend>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Duration</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for appointment in user.schedule %}
+                <tr>
+                    <td>{{ appointment.patient.get_full_name }}</td>
+                    <td>{{ appointment.doctor.get_full_name }}</td>
+                    <td>{{ appointment.date }}</td>
+                    <td>{{ appointment.duration }} minutes</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <h2 class="text-center">No appointments.</h2>
+        <br /><br />
+    {% endif %}
 {% endblock %}

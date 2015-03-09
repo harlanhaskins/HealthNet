@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import dateparse
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import logout, login, authenticate
-from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required, user_passes_test
 from . import form_utilities
 from . import checks
@@ -42,7 +42,7 @@ def logout_view(request):
     return redirect('health:login')
 
 @login_required
-@logged('viewed prescriptions')
+@logged('prescriptions')
 def prescriptions(request):
     context = {
         "navbar":"prescriptions",
@@ -124,7 +124,7 @@ def my_profile(request):
     return redirect('health:profile', request.user.pk)
 
 @login_required
-@logged("viewed profile")
+@logged("profile")
 def profile(request, user_id):
     requested_user = get_object_or_404(User, pk=user_id)
     is_editing_own_profile = requested_user == request.user
@@ -185,18 +185,29 @@ def modify_user_from_form(body, user):
     user.save()
 
 @login_required
-@logged('viewed schedule')
+@logged('schedule')
 def schedule(request):
+    if request.POST:
+        date_string = request.POST.get("date")
+        parsed = dateparse.parse_datetime(date_string)
+        duration = int(request.POST.get("duration"))
+        doctor_id = int(request.POST.get("doctor"))
+        doctor = Group.objects.get(name="Doctor").user_set.get(pk=doctor_id)
+        appointment = Appointment.objects.create(date=parsed, duration=duration,
+                                                 doctor=doctor, patient=request.user)
+        if appointment:
+            return redirect('health:schedule')
     context = {
         "navbar":"schedule",
-        "user": request.user
+        "user": request.user,
+        "doctors": Group.objects.get(name="Doctor").user_set.all()
     }
     return render(request, 'schedule.html', context)
 
 
 @login_required
 @user_passes_test(checks.admin_check)
-@logged("viewed logs")
+@logged("logs")
 def logs(request):
     context = {
         "navbar": "logs",
