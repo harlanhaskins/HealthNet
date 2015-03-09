@@ -11,6 +11,16 @@ import datetime
 
 
 def login_view(request):
+    """
+    Presents a simple form for logging in a user.
+    If requested via POST, looks for the username and password,
+    and attempts to log the user in. If the credentials are invalid,
+    it passes an error message to the context which the template will
+    render using a Bootstrap alert.
+
+    :param request: The Django request object.
+    :return: The rendered 'login' page.
+    """
     context = {'navbar':'login'}
     if request.POST:
         user, message = login_user_from_form(request, request.POST)
@@ -22,6 +32,19 @@ def login_view(request):
 
 
 def login_user_from_form(request, body):
+    """
+    Validates a user's login credentials and returns a tuple
+    containing either a valid, logged-in user or a failure
+    message.
+
+    Checks if all fields were supplied, then attempts to authenticate,
+    then checks if the 'remember' checkbox was checked. If it was, sets
+    the cookie's expiration to 0, meaning it will be invalidated when the
+    session ends.
+
+    :param request: The Django request object.
+    :return: The rendered 'login' page.
+    """
     email = body.get("email")
     password = body.get("password")
     if not all([email, password]):
@@ -38,12 +61,23 @@ def login_user_from_form(request, body):
 
 
 def logout_view(request):
+    """
+    Logs the user out and redirects the user to the login page.
+    :param request: The Django request.
+    :return: A 301 redirect to the login page.
+    """
     logout(request)
     return redirect('health:login')
 
 @login_required
 @logged('prescriptions')
 def prescriptions(request):
+    """
+    Renders a table of the prescriptions associated with this user.
+
+    :param request: The Django request.
+    :return: A rendered version of prescriptions.html
+    """
     context = {
         "navbar":"prescriptions",
         "user": request.user
@@ -52,6 +86,14 @@ def prescriptions(request):
 
 
 def signup(request):
+    """
+    Presents a simple signup page with a form of all the required
+    fields for new users.
+    Uses the full_signup_context function to populate a year/month/day picker
+    and, if the user was created successfully, prompts the user to log in.
+    :param request:
+    :return:
+    """
     context = full_signup_context()
     if request.POST:
         user, message = create_user_from_form(request.POST)
@@ -63,6 +105,10 @@ def signup(request):
 
 
 def full_signup_context():
+    """
+    Returns a dictionary containing valid years, months, days, hospitals,
+    and groups in the database.
+    """
     return {
         "year_range": range(1900, datetime.date.today().year + 1),
         "day_range": range(1, 32),

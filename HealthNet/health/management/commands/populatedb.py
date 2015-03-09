@@ -27,18 +27,18 @@ class Command(BaseCommand):
 
         email = "harlan@harlanhaskins.com"
         admin = User.objects.create_superuser('admin', email=email, first_name="Administrator",
-                last_name="Jones", password="poopsatan666", phone_number="8649189255",
+                last_name="Jones", password="SuperSecurePassword1234", phone_number="8649189255",
                 hospital=h, date_of_birth=datetime.date(year=1995, month=4, day=27))
 
         email = "jd@sacredheart.org"
         doctor = User.objects.create_superuser(email, email=email, first_name="John",
-                 last_name="Dorian", password="poopsatan666", phone_number="18005553333",
+                 last_name="Dorian", password="SuperSecurePassword1234", phone_number="18005553333",
                  hospital=h, date_of_birth=datetime.date(year=1980, month=6, day=7))
         doctors.user_set.add(doctor)
 
         email = "carla@sacredheart.org"
         nurse = User.objects.create_superuser(email, email=email, first_name="Carla",
-                last_name="Turkleton", password="poopsatan666", phone_number="18005553333",
+                last_name="Turkleton", password="SuperSecurePassword1234", phone_number="18005553333",
                 hospital=h, date_of_birth=datetime.date(year=1976, month=3, day=9))
         nurses.user_set.add(nurse)
 
@@ -46,9 +46,9 @@ class Command(BaseCommand):
                                              policy_number="8675309")
         email = "duwayne@theroc-johnson.com"
         patient = User.objects.create_superuser(email, email=email, first_name="Duwayne",
-                  last_name="Theroc-Johnson", password="poopsatan666", phone_number="18005553333",
+                  last_name="Theroc-Johnson", password="SuperSecurePassword1234", phone_number="18005553333",
                   hospital=h, date_of_birth=datetime.date(year=1991, month=3, day=29), insurance=insurance)
-
+        
         patients.user_set.add(patient)
 
     def handle(self, *args, **options):
