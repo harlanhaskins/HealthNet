@@ -48,6 +48,8 @@ class User(AbstractUser):
         # Patients see all appointments
         return Appointment.objects.filter(patient=self)
 
+    def is_patient(self):
+        return self.groups.filter(name="Patient").exists()
 
     def is_free(self, date, duration):
         schedule = self.schedule()
