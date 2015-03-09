@@ -20,6 +20,7 @@ class User(AbstractUser):
     date_of_birth = models.DateField()
     phone_number = models.CharField(max_length=30)
     hospital = models.ForeignKey(Hospital, null=True)
+    insurance = models.ForeignKey(Insurance, null=True)
 
     REQUIRED_FIELDS = ['date_of_birth', 'phone_number', 'email', 'first_name',
                        'last_name', 'hospital']
@@ -47,6 +48,7 @@ class User(AbstractUser):
         # Patients see all appointments
         return Appointment.objects.filter(patient=self)
 
+
     def is_free(self, date, duration):
         schedule = self.schedule()
         end = date + duration
@@ -63,7 +65,6 @@ class User(AbstractUser):
 class Insurance(models.Model):
     policy_number = models.CharField(max_length=200)
     company = models.CharField(max_length=200)
-    patient = models.ForeignKey(User)
 
 
 class Appointment(models.Model):

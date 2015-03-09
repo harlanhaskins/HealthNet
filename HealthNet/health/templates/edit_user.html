@@ -1,16 +1,15 @@
 {% include 'error.html' %}
 {% csrf_token %}
-<legend>{% block legend %}{% endblock %}</legend>
 <div class="row">
     <div class="col-xs-6 col-md-6">
-        <input type="text" name="firstname" value="{{ user.first_name }}" class="form-control" placeholder="First Name" required />
+        <input type="text" name="first_name" value="{{ user.first_name }}" class="form-control" placeholder="First Name" required />
     </div>
     <div class="col-xs-6 col-md-6">
-        <input type="text" name="lastname" value="{{ user.last_name }}" class="form-control" placeholder="Last Name"  required />
+        <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control" placeholder="Last Name"  required />
     </div>
 </div>
 <input type="text" name="email" value="{{ user.email }}" class="form-control" placeholder="Email" required = "" />
-<input type="text" name="phone" value="{{ user.phone_number }}"  class="form-control" placeholder="Phone Number" required = "" />
+<input type="text" name="phone_number" value="{{ user.phone_number }}"  class="form-control" placeholder="Phone Number" required = "" />
 {% if not logged_in_user %}
     <input type="password" name="password" class="form-control password" placeholder="Password"  required = "" />
     <input type="password" name="confirm_password" class="form-control confirm-password" placeholder="Confirm Password" required = "" />

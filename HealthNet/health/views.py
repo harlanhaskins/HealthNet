@@ -84,12 +84,12 @@ def create_user_from_form(body):
              or a failure message if the operation failed.
     """
     password = body.get("password")
-    firstname = body.get("firstname")
-    lastname = body.get("lastname")
+    firstname = body.get("first_name")
+    lastname = body.get("last_name")
 
     email = body.get("email")
     group = body.get("group")
-    phone = form_utilities.sanitize_phone(body.get("phone"))
+    phone = form_utilities.sanitize_phone(body.get("phone_number"))
     month = int(body.get("month"))
     day = int(body.get("day"))
     year = int(body.get("year"))
@@ -104,17 +104,17 @@ def create_user_from_form(body):
         return None, "Invalid email."
     if User.objects.filter(email=email).exists():
         return None, "A user with that email already exists."
-    user = User.objects.create_user(email, email=email,
-        password=password, date_of_birth=date, phone_number=phone,
-        first_name=firstname, last_name=lastname, hospital=hospital)
-    if user is None:
-        return None, "We could not create that user. Please try again."
     policy = body.get("policy")
     company = body.get("company")
     insurance = Insurance.objects.create(policy_number=policy,
-        company=company, patient=user)
+        company=company)
     if not insurance:
-        user.delete()
+        return None, "We could not create that user. Please try again."
+    user = User.objects.create_user(email, email=email,
+        password=password, date_of_birth=date, phone_number=phone,
+        first_name=firstname, last_name=lastname, hospital=hospital,
+        insurance=insurance)
+    if user is None:
         return None, "We could not create that user. Please try again."
     group = Group.objects.get(pk=group)
     group.user_set.add(user)
@@ -127,15 +127,63 @@ def my_profile(request):
 @login_required
 @logged("viewed profile")
 def profile(request, user_id):
-    context = full_signup_context(request)
     requested_user = get_object_or_404(User, pk=user_id)
     is_editing_own_profile = requested_user == request.user
     if not is_editing_own_profile and not request.user.is_superuser:
         raise PermissionDenied
+
+    if request.POST:
+        modify_user_from_form(request.POST, request.user)
+        return redirect('health:profile', user_id)
+
+    context = full_signup_context(request)
     context["user"] = requested_user
     context["logged_in_user"] = request.user
     context["navbar"] = "my_profile" if is_editing_own_profile else "profile"
     return render(request, 'profile.html', context)
+
+
+def modify_user_from_form(body, user):
+    email = body.get("email")
+    if email and user.email != email:
+        user.email = email
+    phone = form_utilities.sanitize_phone(body.get("phone_number"))
+    if phone and user.phone_number != phone:
+        user.phone_number = phone
+    first_name = body.get("first_name")
+    if first_name and user.first_name != first_name:
+        user.first_name = first_name
+    last_name = body.get("last_name")
+    if last_name and user.last_name != last_name:
+        user.last_name = last_name
+    month = int(body.get("month"))
+    day = int(body.get("day"))
+    year = int(body.get("year"))
+    date = datetime.date(month=month, day=day, year=year)
+    if user.date_of_birth != date:
+        user.date_of_birth = date
+    company = body.get("company")
+    policy = body.get("policy")
+    if company and user.insurance.company != company:
+        user.insurance.company = company
+    if policy and user.insurance.policy_number != policy:
+        user.insurance.policy_number = policy
+    hospital_id = int(body.get("hospital"))
+    current_hospital = user.hospital
+    if user.hospital.pk != hospital_id:
+        current_hospital.user_set.remove(user)
+        current_hospital.save()
+        user.hospital = Hospital.objects.get(pk=hospital_id)
+    group_id = int(body.get("group"))
+    if user.is_superuser:
+        if not user.groups.filter(pk=group_id).exists():
+            for group in user.groups.all():
+                group.user_set.remove(user)
+                group.save()
+            group = Group.objects.get(pk=group_id)
+            group.user_set.add(user)
+            group.save()
+    user.save()
 
 @login_required
 @logged('viewed schedule')
@@ -146,9 +194,6 @@ def schedule(request):
     }
     return render(request, 'schedule.html', context)
 
-
-def modify_user_from_form(form):
-    pass
 
 @login_required
 @user_passes_test(checks.admin_check)
