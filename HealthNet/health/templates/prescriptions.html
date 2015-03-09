@@ -3,6 +3,7 @@
 {% block content %}
     {% if user.active_patients %}
     <div class="table-responsive">
+        <hr />
         {% for user in user.active_patients %}
             {% if user.prescription_set.all %}
                 <table class="table table-bordered table-striped">
@@ -27,6 +28,7 @@
             {% else %}
                 <h2 class="text-center"> No prescriptions for {% include 'user_link.html' %}</h2>
             {% endif %}
+            <hr />
         {% endfor %}
     </div>
     {% else %}

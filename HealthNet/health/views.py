@@ -277,18 +277,26 @@ def create_appointment_from_form(body, user):
     date_string = body.get("date")
     try:
         parsed = dateparse.parse_datetime(date_string)
+        parsed = timezone.make_aware(parsed, timezone.get_current_timezone())
         if not parsed:
             return None, "Invalid date or time."
     except ValueError:
         return None, "Invalid date or time."
     duration = int(body.get("duration"))
-    doctor_id = int(body.get("doctor"))
-    doctor = Group.objects.get(name="Doctor").user_set.get(pk=doctor_id)
+    doctor_id = int(body.get("doctor", user.pk))
+    doctor = User.objects.get(pk=doctor_id)
     if not doctor.is_free(parsed, duration):
         return None, "The doctor is not free at that time." +\
                      " Please specify a different time."
+
+    patient_id = int(body.get("patient", user.pk))
+    patient = User.objects.get(pk=patient_id)
+    if not patient.is_free(parsed, duration):
+        return None, "The patient is not free at that time." +\
+                     " Please specify a different time."
+
     appointment = Appointment.objects.create(date=parsed, duration=duration,
-                                             doctor=doctor, patient=user)
+                                             doctor=doctor, patient=patient)
     if not appointment:
         return None, "We could not create the appointment. Please try again."
     return appointment, None
@@ -311,7 +319,8 @@ def schedule(request):
     context = {
         "navbar":"schedule",
         "user": request.user,
-        "doctors": Group.objects.get(name="Doctor").user_set.all()
+        "doctors": Group.objects.get(name="Doctor").user_set.all(),
+        "patients": Group.objects.get(name="Patient").user_set.all()
     }
 
     if request.POST:

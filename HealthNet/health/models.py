@@ -89,9 +89,9 @@ class User(AbstractUser):
         """
         schedule = self.schedule()
         date = timezone.make_aware(date,
-                                  timezone.get_default_timezone())
-        end = timezone.make_aware(date + timedelta(seconds=duration),
-                                  timezone.get_default_timezone())
+                                  timezone.get_current_timezone())
+        end = timezone.make_aware(date + timedelta(minutes=duration),
+                                  timezone.get_current_timezone())
         for appointment in schedule:
             # If the dates intersect (meaning one starts while the other is
             # in progress) then the person is not free at the provided date
@@ -112,8 +112,7 @@ class Appointment(models.Model):
         """
         :return: A datetime representing the end of the appointment.
         """
-        return timezone.make_aware(self.date + timedelta(seconds=self.duration),
-                                   timezone.get_default_timezone())
+        return self.date + timedelta(seconds=self.duration)
 
 
 class Unit(models.Model):
