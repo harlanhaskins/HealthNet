@@ -48,7 +48,7 @@ def login_user_from_form(request, body):
     email = body.get("email")
     password = body.get("password")
     if not all([email, password]):
-        return None, "You must provide a username and password."
+        return None, "You must provide an email and password."
     email = email.lower()  # all emails are lowercase in the database.
     user = authenticate(username=email, password=password)
     remember = body.get("remember")
@@ -180,16 +180,17 @@ def create_user_from_form(body):
     date = datetime.date(month=month, day=day, year=year)
     hospital_key = int(body.get("hospital"))
     hospital = Hospital.objects.get(pk=hospital_key)
+    policy = body.get("policy")
+    company = body.get("company")
     if not all([password, firstname, lastname,
-                email, phone, month, day, year, date]):
+                email, phone, month, day, year,
+                policy, company, date]):
         return None, "All fields are required."
     email = email.lower()  # lowercase the email before adding it to the db.
     if not form_utilities.email_is_valid(email):
         return None, "Invalid email."
     if User.objects.filter(email=email).exists():
         return None, "A user with that email already exists."
-    policy = body.get("policy")
-    company = body.get("company")
     insurance = Insurance.objects.create(policy_number=policy,
         company=company)
     if not insurance:
@@ -354,7 +355,7 @@ def schedule(request):
     """
 
     context = {
-        "navbar":"schedule",
+        "navbar": "schedule",
         "user": request.user,
         "doctors": Group.objects.get(name="Doctor").user_set.all(),
         "patients": Group.objects.get(name="Patient").user_set.all()
