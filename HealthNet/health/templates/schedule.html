@@ -66,6 +66,8 @@
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#appointmentModal">
         Add an Appointment
     </button>
+    <br />
+    <hr />
     {% if user.schedule %}
         {% include 'error.html' %}
         <table class="table table-bordered table-striped">
@@ -93,4 +95,5 @@
         <h2 class="text-center">No appointments.</h2>
         <br /><br />
     {% endif %}
+    <hr />
 {% endblock %}
