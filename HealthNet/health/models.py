@@ -45,11 +45,10 @@ class User(AbstractUser):
         if self.is_superuser:
             # Admins can see all users as patients.
             return Group.objects.get(name='Patient').user_set.all()
-        elif self.groups.filter(name="Doctor").exists():
+        elif self.is_doctor():
             # Doctors get all users who have active appointments.
-            return (Appointment.objects.filter(doctor=self)
-                                       .distinct('patient')
-                                       .values('patient'))
+            return (User.objects.filter(patient_appointments__in=self.schedule())
+                                .distinct())
         else:
             # Users can only see themselves.
             return User.objects.filter(pk=self.pk)
@@ -61,13 +60,16 @@ class User(AbstractUser):
         """
         return self.all_patients().filter(is_active=True)
 
+    def can_add_prescription(self):
+        return self.is_superuser or self.is_doctor()
+
     def schedule(self):
         """
         :return: All appointments for which this person is needed.
         """
         if self.is_superuser:
             return Appointment.objects.all()
-        elif self.groups.filter(name="Doctor").exists():
+        elif self.is_doctor():
             # Doctors see all appointments for which they are needed.
             return Appointment.objects.filter(doctor=self)
         # Patients see all appointments
@@ -77,7 +79,17 @@ class User(AbstractUser):
         """
         :return: True if the user belongs to the Patient group.
         """
-        return self.groups.filter(name="Patient").exists()
+        return self.is_in_group("Patient")
+
+    def is_doctor(self):
+        return self.is_in_group("Doctor")
+
+    def is_in_group(self, group_name):
+        try:
+            return (Group.objects.get(name=group_name)
+                         .user_set.filter(pk=self.pk).exists())
+        except ValueError:
+            return False
 
     def is_free(self, date, duration):
         """
@@ -103,8 +115,8 @@ class User(AbstractUser):
 
 
 class Appointment(models.Model):
-    patient = models.ForeignKey(User, related_name='Patient')
-    doctor = models.ForeignKey(User, related_name='Doctor')
+    patient = models.ForeignKey(User, related_name='patient_appointments')
+    doctor = models.ForeignKey(User, related_name='doctor_appointments')
     date = models.DateTimeField()
     duration = models.IntegerField()
 
@@ -119,6 +131,8 @@ class Unit(models.Model):
     name = models.CharField(max_length=200)
     abbreviation = models.CharField(max_length=200)
 
+    def __str__(self):
+        return self.name + " (" + self.abbreviation + ")"
 
 class Prescription(models.Model):
     patient = models.ForeignKey(User)

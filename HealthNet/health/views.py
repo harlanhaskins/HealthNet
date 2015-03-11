@@ -69,6 +69,31 @@ def logout_view(request):
     logout(request)
     return redirect('health:login')
 
+
+def create_prescription_from_form(body):
+    name = body.get("name")
+    dosage = body.get("dosage")
+    unit = body.get("unit")
+    patient = body.get("patient")
+    directions = body.get("directions")
+    if not all([name, dosage, unit, patient, directions]):
+        return None, "All fields are required."
+    try:
+        patient = User.objects.get(pk=int(patient))
+    except ValueError:
+        return None, "We could not find the user specified."
+
+    try:
+        unit = Unit.objects.get(pk=int(unit))
+    except ValueError:
+        return None, "We could not find the unit specified."
+
+    p = Prescription.objects.create(name=name, dosage=int(dosage), unit=unit,
+                                    patient=patient, directions=directions)
+    if not p:
+        return None, "We could not create that prescription. Please try again."
+    return p, None
+
 @login_required
 @logged('prescriptions')
 def prescriptions(request):
@@ -80,8 +105,17 @@ def prescriptions(request):
     """
     context = {
         "navbar":"prescriptions",
-        "user": request.user
+        "user": request.user,
+        'units': Unit.objects.all()
     }
+    if request.POST:
+        if not request.user.can_add_prescription():
+            raise PermissionDenied
+        user, message = create_prescription_from_form(request.POST)
+        if user:
+            return redirect('health:prescriptions')
+        elif message:
+            context['error_message'] = message
     return render(request, 'prescriptions.html', context)
 
 
@@ -248,14 +282,17 @@ def modify_user_from_form(body, user):
         user.insurance.company = company
     if policy and user.insurance.policy_number != policy:
         user.insurance.policy_number = policy
-    hospital_id = int(body.get("hospital"))
+    hospital_id = body.get("hospital")
     current_hospital = user.hospital
-    if user.hospital.pk != hospital_id:
-        current_hospital.user_set.remove(user)
-        current_hospital.save()
-        user.hospital = Hospital.objects.get(pk=hospital_id)
-    group_id = int(body.get("group"))
-    if user.is_superuser:
+    if hospital_id:
+        hospital_id = int(hospital_id)
+        if user.hospital.pk != hospital_id:
+            current_hospital.user_set.remove(user)
+            current_hospital.save()
+            user.hospital = Hospital.objects.get(pk=hospital_id)
+    group_id = body.get("group")
+    if group_id and user.is_superuser:
+        group_id = int(group_id)
         if not user.groups.filter(pk=group_id).exists():
             for group in user.groups.all():
                 group.user_set.remove(user)

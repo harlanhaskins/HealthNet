@@ -61,8 +61,13 @@ class Command(BaseCommand):
         patient = User.objects.create_user(email, email=email, first_name="Duwayne",
                   last_name="Theroc-Johnson", password="SuperSecurePassword1234", phone_number="18005553333",
                   hospital=h, date_of_birth=datetime.date(year=1991, month=3, day=29), insurance=insurance)
-        
+
         patients.user_set.add(patient)
+
+        u = Unit.objects.create(name="milligrams", abbreviation="mg")
+        u2 = Unit.objects.create(name="grams", abbreviation="g")
+        u3 = Unit.objects.create(name="liters", abbreviation="L")
+        u4 = Unit.objects.create(name="milliliters", abbreviation="mL")
 
     def handle(self, *args, **options):
         self._create_users()
