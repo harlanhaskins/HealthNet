@@ -81,10 +81,23 @@ class User(AbstractUser):
         """
         return self.is_in_group("Patient")
 
+    def is_nurse(self):
+        """
+        :return: True if the user belongs to the Nurse group.
+        """
+        return self.is_in_group("Nurse")
+
     def is_doctor(self):
+        """
+        :return: True if the user belongs to the Doctor group.
+        """
         return self.is_in_group("Doctor")
 
     def is_in_group(self, group_name):
+        """
+        :param group_name: The group within which to check membership.
+        :return: True if the user is a member of the group provided.
+        """
         try:
             return (Group.objects.get(name=group_name)
                          .user_set.filter(pk=self.pk).exists())
@@ -133,6 +146,7 @@ class Unit(models.Model):
 
     def __str__(self):
         return self.name + " (" + self.abbreviation + ")"
+
 
 class Prescription(models.Model):
     patient = models.ForeignKey(User)
