@@ -103,6 +103,15 @@ class User(AbstractUser):
         except ValueError:
             return False
 
+    def group(self):
+        if self.is_doctor():
+            return 'Doctor'
+        if self.is_nurse():
+            return 'Nurse'
+        if self.is_patient():
+            return 'Patient'
+        return None
+
     def is_free(self, date, duration):
         """
         Checks the user's schedule for a given date and duration to see if
