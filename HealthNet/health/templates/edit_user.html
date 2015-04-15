@@ -58,7 +58,7 @@
             <label>Account Type</label>
             <select name="group" class="form-control">
                 {% for group in groups %}
-                    <option value="{{ group.pk }}" {% if user.group == group.name %}selected="selected"{% endif %}>{{ group.name }}</option>
+                    <option value="{{ group.pk }}" {% if user.group == group %}selected="selected"{% endif %}>{{ group.name }}</option>
                 {% endfor %}
             </select>
         </div>
