@@ -19,10 +19,10 @@
 <label>Insurance Information</label>
 <div class="row">
     <div class="col-xs-6 col-md-6">
-        <input type="text" name="company" value="{{ user.insurance_set.first.company }}" class="form-control" placeholder="Company"  />
+        <input type="text" name="company" value="{{ user.insurance.company }}" class="form-control" placeholder="Company"  />
     </div>
     <div class="col-xs-6 col-md-6">
-        <input type="text" name="policy" value="{{ user.insurance_set.first.policy_number }}" class="form-control" placeholder="Policy Number"  />
+        <input type="text" name="policy" value="{{ user.insurance.policy_number }}" class="form-control" placeholder="Policy Number"  />
     </div>
 </div>
 <br />
