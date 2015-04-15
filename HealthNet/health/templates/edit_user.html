@@ -38,15 +38,15 @@
     </div>
     <div class="col-xs-4 col-md-4">
         <select name="day" class="form-control">
-            {% for i in day_range %}
-                <option {% if user.date_of_birth.date.day == day %}selected="selected"{% endif %} value="{{ i }}">{{ i }}</option>
+            {% for day in day_range %}
+                <option {% if user.date_of_birth.date.day == day %}selected="selected"{% endif %} value="{{ day }}">{{ day }}</option>
             {% endfor %}
         </select>
     </div>
     <div class="col-xs-4 col-md-4">
         <select name="year" class="form-control">
-            {% for i in year_range %}
-                <option {% if user.date_of_birth.date.year == year %}selected="selected"{% endif %} value="{{ i }}">{{ i }}</option>
+            {% for year in year_range %}
+                <option {% if user.date_of_birth.date.year == year %}selected="selected"{% endif %} value="{{ year }}">{{ year }}</option>
             {% endfor %}
         </select>
     </div>
