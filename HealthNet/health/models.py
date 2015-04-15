@@ -104,7 +104,13 @@ class User(AbstractUser):
             return False
 
     def group(self):
-        return self.group_set.first().name
+        if self.is_doctor():
+            return 'Doctor'
+        if self.is_nurse():
+            return 'Nurse'
+        if self.is_patient():
+            return 'Patient'
+        return None
 
     def is_free(self, date, duration):
         """
