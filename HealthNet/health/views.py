@@ -279,10 +279,13 @@ def modify_user_from_form(body, user):
         user.date_of_birth = date
     company = body.get("company")
     policy = body.get("policy")
-    if company and user.insurance.company != company:
-        user.insurance.company = company
-    if policy and user.insurance.policy_number != policy:
-        user.insurance.policy_number = policy
+    if user.insurance:
+        if company and user.insurance.company != company:
+            user.insurance.company = company
+        if policy and user.insurance.policy_number != policy:
+            user.insurance.policy_number = policy
+    else:
+        user.insurance = Insurance.objects.create(company=company, policy_number=policy)
     hospital_id = body.get("hospital")
     current_hospital = user.hospital
     if hospital_id:
