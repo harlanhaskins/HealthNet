@@ -42,13 +42,12 @@ class User(AbstractUser):
             Returns all patients in the database.
         :return:
         """
-        if self.is_superuser:
-            # Admins can see all users as patients.
+        if self.is_superuser or self.is_doctor():
+            # Admins and doctors can see all users as patients.
             return Group.objects.get(name='Patient').user_set.all()
-        elif self.is_doctor():
-            # Doctors get all users who have active appointments.
-            return (User.objects.filter(patient_appointments__in=self.schedule())
-                                .distinct())
+        elif self.is_nurse():
+            # Nurses get all users inside their hospital.
+            return User.objects.filter(hospital=self.hospital)
         else:
             # Users can only see themselves.
             return User.objects.filter(pk=self.pk)

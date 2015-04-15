@@ -357,8 +357,8 @@ def schedule(request):
     context = {
         "navbar": "schedule",
         "user": request.user,
-        "doctors": Group.objects.get(name="Doctor").user_set.all(),
-        "patients": Group.objects.get(name="Patient").user_set.all()
+        "doctors": Group.objects.get(name="Doctor").user_set.all().order_by('first_name', 'last_name'),
+        "patients": Group.objects.get(name="Patient").user_set.all().order_by('first_name', 'last_name')
     }
 
     if request.POST:
