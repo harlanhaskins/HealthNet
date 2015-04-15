@@ -32,21 +32,21 @@
     <div class="col-xs-4 col-md-4">
         <select name="month" class="form-control">
             {% for month in months %}
-                <option {% if user.date_of_birth.month == month %}selected="selected"{% endif %} value="{{ forloop.counter }}">{{ month }}</option>
+                <option {% if user.date_of_birth.date.month == month %}selected="selected"{% endif %} value="{{ forloop.counter }}">{{ month }}</option>
             {% endfor %}
         </select>
     </div>
     <div class="col-xs-4 col-md-4">
         <select name="day" class="form-control">
             {% for i in day_range %}
-                <option {% if user.date_of_birth.day == day %}selected="selected"{% endif %} value="{{ i }}">{{ i }}</option>
+                <option {% if user.date_of_birth.date.day == day %}selected="selected"{% endif %} value="{{ i }}">{{ i }}</option>
             {% endfor %}
         </select>
     </div>
     <div class="col-xs-4 col-md-4">
         <select name="year" class="form-control">
             {% for i in year_range %}
-                <option {% if user.date_of_birth.year == year %}selected="selected"{% endif %} value="{{ i }}">{{ i }}</option>
+                <option {% if user.date_of_birth.date.year == year %}selected="selected"{% endif %} value="{{ i }}">{{ i }}</option>
             {% endfor %}
         </select>
     </div>
