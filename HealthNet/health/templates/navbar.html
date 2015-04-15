@@ -12,11 +12,11 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 {% if user.is_authenticated %}
-                    <li class="{% ifequal navbar 'my_profile'%}active{% endifequal %}"><a href="{% url 'health:my_profile' %}">Home</a></li>
-                    <li class="{% ifequal navbar 'schedule'%}active{% endifequal %}"><a href="{% url 'health:schedule' %}">Schedule</a></li>
-                    <li class="{% ifequal navbar 'prescriptions'%}active{% endifequal %}"><a href="{% url 'health:prescriptions' %}">Prescriptions</a></li>
+                    <li class="{% ifequal navbar 'my_profile'%}active{% endifequal %}"><a href="{% url 'health:my_profile' %}"><i class="fa fa-home"></i>Home</a></li>
+                    <li class="{% ifequal navbar 'schedule'%}active{% endifequal %}"><a href="{% url 'health:schedule' %}"><i class="fa fa-calendar"></i>Schedule</a></li>
+                    <li class="{% ifequal navbar 'prescriptions'%}active{% endifequal %}"><a href="{% url 'health:prescriptions' %}"><i class="fa fa-medkit"></i>Prescriptions</a></li>
                     {% if user.is_superuser %}
-                        <li class="{% ifequal navbar 'logs'%}active{% endifequal %}"><a href="{% url 'health:logs' %}">System Logs</a></li>
+                        <li class="{% ifequal navbar 'logs'%}active{% endifequal %}"><a href="{% url 'health:logs' %}"><i class="fa fa-list"></i>System Logs</a></li>
                     {% endif %}
                 {% endif %}
             </ul>
