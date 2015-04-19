@@ -377,14 +377,7 @@ def create_appointment_from_form(body, user):
 
     if not appointment:
         return None, "We could not create the appointment. Please try again."
-    else:
-        log(
-            user = user,
-            action = "Created_Appointment",
-            extra = {
-                    "pk": patient_id,
-            }
-        )
+    
     return appointment, None
 
 
