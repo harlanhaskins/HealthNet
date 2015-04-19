@@ -418,3 +418,11 @@ def logs(request):
     }
     return render(request, 'logs.html', context)
 
+@login_required
+def medical_information(request):
+    context = {
+        "navbar": "medical_information",
+        "user": request.user,
+    }
+    return render(request, 'medical_information.html', context)
+
