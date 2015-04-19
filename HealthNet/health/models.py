@@ -172,3 +172,11 @@ class Prescription(models.Model):
     name = models.CharField(max_length=200)
     dosage = models.CharField(max_length=200)
     directions = models.CharField(max_length=1000)
+
+
+class Message(models.Model):
+    writer = models.ForeignKey(User)
+    recipient = models.ForeignKey(User)
+    title = models.CharField(max_length=50)
+    body = models.CharField(max_length=500)
+    date = models.DateTimeField()
