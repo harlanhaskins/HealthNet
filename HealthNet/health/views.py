@@ -189,58 +189,10 @@ def full_signup_context():
             "Sep", "Oct", "Nov", "Dec"
         ],
         "hospitals": Hospital.objects.all(),
-        "groups": Group.objects.all()
+        "groups": Group.objects.all(),
+        "sexes": MedicalInformation.SEX_CHOICES
     }
 
-
-def create_user_from_form(body):
-    """
-    Creates a user and validates all of the fields, in turn.
-    If there is a failure in any validation, the returned tuple contains
-    None and a failure message.
-    If validation succeeds and the user can be created, then the returned tuple
-    contains the user and None for a failure message.
-    :param body: The POST body from the request.
-    :return: A tuple containing the User if successfully created,
-             or a failure message if the operation failed.
-    """
-    password = body.get("password")
-    firstname = body.get("first_name")
-    lastname = body.get("last_name")
-
-    email = body.get("email")
-    group = body.get("group")
-    phone = form_utilities.sanitize_phone(body.get("phone_number"))
-    month = int(body.get("month"))
-    day = int(body.get("day"))
-    year = int(body.get("year"))
-    date = datetime.date(month=month, day=day, year=year)
-    hospital_key = int(body.get("hospital"))
-    hospital = Hospital.objects.get(pk=hospital_key)
-    policy = body.get("policy")
-    company = body.get("company")
-    if not all([password, firstname, lastname,
-                email, phone, month, day, year,
-                policy, company, date]):
-        return None, "All fields are required."
-    email = email.lower()  # lowercase the email before adding it to the db.
-    if not form_utilities.email_is_valid(email):
-        return None, "Invalid email."
-    if User.objects.filter(email=email).exists():
-        return None, "A user with that email already exists."
-    insurance = Insurance.objects.create(policy_number=policy,
-        company=company)
-    if not insurance:
-        return None, "We could not create that user. Please try again."
-    user = User.objects.create_user(email, email=email,
-        password=password, date_of_birth=date, phone_number=phone,
-        first_name=firstname, last_name=lastname, hospital=hospital,
-        insurance=insurance)
-    if user is None:
-        return None, "We could not create that user. Please try again."
-    group = Group.objects.get(pk=group)
-    group.user_set.add(user)
-    return user, None
 
 @login_required
 def my_profile(request):
@@ -251,6 +203,7 @@ def my_profile(request):
     :return:
     """
     return redirect('health:profile', request.user.pk)
+
 
 @login_required
 def profile(request, user_id):
@@ -275,7 +228,7 @@ def profile(request, user_id):
         raise PermissionDenied
 
     if request.POST:
-        modify_user_from_form(request.POST, requested_user)
+        handle_user_form(request.POST, user=requested_user)
         return redirect('health:profile', user_id)
 
     context = full_signup_context()
@@ -285,62 +238,100 @@ def profile(request, user_id):
     return render(request, 'profile.html', context)
 
 
-def modify_user_from_form(body, user):
+def handle_user_form(body, user=None):
     """
-    Looks through all of models.User's fields and, if they're supplied and
-    different from the existing values, and updates them. There is special
-    behavior for changing groups, because the user must first be removed from
-    the old group and added to the new.
-
-    :param body: The form POST body.
-    :param user: The user being modified.
+    Creates a user and validates all of the fields, in turn.
+    If there is a failure in any validation, the returned tuple contains
+    None and a failure message.
+    If validation succeeds and the user can be created, then the returned tuple
+    contains the user and None for a failure message.
+    :param body: The POST body from the request.
+    :return: A tuple containing the User if successfully created,
+             or a failure message if the operation failed.
     """
-    email = body.get("email")
-    if email and user.email != email:
-        user.email = email
-    phone = form_utilities.sanitize_phone(body.get("phone_number"))
-    if phone and user.phone_number != phone:
-        user.phone_number = phone
+    password = body.get("password")
     first_name = body.get("first_name")
-    if first_name and user.first_name != first_name:
-        user.first_name = first_name
     last_name = body.get("last_name")
-    if last_name and user.last_name != last_name:
-        user.last_name = last_name
+
+    email = body.get("email")
+    group = int(body.get("group"))
+    phone = form_utilities.sanitize_phone(body.get("phone_number"))
     month = int(body.get("month"))
     day = int(body.get("day"))
     year = int(body.get("year"))
     date = datetime.date(month=month, day=day, year=year)
-    if user.date_of_birth != date:
-        user.date_of_birth = date
-    company = body.get("company")
+    hospital_key = int(body.get("hospital"))
+    hospital = Hospital.objects.get(pk=hospital_key)
     policy = body.get("policy")
-    if all([company, policy]):
-        if (not user.insurance
-                or user.insurance.company != company
-                or user.insurance.policy_number != policy):
-            user.insurance = Insurance.objects.create(company=company,
-                                                      policy_number=policy)
-    hospital_id = body.get("hospital")
-    current_hospital = user.hospital
-    if hospital_id:
-        hospital_id = int(hospital_id)
-        if user.hospital.pk != hospital_id:
-            current_hospital.user_set.remove(user)
-            current_hospital.save()
-            user.hospital = Hospital.objects.get(pk=hospital_id)
-    group_id = body.get("group")
-    if group_id and user.is_superuser:
-        group_id = int(group_id)
-        if not user.groups.filter(pk=group_id).exists():
-            for group in user.groups.all():
-                group.user_set.remove(user)
+    company = body.get("company")
+    sex = body.get("sex")
+    medications = body.get("medications")
+    allergies = body.get("allergies")
+    medical_conditions = body.get("medical_conditions")
+    family_history = body.get("family_history")
+    additional_info = body.get("additional_info")
+    group = Group.objects.get(pk=group)
+    if not all([password, first_name, last_name,
+                email, phone, month, day, year, date]):
+        return None, "All fields are required."
+    email = email.lower()  # lowercase the email before adding it to the db.
+    if not form_utilities.email_is_valid(email):
+        return None, "Invalid email."
+    if not all([company, policy]):
+        return None, "Insurance information is required."
+    if user:
+        user.email = email
+        user.phone_number = phone
+        user.first_name = first_name
+        user.last_name = last_name
+        user.date_of_birth = date
+        if not user.medical_information:
+            insurance = Insurance.objects.create(policy_number=policy,
+                                                 company=company)
+            medical_information = MedicalInformation.objects.create(
+                allergies=allergies, family_history=family_history,
+                sex=sex, medications=medications,
+                additional_info=additional_info, insurance=insurance,
+                medical_conditions=medical_conditions
+            )
+            user.medical_information = medical_information
+        if user.hospital != hospital:
+            user.hospital.user_set.remove(user)
+            user.hospital.save()
+            user.hospital = hospital
+        group_id = body.get("group")
+        if group_id and user.is_superuser:
+            group_id = int(group_id)
+            if not user.groups.filter(pk=group_id).exists():
+                for group in user.groups.all():
+                    group.user_set.remove(user)
+                    group.save()
+                group = Group.objects.get(pk=group_id)
+                group.user_set.add(user)
                 group.save()
-            group = Group.objects.get(pk=group_id)
-            group.user_set.add(user)
-            group.save()
-    user.save()
-
+        user.save()
+        return user, None
+    else:
+        if User.objects.filter(email=email).exists():
+            return None, "A user with that email already exists."
+        insurance = Insurance.objects.create(policy_number=policy,
+            company=company)
+        if not insurance:
+            return None, "We could not create that user. Please try again."
+        medical_information = MedicalInformation.objects.create(
+            allergies=allergies, family_history=family_history,
+            sex=sex, medications=medications,
+            additional_info=additional_info, insurance=insurance,
+            medical_conditions=medical_conditions
+        )
+        user = User.objects.create_user(email, email=email,
+            password=password, date_of_birth=date, phone_number=phone,
+            first_name=first_name, last_name=last_name, hospital=hospital,
+            medical_information=medical_information)
+        if user is None:
+            return None, "We could not create that user. Please try again."
+        group.user_set.add(user)
+        return user, None
 
 def messages(request):
     context = {

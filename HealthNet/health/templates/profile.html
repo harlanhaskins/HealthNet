@@ -3,16 +3,5 @@
 {% block title %}{{ user.get_full_name }}'s Profile{% endblock %}
 
 {% block content %}
-    <div class="form-wrap">
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3">
-                <form action="" method="post" accept-charset="utf-8" class="form" role="form">
-                    {% include 'edit_user.html' %}
-                    <button class="btn btn-lg btn-primary btn-block signup-btn" type="submit">
-                        Save Changes
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
+{% include 'edit_user.html' %}
 {% endblock %}

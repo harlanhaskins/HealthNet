@@ -17,13 +17,10 @@ class EmergencyContact(models.Model):
 
 
 class MedicalInformation(models.Model):
-    female = 'Female'
-    male = 'Male'
-    intersex = 'Intersex'
-    sex_choices = (
-        (female, 'Female'),
-        (male, 'Male'),
-        (intersex, 'Intersex'),
+    SEX_CHOICES = (
+        'Female',
+        'Male',
+        'Intersex',
     )
     sex = models.CharField(max_length=50)
     insurance = models.ForeignKey(Insurance)
