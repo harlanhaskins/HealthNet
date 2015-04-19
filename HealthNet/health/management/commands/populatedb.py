@@ -64,10 +64,5 @@ class Command(BaseCommand):
 
         patients.user_set.add(patient)
 
-        u = Unit.objects.create(name="milligrams", abbreviation="mg")
-        u2 = Unit.objects.create(name="grams", abbreviation="g")
-        u3 = Unit.objects.create(name="liters", abbreviation="L")
-        u4 = Unit.objects.create(name="milliliters", abbreviation="mL")
-
     def handle(self, *args, **options):
         self._create_users()

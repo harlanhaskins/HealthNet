@@ -2,59 +2,7 @@
 {% block title %}Prescriptions{% endblock %}
 {% block content %}
     {% if user.active_patients %}
-        <div class="modal fade" id="prescriptionModal" tabindex="-1" role="dialog" aria-labelledby="addPrescription" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form action="" method="post" accept-charset="utf-8" class="form" role="form">
-                        {% csrf_token %}
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="addAppointment">Add a Prescription</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <legend>Name</legend>
-                                    <input class="form-control" name="name" placeholder="Ibuprofen" />
-                                </div>
-                                <div class="col-sm-4">
-                                    <legend>Dosage</legend>
-                                    <input class="form-control" name="dosage" placeholder="30" />
-                                </div>
-                                <div class="col-sm-4">
-                                    <legend>Unit</legend>
-                                    <select name="unit" class='form-control'>
-                                        {% for unit in units %}
-                                            <option value="{{ unit.pk }}">{{ unit }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <legend>Directions</legend>
-                                    <input class="form-control" name="directions" placeholder="Take twice a day while symptoms persist." />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-8">
-                                    <legend>Patient</legend>
-                                    <select name="patient" class='form-control'>
-                                        {% for patient in user.active_patients %}
-                                            <option value="{{ patient.pk }}">{{ patient.get_full_name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button class="btn btn-primary" type="submit">Add Prescription</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        {% include 'edit_prescription.html' %}
         <div class="table-responsive">
             {% if user.can_add_prescription %}
                 <button class="btn btn-primary" data-toggle="modal" data-target="#prescriptionModal">Add a Prescription</button>
@@ -69,6 +17,8 @@
                             <th>Name</th>
                             <th>Dosage</th>
                             <th>Directions</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -77,6 +27,8 @@
                                 <td>{{ prescription.name }}</td>
                                 <td>{{ prescription.dosage }}{{ prescription.unit.abbreviation }}</td>
                                 <td>{{ prescription.directions }}</td>
+                                <td><p data-placement="top" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></p></td>
+                                <td><p data-placement="top" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></p></td>
                             </tr>
                         {% endfor %}
                         </tbody>

@@ -142,20 +142,11 @@ class Appointment(models.Model):
         return self.date + timedelta(seconds=self.duration)
 
 
-class Unit(models.Model):
-    name = models.CharField(max_length=200)
-    abbreviation = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.name + " (" + self.abbreviation + ")"
-
-
 class Prescription(models.Model):
     patient = models.ForeignKey(User)
     name = models.CharField(max_length=200)
-    dosage = models.FloatField()
+    dosage = models.CharField(max_length=200)
     directions = models.CharField(max_length=1000)
-    unit = models.ForeignKey(Unit)
 
 
 class Log(models.Model):

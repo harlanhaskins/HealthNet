@@ -73,26 +73,42 @@ def logout_view(request):
 def create_prescription_from_form(body):
     name = body.get("name")
     dosage = body.get("dosage")
-    unit = body.get("unit")
     patient = body.get("patient")
     directions = body.get("directions")
-    if not all([name, dosage, unit, patient, directions]):
+    if not all([name, dosage, patient, directions]):
         return None, "All fields are required."
     try:
         patient = User.objects.get(pk=int(patient))
     except ValueError:
         return None, "We could not find the user specified."
 
-    try:
-        unit = Unit.objects.get(pk=int(unit))
-    except ValueError:
-        return None, "We could not find the unit specified."
-
-    p = Prescription.objects.create(name=name, dosage=int(dosage), unit=unit,
+    p = Prescription.objects.create(name=name, dosage=dosage,
                                     patient=patient, directions=directions)
     if not p:
         return None, "We could not create that prescription. Please try again."
     return p, None
+
+
+def modify_prescription_from_form(body, prescription):
+    name = body.get("name")
+    dosage = body.get("dosage")
+    patient = body.get("patient")
+    directions = body.get("directions")
+    if not all([name, dosage, patient, directions]):
+        return None, "All fields are required."
+    try:
+        patient = User.objects.get(pk=int(patient))
+    except ValueError:
+        return None, "We could not find the user specified."
+
+    prescription.name = name
+    prescription.dosage = dosage
+    prescription.patient = patient
+    prescription.directions = directions
+
+    prescription.save()
+
+    return prescription, None
 
 @login_required
 @logged('prescriptions')
@@ -106,7 +122,6 @@ def prescriptions(request):
     context = {
         "navbar":"prescriptions",
         "user": request.user,
-        'units': Unit.objects.all()
     }
     if request.POST:
         if not request.user.can_add_prescription():
