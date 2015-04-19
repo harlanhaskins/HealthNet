@@ -58,11 +58,13 @@ class Command(BaseCommand):
         insurance = Insurance.objects.create(company="Hobo Sal's Used Needle Emporium",
                                              policy_number="8675309")
 
-        medical_info = MedicalInformation.objects.create()
+        medical_info = MedicalInformation.objects.create(sex='Male', insurance=insurance, medications=None,
+                                                         allergies=None, medical_conditions="Brain Tumor",
+                                                         family_history=None, additional_info="Oh, you guys!")
         email = "duwayne@theroc-johnson.com"
         patient = User.objects.create_user(email, email=email, first_name="Duwayne",
                   last_name="Theroc-Johnson", password="SuperSecurePassword1234", phone_number="18005553333",
-                  hospital=h, date_of_birth=datetime.date(year=1991, month=3, day=29), insurance=insurance)
+                  hospital=h, date_of_birth=datetime.date(year=1991, month=3, day=29), medical_information=medical_info)
 
         patients.user_set.add(patient)
 

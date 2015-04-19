@@ -7,7 +7,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from . import form_utilities
 from . import checks
 from .models import *
-from eventlog.models import log
 import datetime
 
 
