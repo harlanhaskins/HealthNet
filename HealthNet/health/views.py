@@ -120,7 +120,7 @@ def prescriptions(request):
     """
     context = {
         "navbar":"prescriptions",
-        "user": request.user,
+        "logged_in_user": request.user,
     }
 
     return render(request, 'prescriptions.html', context)
@@ -145,7 +145,7 @@ def prescription_form(request, prescription_id):
             return redirect('health:prescriptions')
     context = {
         'prescription': prescription,
-        'user': request.user
+        'logged_in_user': request.user
     }
     return render(request, 'edit_prescription.html', context)
 
