@@ -124,21 +124,39 @@ def prescriptions(request):
         "navbar":"prescriptions",
         "user": request.user,
     }
+
+    return render(request, 'prescriptions.html', context)
+
+
+def add_prescription_form(request):
+    return prescription_form(request, None)
+
+
+def prescription_form(request, prescription_id):
+    prescription = None
+    if prescription_id:
+        prescription = get_object_or_404(Prescription, pk=prescription_id)
     if request.POST:
         if not request.user.can_add_prescription():
             raise PermissionDenied
-        user, message = create_prescription_from_form(request.POST)
-        if user:
+        if prescription:
+            p, message = modify_prescription_from_form(request.POST, prescription)
+        else:
+            p, message = create_prescription_from_form(request.POST)
+        if p:
             return redirect('health:prescriptions')
-        elif message:
-            context['error_message'] = message
-    return render(request, 'prescriptions.html', context)
+    context = {
+        'prescription': prescription,
+        'user': request.user
+    }
+    return render(request, 'edit_prescription.html', context)
 
 
 def delete_prescription(request, prescription_id):
     p = get_object_or_404(Prescription, pk=prescription_id)
     p.delete()
     return redirect('health:prescriptions')
+
 
 def signup(request):
     """
