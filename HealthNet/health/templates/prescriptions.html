@@ -28,7 +28,7 @@
                                 <td>{{ prescription.dosage }}</td>
                                 <td>{{ prescription.directions }}</td>
                                 <td><p data-placement="top" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></p></td>
-                                <td><p data-placement="top" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></p></td>
+                                <td><p data-placement="top" title="Delete"><a class="btn btn-danger btn-xs" data-title="Delete" href="{% url 'health:delete_prescription' prescription.pk %}"><span class="glyphicon glyphicon-trash"></span></button></p></td>
                             </tr>
                         {% endfor %}
                         </tbody>

@@ -134,6 +134,11 @@ def prescriptions(request):
     return render(request, 'prescriptions.html', context)
 
 
+def delete_prescription(request, prescription_id):
+    p = get_object_or_404(Prescription, pk=prescription_id)
+    p.delete()
+    return redirect('health:prescriptions')
+
 def signup(request):
     """
     Presents a simple signup page with a form of all the required
