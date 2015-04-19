@@ -1,7 +1,7 @@
 __author__ = 'kodigray'
 
 from django.dispatch import receiver
-from account import signals
+from django.db.models import signals
 from eventlog.models import log
 
 

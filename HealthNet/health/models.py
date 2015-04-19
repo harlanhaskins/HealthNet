@@ -171,9 +171,3 @@ class Prescription(models.Model):
     name = models.CharField(max_length=200)
     dosage = models.CharField(max_length=200)
     directions = models.CharField(max_length=1000)
-
-
-class Log(models.Model):
-    user = models.ForeignKey(User)
-    action = models.CharField(max_length=200)
-    date = models.DateTimeField()

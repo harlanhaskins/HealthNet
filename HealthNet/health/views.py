@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from . import form_utilities
 from . import checks
 from .models import *
-from .decorators import *
 from .activitylog import *
 import datetime
 
@@ -112,7 +111,6 @@ def modify_prescription_from_form(body, prescription):
     return prescription, None
 
 @login_required
-@logged('prescriptions')
 def prescriptions(request):
     """
     Renders a table of the prescriptions associated with this user.
@@ -255,7 +253,6 @@ def my_profile(request):
     return redirect('health:profile', request.user.pk)
 
 @login_required
-@logged("profile")
 def profile(request, user_id):
     """
     Checks if the logged-in user has permission to modify the requested user.
@@ -385,7 +382,6 @@ def create_appointment_from_form(body, user):
 
 
 @login_required
-@logged('schedule')
 def schedule(request):
     """
     If requested with GET:
@@ -416,7 +412,6 @@ def schedule(request):
 
 @login_required
 @user_passes_test(checks.admin_check)
-@logged("logs")
 def logs(request):
     context = {
         "navbar": "logs",
