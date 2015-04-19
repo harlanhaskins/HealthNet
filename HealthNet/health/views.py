@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import dateparse
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import logout, login, authenticate
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth.decorators import login_required, user_passes_test
 from . import form_utilities
 from . import checks
@@ -414,7 +415,7 @@ def logs(request):
     context = {
         "navbar": "logs",
         "user": request.user,
-        "logs": Log.objects.all().order_by('-date')
+        "logs": LogEntry.objects.all().order_by('-action_time')
     }
     return render(request, 'logs.html', context)
 
