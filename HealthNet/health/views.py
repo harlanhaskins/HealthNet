@@ -342,6 +342,14 @@ def modify_user_from_form(body, user):
     user.save()
 
 
+def messages(request):
+    context = {
+        'navbar': 'messages',
+        'user': request.user
+    }
+    return render(request, 'messages.html', context)
+
+
 def create_appointment_from_form(body, user):
     """
     Validates the provided fields for an appointment request and creates one
@@ -376,14 +384,6 @@ def create_appointment_from_form(body, user):
 
     if not appointment:
         return None, "We could not create the appointment. Please try again."
-    else:
-        log(
-            user = user,
-            action = "Created_Appointment",
-            extra = {
-                    "pk": patient_id,
-            }
-        )
     return appointment, None
 
 
