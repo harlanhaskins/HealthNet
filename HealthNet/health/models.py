@@ -3,6 +3,30 @@ from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth.models import AbstractUser, Group
 
+class Emergency_Contact(models.Model):
+    first_name = models.CharField(max_length=20)
+    last_name = models.CharField(max_length=20)
+    phone_number = models.CharField(max_length=30)
+    relationship = models.CharField(max_length=30)
+
+
+class Medical_Information(models.Model):
+    female = 'Female'
+    male = 'Male'
+    other = 'Other'
+    gender_choices = (
+        (female, 'Female'),
+        (male, 'Male'),
+        (other, 'Other'),
+    )
+    gender = models.CharField(max_length=6, choices=gender_choices,
+                              default=female)
+    medications = models.CharField(max_length=200)
+    allergies = models.CharField(max_length=200)
+    medical_conditions = models.CharField(max_length=200)
+    family_history = models.CharField(max_length=200)
+    additional_info = models.CharField(max_length=400)
+
 
 class Hospital(models.Model):
     name = models.CharField(max_length=200)
