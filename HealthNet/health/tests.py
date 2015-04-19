@@ -58,11 +58,6 @@ class UserTestCase(TestCase):
 
         self.patients.user_set.add(self.patient)
 
-        self.unit = Unit.objects.create(name="milligrams", abbreviation="mg")
-        self.unit2 = Unit.objects.create(name="grams", abbreviation="g")
-        self.unit3 = Unit.objects.create(name="liters", abbreviation="L")
-        self.unit4 = Unit.objects.create(name="milliliters", abbreviation="mL")
-
     def test_group_definitions(self):
         self.assertTrue(self.patient.is_patient())
         self.assertFalse(self.patient.is_doctor())
