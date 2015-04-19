@@ -16,7 +16,7 @@
                     <li class="{% ifequal navbar 'schedule'%}active{% endifequal %}"><a href="{% ifequal navbar 'schedule'%}#{% else %}{% url 'health:schedule' %}{% endifequal %}"><i class="fa fa-calendar"></i>&nbsp;Schedule</a></li>
                     <li class="{% ifequal navbar 'prescriptions'%}active{% endifequal %}"><a href="{% ifequal navbar 'prescriptions'%}#{% else %}{% url 'health:prescriptions' %}{% endifequal %}"><i class="fa fa-medkit"></i>&nbsp;Prescriptions</a></li>
                     <li class="{% ifequal navbar 'medical_information'%}active{% endifequal %}"><a href="{% ifequal navbar 'medical_information'%}#{% else %}{% url 'health:medical_information' %}{% endifequal %}"><i class="fa fa-heart"></i></i>&nbsp;Medical Information</a></li>
-                    <li class="{% ifequal navbar 'messages'%}active{% endifequal %}"><a href="{% ifequal navbar 'messages'%}#{% else %}{% url 'health:messages' %}{% endifequal %}"><i class="fa fa-heart"></i></i>&nbsp;Messages</a></li>
+                    <li class="{% ifequal navbar 'messages'%}active{% endifequal %}"><a href="{% ifequal navbar 'messages'%}#{% else %}{% url 'health:messages' %}{% endifequal %}"><i class="fa fa-envelope"></i></i>&nbsp;Messages</a></li>
                     {% if user.is_superuser %}
                         <li class="{% ifequal navbar 'logs'%}active{% endifequal %}"><a href="{% ifequal navbar 'logs'%}#{% else %}{% url 'health:logs' %}{% endifequal %}"><i class="fa fa-list"></i>&nbsp;System Logs</a></li>
                     {% endif %}
