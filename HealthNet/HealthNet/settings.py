@@ -22,7 +22,7 @@ SECRET_KEY = 'x_p!s9fcx+ra!wb-%kmlr*c^=q%6*4pq#7lldts75_1j-$mp4l'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = [] if DEBUG else [
     '.djangomaintained.com',
@@ -40,7 +40,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'health',
-    'eventlog',
 )
 
 MIDDLEWARE_CLASSES = (

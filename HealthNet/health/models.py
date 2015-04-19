@@ -3,14 +3,20 @@ from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth.models import AbstractUser, Group
 
-class Emergency_Contact(models.Model):
+
+class Insurance(models.Model):
+    policy_number = models.CharField(max_length=200)
+    company = models.CharField(max_length=200)
+
+
+class EmergencyContact(models.Model):
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     phone_number = models.CharField(max_length=30)
     relationship = models.CharField(max_length=30)
 
 
-class Medical_Information(models.Model):
+class MedicalInformation(models.Model):
     female = 'Female'
     male = 'Male'
     intersex = 'Intersex'
@@ -42,16 +48,11 @@ class Hospital(models.Model):
                 self.state, self.zipcode)
 
 
-class Insurance(models.Model):
-    policy_number = models.CharField(max_length=200)
-    company = models.CharField(max_length=200)
-
-
 class User(AbstractUser):
     date_of_birth = models.DateField()
     phone_number = models.CharField(max_length=30)
     hospital = models.ForeignKey(Hospital, null=True)
-    medical_information = models.ForeignKey(Medical_Information, null=True)
+    medical_information = models.ForeignKey(MedicalInformation, null=True)
 
     REQUIRED_FIELDS = ['date_of_birth', 'phone_number', 'email', 'first_name',
                        'last_name', 'hospital']
@@ -175,8 +176,8 @@ class Prescription(models.Model):
 
 
 class Message(models.Model):
-    writer = models.ForeignKey(User)
-    recipient = models.ForeignKey(User)
+    sender = models.ForeignKey(User, related_name='sent_messages')
+    recipient = models.ForeignKey(User, related_name='received_messages')
     title = models.CharField(max_length=50)
     body = models.CharField(max_length=500)
     date = models.DateTimeField()
