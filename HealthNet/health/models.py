@@ -21,6 +21,7 @@ class Medical_Information(models.Model):
     )
     sex = models.CharField(max_length=6, choices=sex_choices,
                               default=female)
+    insurance = models.ForeignKey(Insurance, null=True)
     medications = models.CharField(max_length=200)
     allergies = models.CharField(max_length=200)
     medical_conditions = models.CharField(max_length=200)
@@ -50,7 +51,7 @@ class User(AbstractUser):
     date_of_birth = models.DateField()
     phone_number = models.CharField(max_length=30)
     hospital = models.ForeignKey(Hospital, null=True)
-    insurance = models.ForeignKey(Insurance, null=True)
+    medical_information = models.ForeignKey(Medical_Information, null=True)
 
     REQUIRED_FIELDS = ['date_of_birth', 'phone_number', 'email', 'first_name',
                        'last_name', 'hospital']
