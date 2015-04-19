@@ -13,13 +13,13 @@ class Emergency_Contact(models.Model):
 class Medical_Information(models.Model):
     female = 'Female'
     male = 'Male'
-    other = 'Other'
-    gender_choices = (
+    intersex = 'Intersex'
+    sex_choices = (
         (female, 'Female'),
         (male, 'Male'),
-        (other, 'Other'),
+        (intersex, 'Intersex'),
     )
-    gender = models.CharField(max_length=6, choices=gender_choices,
+    sex = models.CharField(max_length=6, choices=sex_choices,
                               default=female)
     medications = models.CharField(max_length=200)
     allergies = models.CharField(max_length=200)
