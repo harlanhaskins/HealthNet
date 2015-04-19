@@ -25,14 +25,13 @@ class MedicalInformation(models.Model):
         (male, 'Male'),
         (intersex, 'Intersex'),
     )
-    sex = models.CharField(max_length=6, choices=sex_choices,
-                              default=female)
-    insurance = models.ForeignKey(Insurance, null=True)
-    medications = models.CharField(max_length=200)
-    allergies = models.CharField(max_length=200)
-    medical_conditions = models.CharField(max_length=200)
-    family_history = models.CharField(max_length=200)
-    additional_info = models.CharField(max_length=400)
+    sex = models.CharField(max_length=50)
+    insurance = models.ForeignKey(Insurance)
+    medications = models.CharField(max_length=200, null=True)
+    allergies = models.CharField(max_length=200, null=True)
+    medical_conditions = models.CharField(max_length=200, null=True)
+    family_history = models.CharField(max_length=200, null=True)
+    additional_info = models.CharField(max_length=400, null=True)
 
 
 class Hospital(models.Model):

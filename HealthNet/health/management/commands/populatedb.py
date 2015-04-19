@@ -57,6 +57,8 @@ class Command(BaseCommand):
 
         insurance = Insurance.objects.create(company="Hobo Sal's Used Needle Emporium",
                                              policy_number="8675309")
+
+        medical_info = MedicalInformation.objects.create()
         email = "duwayne@theroc-johnson.com"
         patient = User.objects.create_user(email, email=email, first_name="Duwayne",
                   last_name="Theroc-Johnson", password="SuperSecurePassword1234", phone_number="18005553333",
