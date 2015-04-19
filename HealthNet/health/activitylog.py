@@ -1,5 +1,5 @@
 __author__ = 'kodigray'
-
+"""
 from django.dispatch import receiver
 from django.db.models import signals
 from eventlog.models import log
@@ -205,3 +205,4 @@ def handle_doc_uploads_update(sender, **kwargs):
             "ID": kwargs.get("id")
         }
     )
+    """

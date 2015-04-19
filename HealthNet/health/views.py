@@ -376,8 +376,6 @@ def create_appointment_from_form(body, user):
 
     if not appointment:
         return None, "We could not create the appointment. Please try again."
-    else:
-        handle_add_appointment(user)
     return appointment, None
 
 
