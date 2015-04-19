@@ -7,6 +7,7 @@ from . import form_utilities
 from . import checks
 from .models import *
 from .decorators import *
+from .activitylog import *
 import datetime
 
 
@@ -357,8 +358,11 @@ def create_appointment_from_form(body, user):
 
     appointment = Appointment.objects.create(date=parsed, duration=duration,
                                              doctor=doctor, patient=patient)
+
     if not appointment:
         return None, "We could not create the appointment. Please try again."
+    else:
+        handle_add_appointment(user)
     return appointment, None
 
 
