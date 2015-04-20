@@ -25,7 +25,7 @@ def login_view(request):
     if request.POST:
         user, message = login_user_from_form(request, request.POST)
         if user:
-            return redirect('health:my_profile')
+            return redirect('health:my_medical_information')
         elif message:
             context['error_message'] = message
     return render(request, 'login.html', context)
@@ -165,9 +165,9 @@ def signup(request):
     :param request:
     :return:
     """
-    context = full_signup_context()
+    context = full_signup_context(None)
     if request.POST:
-        user, message = create_user_from_form(request.POST)
+        user, message = handle_user_form(request.POST)
         if user:
             return redirect('health:login')
         elif message:
@@ -175,7 +175,7 @@ def signup(request):
     return render(request, 'signup.html', context)
 
 
-def full_signup_context():
+def full_signup_context(user):
     """
     Returns a dictionary containing valid years, months, days, hospitals,
     and groups in the database.
@@ -190,23 +190,25 @@ def full_signup_context():
         ],
         "hospitals": Hospital.objects.all(),
         "groups": Group.objects.all(),
-        "sexes": MedicalInformation.SEX_CHOICES
+        "sexes": MedicalInformation.SEX_CHOICES,
+        "user_sex_other": (user and user.medical_information.sex
+            not in MedicalInformation.SEX_CHOICES)
     }
 
 
 @login_required
-def my_profile(request):
+def my_medical_information(request):
     """
-    Gets the primary key of the current user and redirects to the profile view
+    Gets the primary key of the current user and redirects to the medical_information view
     for the logged-in user.
     :param request:
     :return:
     """
-    return redirect('health:profile', request.user.pk)
+    return redirect('health:medical_information', request.user.pk)
 
 
 @login_required
-def profile(request, user_id):
+def medical_information(request, user_id):
     """
     Checks if the logged-in user has permission to modify the requested user.
     If not, raises a PermissionDenied which Django catches by redirecting to
@@ -223,19 +225,19 @@ def profile(request, user_id):
     :return:
     """
     requested_user = get_object_or_404(User, pk=user_id)
-    is_editing_own_profile = requested_user == request.user
-    if not is_editing_own_profile and not request.user.is_superuser:
+    is_editing_own_medical_information = requested_user == request.user
+    if not is_editing_own_medical_information and not request.user.is_superuser:
         raise PermissionDenied
 
     if request.POST:
         handle_user_form(request.POST, user=requested_user)
-        return redirect('health:profile', user_id)
+        return redirect('health:medical_information', user_id)
 
-    context = full_signup_context()
+    context = full_signup_context(requested_user)
     context["user"] = requested_user
     context["logged_in_user"] = request.user
-    context["navbar"] = "my_profile" if is_editing_own_profile else "profile"
-    return render(request, 'profile.html', context)
+    context["navbar"] = "my_medical_information" if is_editing_own_medical_information else "medical_information"
+    return render(request, 'medical_information.html', context)
 
 
 def handle_user_form(body, user=None):
@@ -254,25 +256,26 @@ def handle_user_form(body, user=None):
     last_name = body.get("last_name")
 
     email = body.get("email")
-    group = int(body.get("group"))
+    group = body.get("group")
+    group_id = int(group) if group else None
     phone = form_utilities.sanitize_phone(body.get("phone_number"))
     month = int(body.get("month"))
     day = int(body.get("day"))
     year = int(body.get("year"))
     date = datetime.date(month=month, day=day, year=year)
-    hospital_key = int(body.get("hospital"))
-    hospital = Hospital.objects.get(pk=hospital_key)
+    hospital_key = body.get("hospital")
+    hospital = Hospital.objects.get(pk=int(hospital_key)) if hospital_key else None
     policy = body.get("policy")
     company = body.get("company")
     sex = body.get("sex")
+    other_sex = body.get("other_sex")
     medications = body.get("medications")
     allergies = body.get("allergies")
     medical_conditions = body.get("medical_conditions")
     family_history = body.get("family_history")
     additional_info = body.get("additional_info")
-    group = Group.objects.get(pk=group)
-    if not all([password, first_name, last_name,
-                email, phone, month, day, year, date]):
+    if not all([first_name, last_name, email, phone,
+                month, day, year, date]):
         return None, "All fields are required."
     email = email.lower()  # lowercase the email before adding it to the db.
     if not form_utilities.email_is_valid(email):
@@ -285,7 +288,23 @@ def handle_user_form(body, user=None):
         user.first_name = first_name
         user.last_name = last_name
         user.date_of_birth = date
-        if not user.medical_information:
+        if user.medical_information is not None:
+            user.medical_information.sex = sex if sex in MedicalInformation.SEX_CHOICES else other_sex
+            user.medical_information.medical_conditions = medical_conditions
+            user.medical_information.family_history = family_history
+            user.medical_information.additional_info = additional_info
+            user.medical_information.allergies = allergies
+            user.medical_information.medications = medications
+            if user.medical_information.insurance:
+                user.medical_information.insurance.policy_number = policy
+                user.medical_information.insurance.company = company
+            else:
+                user.medical_information.insurance = Insurance.objects.create(
+                    policy_number=policy,
+                    company=company
+                )
+            user.medical_information.save()
+        else:
             insurance = Insurance.objects.create(policy_number=policy,
                                                  company=company)
             medical_information = MedicalInformation.objects.create(
@@ -299,13 +318,11 @@ def handle_user_form(body, user=None):
             user.hospital.user_set.remove(user)
             user.hospital.save()
             user.hospital = hospital
-        group_id = body.get("group")
         if group_id and user.is_superuser:
-            group_id = int(group_id)
             if not user.groups.filter(pk=group_id).exists():
-                for group in user.groups.all():
-                    group.user_set.remove(user)
-                    group.save()
+                for user_group in user.groups.all():
+                    user_group.user_set.remove(user)
+                    user_group.save()
                 group = Group.objects.get(pk=group_id)
                 group.user_set.add(user)
                 group.save()
@@ -330,8 +347,10 @@ def handle_user_form(body, user=None):
             medical_information=medical_information)
         if user is None:
             return None, "We could not create that user. Please try again."
+        group = Group.objects.get(pk=group_id)
         group.user_set.add(user)
         return user, None
+
 
 def messages(request):
     context = {
@@ -418,10 +437,6 @@ def logs(request):
     return render(request, 'logs.html', context)
 
 @login_required
-def medical_information(request):
-    context = {
-        "navbar": "medical_information",
-        "user": request.user,
-    }
-    return render(request, 'medical_information.html', context)
-
+def home(request):
+    return render(request, 'home.html', {'navbar': 'home',
+                                         'user': request.user})
