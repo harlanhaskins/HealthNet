@@ -13,36 +13,21 @@
     </button>
     <br />
     <hr />
-    {% if user.schedule %}
-        {% include 'error.html' %}
+    {% include 'error.html' %}
+    {% if schedule_future %}
         <table class="table table-bordered table-striped">
-            <legend>Schedule for {% include 'user_link.html' %}</legend>
-            <thead>
-            <tr>
-                <th>Patient</th>
-                <th>Doctor</th>
-                <th>Date</th>
-                <th>Duration</th>
-                <th>Edit</th>
-                <th>Cancel</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for appointment in user.schedule %}
-                <tr>
-                    <td>{{ appointment.patient.get_full_name }}</td>
-                    <td>{{ appointment.doctor.get_full_name }}</td>
-                    <td>{{ appointment.date }}</td>
-                    <td>{{ appointment.duration }} minutes</td>
-                    <td><p title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-remote="{% url 'health:edit_appointment' appointment.pk %}" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></p></td>
-                    <td><p title="Delete"><a class="btn btn-danger btn-xs" data-title="Delete" href="{% url 'health:delete_appointment' appointment.pk %}"><span class="glyphicon glyphicon-trash"></span></a></p></td>
-                </tr>
-            {% endfor %}
-            </tbody>
+            <legend>Upcoming appointments for {% include 'user_link.html' %}</legend>
+            {% include 'appointment_table.html' with schedule=schedule_future editable=True %}
         </table>
     {% else %}
-        <h2 class="text-center">No appointments.</h2>
+        <h2 class="text-center">No upcoming appointments.</h2>
         <br /><br />
+    {% endif %}
+    {% if schedule_past %}
+        <table class="table table-bordered table-striped">
+            <legend>Past appointments for {% include 'user_link.html' %}</legend>
+            {% include 'appointment_table.html' with schedule=schedule_past editable=False %}
+        </table>
     {% endif %}
     <hr />
 {% endblock %}

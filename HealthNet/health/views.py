@@ -380,10 +380,10 @@ def handle_appointment_form(request, body, user, appointment=None):
     date_string = body.get("date")
     try:
         parsed = dateparse.parse_datetime(date_string)
-        parsed = timezone.make_aware(parsed, timezone.get_current_timezone())
         if not parsed:
             return None, "Invalid date or time."
-    except ValueError:
+        parsed = timezone.make_aware(parsed, timezone.get_current_timezone())
+    except:
         return None, "Invalid date or time."
     duration = int(body.get("duration"))
     doctor_id = int(body.get("doctor", user.pk))
@@ -448,12 +448,15 @@ def schedule(request, error=None):
     with an existing doctor.
     Also shows a table of the existing appointments for the logged-in user.
     """
+    now = timezone.now()
 
     context = {
         "navbar": "schedule",
         "user": request.user,
         "doctors": Group.objects.get(name="Doctor").user_set.all().order_by('first_name', 'last_name'),
-        "patients": Group.objects.get(name="Patient").user_set.all().order_by('first_name', 'last_name')
+        "patients": Group.objects.get(name="Patient").user_set.all().order_by('first_name', 'last_name'),
+        "schedule_future": request.user.schedule().filter(date__gte=now).order_by('date'),
+        "schedule_past": request.user.schedule().filter(date__lt=now).order_by('-date')
     }
     if error:
         context['error_message'] = error
