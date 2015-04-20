@@ -50,6 +50,7 @@ class User(AbstractUser):
     phone_number = models.CharField(max_length=30)
     hospital = models.ForeignKey(Hospital, null=True)
     medical_information = models.ForeignKey(MedicalInformation, null=True)
+    emergency_contact = models.ForeignKey(EmergencyContact, null=True)
 
     REQUIRED_FIELDS = ['date_of_birth', 'phone_number', 'email', 'first_name',
                        'last_name', 'hospital']
