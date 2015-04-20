@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Prescriptions{% endblock %}
 {% block content %}
+    {% include 'error.html' %}
     {% if user.active_patients %}
         <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
             <div class="modal-dialog">

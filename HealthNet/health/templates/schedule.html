@@ -1,69 +1,14 @@
 {% extends 'base.html' %}
 {% block title %}Schedule{% endblock %}
 {% block content %}
-    <div class="modal fade" id="appointmentModal" tabindex="-1" role="dialog" aria-labelledby="addAppointment" aria-hidden="true">
+    <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="" method="post" accept-charset="utf-8" class="form" role="form">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="addAppointment">Add an Appointment</h4>
-                    </div>
-                    <div class="modal-body">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-xs-12 col-md-12">
-                                <label>Time and Date</label>
-                                <div class='input-group' id='datetimepicker'>
-                                    <input type='datetime-local' class="form-control" name="date" />
-                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                                </div>
-                            </div>
-                        </div>
-                        <br />
-                        <div class="row">
-                            <div class="col-xs-8 col-md-8">
-                                <label>Duration</label>
-                                <div class="input-group" id="duration">
-                                    <input type="number" name="duration" class="form-control" value="30" />
-                                    <span class="input-group-addon">minutes</span>
-                                </div>
-                            </div>
-                        </div>
-                        <br />
-                        <div class="row">
-                            {% if user.is_patient or user.is_superuser %}
-                                <div class="col-xs-6 col-md-6">
-                                    <label>Doctor</label>
-                                    <select name="doctor" class="form-control">
-                                        {% for doctor in doctors %}
-                                            <option value="{{ doctor.pk }}">{{ doctor.get_full_name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            {% endif %}
-                            {% if user.is_doctor or user.is_superuser %}
-                                <div class="col-xs-6 col-md-6">
-                                    <label>Patient</label>
-                                    <select name="patient" class="form-control">
-                                        {% for patient in patients %}
-                                            <option value="{{ patient.pk }}">{{ patient.get_full_name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button class="btn btn-primary" type="submit">Add Appointment</button>
-                    </div>
-                </form>
             </div>
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#appointmentModal">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#appointmentModal" data-remote="{% url 'health:add_appointment' %}">
         Add an Appointment
     </button>
     <br />
@@ -78,6 +23,8 @@
                 <th>Doctor</th>
                 <th>Date</th>
                 <th>Duration</th>
+                <th>Edit</th>
+                <th>Cancel</th>
             </tr>
             </thead>
             <tbody>
@@ -87,6 +34,8 @@
                     <td>{{ appointment.doctor.get_full_name }}</td>
                     <td>{{ appointment.date }}</td>
                     <td>{{ appointment.duration }} minutes</td>
+                    <td><p title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-remote="{% url 'health:edit_appointment' appointment.pk %}" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></p></td>
+                    <td><p title="Delete"><a class="btn btn-danger btn-xs" data-title="Delete" href="{% url 'health:delete_appointment' appointment.pk %}"><span class="glyphicon glyphicon-trash"></span></a></p></td>
                 </tr>
             {% endfor %}
             </tbody>

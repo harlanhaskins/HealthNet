@@ -70,7 +70,7 @@ def logout_view(request):
     return redirect('health:login')
 
 
-def create_prescription_from_form(body):
+def handle_prescription_form(body, prescription=None):
     name = body.get("name")
     dosage = body.get("dosage")
     patient = body.get("patient")
@@ -82,36 +82,22 @@ def create_prescription_from_form(body):
     except ValueError:
         return None, "We could not find the user specified."
 
-    p = Prescription.objects.create(name=name, dosage=dosage,
-                                    patient=patient, directions=directions)
-    if not p:
-        return None, "We could not create that prescription. Please try again."
-    return p, None
-
-
-def modify_prescription_from_form(body, prescription):
-    name = body.get("name")
-    dosage = body.get("dosage")
-    patient = body.get("patient")
-    directions = body.get("directions")
-    if not all([name, dosage, patient, directions]):
-        return None, "All fields are required."
-    try:
-        patient = User.objects.get(pk=int(patient))
-    except ValueError:
-        return None, "We could not find the user specified."
-
-    prescription.name = name
-    prescription.dosage = dosage
-    prescription.patient = patient
-    prescription.directions = directions
-
-    prescription.save()
-
+    if prescription:
+        prescription.name = name
+        prescription.dosage = dosage
+        prescription.patient = patient
+        prescription.directions = directions
+        prescription.save()
+    else:
+        prescription = Prescription.objects.create(name=name, dosage=dosage,
+                                        patient=patient, directions=directions)
+        if not prescription:
+            return None, "We could not create that prescription. Please try again."
     return prescription, None
 
+
 @login_required
-def prescriptions(request):
+def prescriptions(request, error=None):
     """
     Renders a table of the prescriptions associated with this user.
 
@@ -122,6 +108,8 @@ def prescriptions(request):
         "navbar":"prescriptions",
         "logged_in_user": request.user,
     }
+    if error:
+        context["error_message"] = error
 
     return render(request, 'prescriptions.html', context)
 
@@ -137,12 +125,8 @@ def prescription_form(request, prescription_id):
     if request.POST:
         if not request.user.can_add_prescription():
             raise PermissionDenied
-        if prescription:
-            p, message = modify_prescription_from_form(request.POST, prescription)
-        else:
-            p, message = create_prescription_from_form(request.POST)
-        if p:
-            return redirect('health:prescriptions')
+        p, message = handle_prescription_form(request.POST, prescription)
+        return redirect('health:prescriptions', error=message)
     context = {
         'prescription': prescription,
         'logged_in_user': request.user
@@ -191,8 +175,8 @@ def full_signup_context(user):
         "hospitals": Hospital.objects.all(),
         "groups": Group.objects.all(),
         "sexes": MedicalInformation.SEX_CHOICES,
-        "user_sex_other": (user and user.medical_information.sex
-            not in MedicalInformation.SEX_CHOICES)
+        "user_sex_other": (user and user.medical_information and
+            user.medical_information.sex not in MedicalInformation.SEX_CHOICES)
     }
 
 
@@ -298,6 +282,7 @@ def handle_user_form(body, user=None):
             if user.medical_information.insurance:
                 user.medical_information.insurance.policy_number = policy
                 user.medical_information.insurance.company = company
+                user.medical_information.insurance.save()
             else:
                 user.medical_information.insurance = Insurance.objects.create(
                     policy_number=policy,
@@ -360,7 +345,7 @@ def messages(request):
     return render(request, 'messages.html', context)
 
 
-def create_appointment_from_form(body, user):
+def handle_appointment_form(body, user, appointment=None):
     """
     Validates the provided fields for an appointment request and creates one
     if all fields are valid.
@@ -389,25 +374,42 @@ def create_appointment_from_form(body, user):
         return None, "The patient is not free at that time." +\
                      " Please specify a different time."
 
-    appointment = Appointment.objects.create(date=parsed, duration=duration,
-                                             doctor=doctor, patient=patient)
+    if appointment:
+        appointment.date = parsed
+        appointment.patient = patient
+        appointment.duration = duration
+        appointment.doctor = doctor
+        appointment.save()
+    else:
+        appointment = Appointment.objects.create(date=parsed, duration=duration,
+                                                 doctor=doctor, patient=patient)
 
     if not appointment:
         return None, "We could not create the appointment. Please try again."
     return appointment, None
 
 
+def appointment_form(request, appointment_id):
+    appointment = None
+    if appointment_id:
+        appointment = get_object_or_404(Appointment, pk=appointment_id)
+    if request.POST:
+        appointment, message = handle_appointment_form(request.POST, request.user, appointment=appointment)
+        return schedule(request, error=message)
+    context = {
+        "user": request.user,
+        'appointment': appointment,
+        "doctors": Group.objects.get(name="Doctor").user_set.all().order_by('first_name', 'last_name'),
+        "patients": Group.objects.get(name="Patient").user_set.all().order_by('first_name', 'last_name')
+    }
+    return render(request, 'edit_appointment.html', context)
+
 @login_required
-def schedule(request):
+def schedule(request, error=None):
     """
-    If requested with GET:
-        Renders a page with an HTML form allowing the user to add an appointment
-        with an existing doctor.
-        Also shows a table of the existing appointments for the logged-in user.
-    If requested with POST:
-        Looks for the form fields rendered by the template and creates an
-        Appointment object corresponding to the fields provided.
-    :param request:
+    Renders a page with an HTML form allowing the user to add an appointment
+    with an existing doctor.
+    Also shows a table of the existing appointments for the logged-in user.
     """
 
     context = {
@@ -416,15 +418,20 @@ def schedule(request):
         "doctors": Group.objects.get(name="Doctor").user_set.all().order_by('first_name', 'last_name'),
         "patients": Group.objects.get(name="Patient").user_set.all().order_by('first_name', 'last_name')
     }
-
-    if request.POST:
-        appointment, message = create_appointment_from_form(request.POST,
-                                                            request.user)
-        if appointment:
-            return redirect('health:schedule')
-        elif message:
-            context['error_message'] = message
+    if error:
+        context['error_message'] = error
     return render(request, 'schedule.html', context)
+
+
+def add_appointment_form(request):
+    return appointment_form(request, None)
+
+
+def delete_appointment(request, appointment_id):
+    a = get_object_or_404(Appointment, pk=appointment_id)
+    a.delete()
+    return redirect('health:schedule')
+
 
 @login_required
 @user_passes_test(checks.admin_check)

@@ -1,1 +1,11 @@
-{% include 'base.html' %}
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="list-group">
+        {% for message in user.latest_messages %}
+            <a href="#" class="list-group-item">
+                <span class="name">{{ message.sender.get_full_name }}</span><span>{{ message.body }}</span><span class="badge">{{ message.date }}</span>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

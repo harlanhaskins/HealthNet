@@ -20,7 +20,7 @@
                     <input type="password" name="confirm_password" class="form-control confirm-password" placeholder="Confirm Password" required = "" />
                 {% endif %}
                 <br />
-                {% if not logged_in_user or logged_in_user.is_patient %}
+                {% if not logged_in_user or user.is_patient %}
                     <label>Insurance Information</label>
                     <div class="row">
                         <div class="col-xs-6 col-md-6">

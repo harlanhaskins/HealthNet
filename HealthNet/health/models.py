@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth.models import AbstractUser, Group
@@ -83,6 +84,11 @@ class User(AbstractUser):
 
     def can_add_prescription(self):
         return self.is_superuser or self.is_doctor()
+
+    def latest_messages(self):
+        return Message.objects.filter(
+            Q(sender=self) | Q(recipient=self)
+        ).order_by('-date')
 
     def schedule(self):
         """
@@ -174,6 +180,6 @@ class Prescription(models.Model):
 class Message(models.Model):
     sender = models.ForeignKey(User, related_name='sent_messages')
     recipient = models.ForeignKey(User, related_name='received_messages')
-    title = models.CharField(max_length=50)
+    subject = models.CharField(max_length=50)
     body = models.CharField(max_length=500)
     date = models.DateTimeField()
