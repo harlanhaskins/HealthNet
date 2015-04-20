@@ -7,7 +7,7 @@
             <tbody>
             {% for log in logs %}
                 <tr>
-                    <td><a href="{% url 'health:medical_information' log.user.pk %}">{{ log.user.get_full_name }}</a> ({{ log.user.email }}) {{ log.change_message }}</td>
+                    <td><a href="{% url 'health:medical_information' log.user.pk %}">{{ log.user.get_full_name }}</a> ({{ log.user.email }}) {{ log }}</td>
                     <td>{{ log.action_time }}</td>
                 </tr>
             {% endfor %}

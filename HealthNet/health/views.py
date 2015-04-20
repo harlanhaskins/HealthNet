@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import dateparse
 from django.core.exceptions import PermissionDenied
-from django.contrib.auth import logout, login, authenticate
 from django.contrib.admin.models import LogEntry
+from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.decorators import login_required, user_passes_test
 from . import form_utilities
+from .form_utilities import *
 from . import checks
 from .models import *
 import datetime
@@ -70,7 +71,7 @@ def logout_view(request):
     return redirect('health:login')
 
 
-def handle_prescription_form(body, prescription=None):
+def handle_prescription_form(request, body, prescription=None):
     name = body.get("name")
     dosage = body.get("dosage")
     patient = body.get("patient")
@@ -83,16 +84,28 @@ def handle_prescription_form(body, prescription=None):
         return None, "We could not find the user specified."
 
     if prescription:
-        prescription.name = name
-        prescription.dosage = dosage
-        prescription.patient = patient
-        prescription.directions = directions
+        changed_fields = []
+        if prescription.name != name:
+            changed_fields.append('name')
+            prescription.name = name
+        if prescription.dosage != dosage:
+            changed_fields.append('dosage')
+            prescription.dosage = dosage
+        if prescription.directions != directions:
+            changed_fields.append('directions')
+            prescription.directions = directions
+        if prescription.patient != patient:
+            changed_fields.append('patient')
+            prescription.patient = patient
         prescription.save()
+        change(request, prescription, changed_fields)
     else:
         prescription = Prescription.objects.create(name=name, dosage=dosage,
                                         patient=patient, directions=directions)
+
         if not prescription:
             return None, "We could not create that prescription. Please try again."
+        addition(request, prescription)
     return prescription, None
 
 
@@ -125,8 +138,8 @@ def prescription_form(request, prescription_id):
     if request.POST:
         if not request.user.can_add_prescription():
             raise PermissionDenied
-        p, message = handle_prescription_form(request.POST, prescription)
-        return redirect('health:prescriptions', error=message)
+        p, message = handle_prescription_form(request, request.POST, prescription)
+        return prescriptions(request, error=message)
     context = {
         'prescription': prescription,
         'logged_in_user': request.user
@@ -137,6 +150,7 @@ def prescription_form(request, prescription_id):
 def delete_prescription(request, prescription_id):
     p = get_object_or_404(Prescription, pk=prescription_id)
     p.delete()
+    deletion(request, p, repr(p))
     return redirect('health:prescriptions')
 
 
@@ -151,8 +165,9 @@ def signup(request):
     """
     context = full_signup_context(None)
     if request.POST:
-        user, message = handle_user_form(request.POST)
+        user, message = handle_user_form(request, request.POST)
         if user:
+            addition(request, user)
             return redirect('health:login')
         elif message:
             context['error_message'] = message
@@ -214,7 +229,7 @@ def medical_information(request, user_id):
         raise PermissionDenied
 
     if request.POST:
-        handle_user_form(request.POST, user=requested_user)
+        handle_user_form(request, request.POST, user=requested_user)
         return redirect('health:medical_information', user_id)
 
     context = full_signup_context(requested_user)
@@ -224,7 +239,7 @@ def medical_information(request, user_id):
     return render(request, 'medical_information.html', context)
 
 
-def handle_user_form(body, user=None):
+def handle_user_form(request, body, user=None):
     """
     Creates a user and validates all of the fields, in turn.
     If there is a failure in any validation, the returned tuple contains
@@ -288,16 +303,20 @@ def handle_user_form(body, user=None):
                     policy_number=policy,
                     company=company
                 )
+                addition(request, user.medical_information.insurance)
             user.medical_information.save()
+            change(request, user.medical_information)
         else:
             insurance = Insurance.objects.create(policy_number=policy,
                                                  company=company)
+            addition(request, insurance)
             medical_information = MedicalInformation.objects.create(
                 allergies=allergies, family_history=family_history,
                 sex=sex, medications=medications,
                 additional_info=additional_info, insurance=insurance,
                 medical_conditions=medical_conditions
             )
+            addition(request, user.medical_information)
             user.medical_information = medical_information
         if user.hospital != hospital:
             user.hospital.user_set.remove(user)
@@ -312,6 +331,7 @@ def handle_user_form(body, user=None):
                 group.user_set.add(user)
                 group.save()
         user.save()
+        change(request, user, '')
         return user, None
     else:
         if User.objects.filter(email=email).exists():
@@ -332,6 +352,10 @@ def handle_user_form(body, user=None):
             medical_information=medical_information)
         if user is None:
             return None, "We could not create that user. Please try again."
+        request.user = user
+        addition(request, user)
+        addition(request, medical_information)
+        addition(request, insurance)
         group = Group.objects.get(pk=group_id)
         group.user_set.add(user)
         return user, None
@@ -345,7 +369,7 @@ def messages(request):
     return render(request, 'messages.html', context)
 
 
-def handle_appointment_form(body, user, appointment=None):
+def handle_appointment_form(request, body, user, appointment=None):
     """
     Validates the provided fields for an appointment request and creates one
     if all fields are valid.
@@ -375,15 +399,25 @@ def handle_appointment_form(body, user, appointment=None):
                      " Please specify a different time."
 
     if appointment:
-        appointment.date = parsed
-        appointment.patient = patient
-        appointment.duration = duration
-        appointment.doctor = doctor
+        changed = []
+        if appointment.date != parsed:
+            appointment.date = parsed
+            changed.append('date')
+        if appointment.patient != patient:
+            appointment.patient = patient
+            changed.append('patient')
+        if appointment.duration != duration:
+            appointment.duration = duration
+            changed.append('duration')
+        if appointment.doctor != doctor:
+            appointment.doctor = doctor
+            changed.append('doctor')
         appointment.save()
+        change(request, appointment, changed)
     else:
         appointment = Appointment.objects.create(date=parsed, duration=duration,
                                                  doctor=doctor, patient=patient)
-
+        addition(request, appointment)
     if not appointment:
         return None, "We could not create the appointment. Please try again."
     return appointment, None
@@ -394,7 +428,10 @@ def appointment_form(request, appointment_id):
     if appointment_id:
         appointment = get_object_or_404(Appointment, pk=appointment_id)
     if request.POST:
-        appointment, message = handle_appointment_form(request.POST, request.user, appointment=appointment)
+        appointment, message = handle_appointment_form(
+            request, request.POST,
+            request.user, appointment=appointment
+        )
         return schedule(request, error=message)
     context = {
         "user": request.user,
