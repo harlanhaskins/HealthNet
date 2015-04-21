@@ -305,7 +305,7 @@ def handle_user_form(request, body, user=None):
                 )
                 addition(request, user.medical_information.insurance)
             user.medical_information.save()
-            change(request, user.medical_information)
+            change(request, user.medical_information, 'Changed fields.')
         else:
             insurance = Insurance.objects.create(policy_number=policy,
                                                  company=company)
@@ -331,7 +331,7 @@ def handle_user_form(request, body, user=None):
                 group.user_set.add(user)
                 group.save()
         user.save()
-        change(request, user, '')
+        change(request, user, 'Changed fields.')
         return user, None
     else:
         if User.objects.filter(email=email).exists():
