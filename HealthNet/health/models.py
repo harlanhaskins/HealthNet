@@ -194,7 +194,7 @@ class Prescription(models.Model):
     directions = models.CharField(max_length=1000)
 
     def __repr__(self):
-        return '{0} {1}: {2}'.format(self.dosage, self.name, self.directions)
+        return '{0} of {1}: {2}'.format(self.dosage, self.name, self.directions)
 
 
 class Message(models.Model):
