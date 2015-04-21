@@ -10,7 +10,7 @@ class Insurance(models.Model):
     company = models.CharField(max_length=200)
 
     def __repr__(self):
-        return "{} with {}".format(self.policy_number, self.company)
+        return "{0} with {1}".format(self.policy_number, self.company)
 
 
 class EmergencyContact(models.Model):
@@ -35,9 +35,9 @@ class MedicalInformation(models.Model):
     additional_info = models.CharField(max_length=400, null=True)
 
     def __repr__(self):
-        return ("Sex: {}, Insurance: {}, Medications: {}, Allergies: {}, " +
-                "Medical Conditions: {}, Family History: {}," +
-                " Additional Info: {}".format(
+        return (("Sex: {0}, Insurance: {1}, Medications: {2}, Allergies: {3}, " +
+                "Medical Conditions: {4}, Family History: {5}," +
+                " Additional Info: {6}").format(
                     self.sex, repr(self.insurance), self.medications,
                     self.allergies, self.medical_conditions,
                     self.family_history, self.additional_info
@@ -183,8 +183,8 @@ class Appointment(models.Model):
         return self.date + timedelta(seconds=self.duration)
 
     def __repr__(self):
-        return '{} minutes on {}, {} with {}'.format(self.duration, self.date,
-                                                     self.patient, self.doctor)
+        return '{0} minutes on {1}, {2} with {3}'.format(self.duration, self.date,
+                                                         self.patient, self.doctor)
 
 
 class Prescription(models.Model):
@@ -194,7 +194,7 @@ class Prescription(models.Model):
     directions = models.CharField(max_length=1000)
 
     def __repr__(self):
-        return '{} {}: {}'.format(self.dosage, self.name, self.directions)
+        return '{0} {1}: {2}'.format(self.dosage, self.name, self.directions)
 
 
 class Message(models.Model):
