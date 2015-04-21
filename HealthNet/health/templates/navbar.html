@@ -12,7 +12,7 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 {% if user.is_authenticated %}
-                    <li class="{% ifequal navbar 'home'%}active{% endifequal %}"><a href="{% ifequal navbar 'medical_information'%}#{% else %}{% url 'health:home' %}{% endifequal %}"><i class="fa fa-home"></i>&nbsp;Home</a></li>
+                    <li class="{% ifequal navbar 'home'%}active{% endifequal %}"><a href="{% url 'health:home' %}"><i class="fa fa-home"></i>&nbsp;Home</a></li>
                     <li class="{% ifequal navbar 'schedule'%}active{% endifequal %}"><a href="{% ifequal navbar 'schedule'%}#{% else %}{% url 'health:schedule' %}{% endifequal %}"><i class="fa fa-calendar"></i>&nbsp;Schedule</a></li>
                     <li class="{% ifequal navbar 'prescriptions'%}active{% endifequal %}"><a href="{% ifequal navbar 'prescriptions'%}#{% else %}{% url 'health:prescriptions' %}{% endifequal %}"><i class="fa fa-medkit"></i>&nbsp;Prescriptions</a></li>
                     <li class="{% ifequal navbar 'my_medical_information'%}active{% endifequal %}"><a href="{% ifequal navbar 'my_medical_information'%}#{% else %}{% url 'health:my_medical_information' %}{% endifequal %}"><i class="fa fa-heart"></i></i>&nbsp;Medical Information</a></li>

@@ -13,8 +13,8 @@
 <tbody>
 {% for appointment in schedule %}
     <tr>
-        <td>{{ appointment.patient.get_full_name }}</td>
-        <td>{{ appointment.doctor.get_full_name }}</td>
+        <td>{% include 'user_link.html' with user=appointment.patient %}</td>
+        <td>{% include 'user_link.html' with user=appointment.doctor %}</td>
         <td>{{ appointment.date }}</td>
         <td>{{ appointment.duration }} minutes</td>
         {% if editable %}
