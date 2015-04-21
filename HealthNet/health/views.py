@@ -203,7 +203,7 @@ def my_medical_information(request):
     :param request:
     :return:
     """
-    return redirect('health:medical_information', request.user.pk)
+    return medical_information(request, request.user.pk)
 
 
 @login_required
