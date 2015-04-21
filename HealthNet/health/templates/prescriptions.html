@@ -20,8 +20,8 @@
                         <legend>Prescriptions for {% include 'user_link.html' %}</legend>
                         <thead>
                         <tr>
-                            <th>Name</th>
                             <th>Dosage</th>
+                            <th>Name</th>
                             <th>Directions</th>
                             {% if logged_in_user.can_add_prescription %}
                                 <th>Edit</th>
@@ -32,8 +32,8 @@
                         <tbody>
                         {% for prescription in user.prescription_set.all %}
                             <tr>
-                                <td>{{ prescription.name }}</td>
                                 <td>{{ prescription.dosage }}</td>
+                                <td>{{ prescription.name }}</td>
                                 <td>{{ prescription.directions }}</td>
 
                                 {% if logged_in_user.can_add_prescription %}
