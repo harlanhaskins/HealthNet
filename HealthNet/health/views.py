@@ -388,35 +388,35 @@ def handle_appointment_form(request, body, user, appointment=None):
     duration = int(body.get("duration"))
     doctor_id = int(body.get("doctor", user.pk))
     doctor = User.objects.get(pk=doctor_id)
+    patient_id = int(body.get("patient", user.pk))
+    patient = User.objects.get(pk=patient_id)
+
+    is_change = appointment is not None
+
+    changed = []
+    if is_change:
+        if appointment.date != parsed:
+            changed.append('date')
+        if appointment.patient != patient:
+            changed.append('patient')
+        if appointment.duration != duration:
+            changed.append('duration')
+        if appointment.doctor != doctor:
+            changed.append('doctor')
+        appointment.delete()
     if not doctor.is_free(parsed, duration):
         return None, "The doctor is not free at that time." +\
                      " Please specify a different time."
 
-    patient_id = int(body.get("patient", user.pk))
-    patient = User.objects.get(pk=patient_id)
     if not patient.is_free(parsed, duration):
         return None, "The patient is not free at that time." +\
                      " Please specify a different time."
+    appointment = Appointment.objects.create(date=parsed, duration=duration,
+                                             doctor=doctor, patient=patient)
 
-    if appointment:
-        changed = []
-        if appointment.date != parsed:
-            appointment.date = parsed
-            changed.append('date')
-        if appointment.patient != patient:
-            appointment.patient = patient
-            changed.append('patient')
-        if appointment.duration != duration:
-            appointment.duration = duration
-            changed.append('duration')
-        if appointment.doctor != doctor:
-            appointment.doctor = doctor
-            changed.append('doctor')
-        appointment.save()
+    if is_change:
         change(request, appointment, changed)
     else:
-        appointment = Appointment.objects.create(date=parsed, duration=duration,
-                                                 doctor=doctor, patient=patient)
         addition(request, appointment)
     if not appointment:
         return None, "We could not create the appointment. Please try again."
