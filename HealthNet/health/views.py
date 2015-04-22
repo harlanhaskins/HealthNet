@@ -164,6 +164,7 @@ def signup(request):
     :return:
     """
     context = full_signup_context(None)
+    context['is_signup'] = True
     if request.POST:
         user, message = handle_user_form(request, request.POST)
         if user:
@@ -235,6 +236,7 @@ def medical_information(request, user_id):
     context = full_signup_context(requested_user)
     context["requested_user"] = requested_user
     context["user"] = request.user
+    context['is_signup'] = False
     context["navbar"] = "my_medical_information" if is_editing_own_medical_information else "medical_information"
     return render(request, 'medical_information.html', context)
 
