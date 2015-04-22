@@ -181,7 +181,7 @@ def full_signup_context(user):
     and groups in the database.
     """
     return {
-        "year_range": range(1900, datetime.date.today().year + 1),
+        "year_range": reversed(range(1900, datetime.date.today().year + 1)),
         "day_range": range(1, 32),
         "months": [
             "Jan", "Feb", "Mar", "Apr",
