@@ -41,16 +41,16 @@ class UserTestCase(TestCase):
                  hospital=h, date_of_birth=datetime.date(year=1980, month=6, day=7))
         doctors.user_set.add(doctor)
         email = "drcox@sacredheart.org"
-        doctor = User.objects.create_user(email, email=email, first_name="Perry",
+        self.doctor = User.objects.create_user(email, email=email, first_name="Perry",
                  last_name="Cox", password="SuperSecurePassword1234", phone_number="18005553333",
                  hospital=h, date_of_birth=datetime.date(year=1980, month=6, day=7))
-        doctors.user_set.add(doctor)
+        doctors.user_set.add(self.doctor)
 
         email = "carla@sacredheart.org"
-        nurse = User.objects.create_user(email, email=email, first_name="Carla",
+        self.nurse = User.objects.create_user(email, email=email, first_name="Carla",
                 last_name="Turkleton", password="SuperSecurePassword1234", phone_number="18005553333",
                 hospital=h, date_of_birth=datetime.date(year=1976, month=3, day=9))
-        nurses.user_set.add(nurse)
+        nurses.user_set.add(self.nurse)
 
         insurance = Insurance.objects.create(company="Hobo Sal's Used Needle Emporium",
                                              policy_number="8675309")
@@ -59,11 +59,12 @@ class UserTestCase(TestCase):
                                                          allergies=None, medical_conditions="Brain Tumor",
                                                          family_history=None, additional_info="Oh, you guys!")
         email = "duwayne@theroc-johnson.com"
-        patient = User.objects.create_user(email, email=email, first_name="Duwayne",
+        self.patient = User.objects.create_user(email, email=email, first_name="Duwayne",
                   last_name="Theroc-Johnson", password="SuperSecurePassword1234", phone_number="18005553333",
                   hospital=h, date_of_birth=datetime.date(year=1991, month=3, day=29), medical_information=medical_info)
 
-        patients.user_set.add(patient)
+        patients.user_set.add(self.patient)
+
 
     def test_group_definitions(self):
         self.assertTrue(self.patient.is_patient())
