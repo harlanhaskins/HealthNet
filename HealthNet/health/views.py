@@ -321,8 +321,6 @@ def handle_user_form(request, body, user=None):
             addition(request, user.medical_information)
             user.medical_information = medical_information
         if user.hospital != hospital:
-            user.hospital.user_set.remove(user)
-            user.hospital.save()
             user.hospital = hospital
         if group_id and user.is_superuser:
             if not user.groups.filter(pk=group_id).exists():
