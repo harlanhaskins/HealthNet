@@ -31,12 +31,12 @@
                     $($(this).closest('.modal')).modal('hide');
                 })
             </script>
-            <div class="col-md-offset-3">
+        {% endif %}
+        {% include 'edit_user.html' %}
+            <br />
+            <div class="col-md-offset-9">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#privacy">
                     Export
                 </button>
             </div>
-            <br />
-        {% endif %}
-        {% include 'edit_user.html' %}
 {% endblock %}
