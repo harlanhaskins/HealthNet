@@ -223,7 +223,7 @@ class User(AbstractUser):
         if self.prescription_set.all():
             json['prescriptions'] = [p.json_object() for p in
                 self.prescription_set.all()]
-        if self.appointment:
+        if self.schedule():
             json['appointments'] = [a.json_object() for a in self.schedule()]
         return json
 
