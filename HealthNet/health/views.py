@@ -171,7 +171,10 @@ def signup(request):
         user, message = handle_user_form(request, request.POST)
         if user:
             addition(request, user)
-            return redirect('health:login')
+            if request.user.is_authenticated():
+                return redirect('health:signup')
+            else:
+                return redirect('health:login')
         elif message:
             context['error_message'] = message
     return render(request, 'signup.html', context)
@@ -261,7 +264,9 @@ def handle_user_form(request, body, user=None):
 
     email = body.get("email")
     group = body.get("group")
-    group_id = int(group) if group else None
+    patient_group = Group.objects.get(name='Patient')
+    group = Group.objects.get(pk=int(group)) if group else patient_group
+    is_patient = group == patient_group
     phone = form_utilities.sanitize_phone(body.get("phone_number"))
     month = int(body.get("month"))
     day = int(body.get("day"))
@@ -284,7 +289,7 @@ def handle_user_form(request, body, user=None):
     email = email.lower()  # lowercase the email before adding it to the db.
     if not form_utilities.email_is_valid(email):
         return None, "Invalid email."
-    if not all([company, policy]):
+    if (user and user.is_patient()) and not all([company, policy]):
         return None, "Insurance information is required."
     if user:
         user.email = email
@@ -292,7 +297,7 @@ def handle_user_form(request, body, user=None):
         user.first_name = first_name
         user.last_name = last_name
         user.date_of_birth = date
-        if user.medical_information is not None:
+        if is_patient and user.medical_information is not None:
             user.medical_information.sex = sex if sex in MedicalInformation.SEX_CHOICES else other_sex
             user.medical_information.medical_conditions = medical_conditions
             user.medical_information.family_history = family_history
@@ -311,7 +316,7 @@ def handle_user_form(request, body, user=None):
                 addition(request, user.medical_information.insurance)
             user.medical_information.save()
             change(request, user.medical_information, 'Changed fields.')
-        else:
+        elif user.is_patient():
             insurance = Insurance.objects.create(policy_number=policy,
                                                  company=company)
             addition(request, insurance)
@@ -325,12 +330,11 @@ def handle_user_form(request, body, user=None):
             user.medical_information = medical_information
         if user.hospital != hospital:
             user.hospital = hospital
-        if group_id and user.is_superuser:
-            if not user.groups.filter(pk=group_id).exists():
+        if user.is_superuser:
+            if not user.groups.filter(pk=group.pk).exists():
                 for user_group in user.groups.all():
                     user_group.user_set.remove(user)
                     user_group.save()
-                group = Group.objects.get(pk=group_id)
                 group.user_set.add(user)
                 group.save()
         user.save()
@@ -359,7 +363,6 @@ def handle_user_form(request, body, user=None):
         addition(request, user)
         addition(request, medical_information)
         addition(request, insurance)
-        group = Group.objects.get(pk=group_id)
         group.user_set.add(user)
         return user, None
 
