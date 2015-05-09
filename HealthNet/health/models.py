@@ -247,9 +247,9 @@ class Prescription(models.Model):
 
     def json_object(self):
         return {
-            'name': self.presription.name,
-            'dosage': self.prescription.dosage,
-            'directions': self.prescription.directions,
+            'name': self.name,
+            'dosage': self.dosage,
+            'directions': self.directions,
             }
 
     def __repr__(self):
