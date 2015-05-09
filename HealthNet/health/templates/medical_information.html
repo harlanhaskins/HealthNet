@@ -3,5 +3,10 @@
 {% block title %}{{ user.get_full_name }}'s Medical Information{% endblock %}
 
 {% block content %}
+    <div class="row">
+        <a class="btn btn-primary" href="{% url 'health:export' %}" download="{{ user.get_full_name }}_medical_information.json">
+            Export
+        </a>
+    </div>
 {% include 'edit_user.html' %}
 {% endblock %}

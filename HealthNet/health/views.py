@@ -492,4 +492,7 @@ def home(request):
 
 @login_required
 def export(request):
-    return HttpResponse(json.dumps(request.user.json_object()), content_type='application/json')
+    json_object = json.dumps(request.user.json_object(), sort_keys=True,
+        indent=4, separators=(',', ': '))
+    return HttpResponse(json_object,
+        content_type='application/json', mimetype='application/force-download')
