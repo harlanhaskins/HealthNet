@@ -78,7 +78,7 @@ class Hospital(models.Model):
     def json_object(self):
         return {
             'name': self.name,
-            'address': self.ddress,
+            'address': self.address,
             'city': self.city,
             'state': self.state,
             'zipcode': self.zipcode,
@@ -216,9 +216,9 @@ class User(AbstractUser):
             json['medical_information'] = self.medical_information.json_object()
         if self.emergency_contact:
             json['emergency_contact'] = self.emergency_contact.json_object()
-        if self.prescription_set:
-            json['prescription'] = [p.json_object() for p in
-                self.prescription_set]
+        if self.prescription_set.all():
+            json['prescriptions'] = [p.json_object() for p in
+                self.prescription_set.all()]
         return json
 
 
