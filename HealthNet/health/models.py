@@ -170,18 +170,43 @@ class User(AbstractUser):
     def json_object(self):
         json = {
             'name': self.get_full_name(),
-            'email': self.email
+            'email': self.email,
+            'date_of_birth': self.date_of_birth,
+            'phone_number': self.phone_number,
         }
+        if self.hospital:
+            hospital = {
+                'name': self.hospital.name,
+                'address': self.hospital.address,
+                'city': self.hospital.city,
+                'state': self.hospital.state,
+                'zipcode': self.hospital.zipcode,
+            }
+            json.update(hospital)
         if self.medical_information:
             info = {
+                'sex': self.medical_information.sex,
                 'insurance': {
                     'company': self.medical_information.insurance.company,
                     'policy_number':
                         self.medical_information.insurance.policy_number
-                }
-
+                },
+                'medications': self.medical_information.medications,
+                'allergies': self.medical_information.allergies,
+                'medical_conditions':
+                    self.medical_information.medical_conditions,
+                'family_history': self.medical_information.family_history,
+                'additional_info': self.medical_information.additional_info,
             }
             json.update(info)
+        if self.emergency_contact:
+            contact = {
+                'first_name': self.emergency_contact.first_name,
+                'last_name': self.emergency_contact.last_name,
+                'phone_number': self.emergency_contact.phone_number,
+                'relationship': self.emergency_contact.relationship,
+            }
+            json.update(contact)
         return json
 
 
