@@ -12,7 +12,6 @@
         <div class="table-responsive">
             {% if logged_in_user.can_add_prescription %}
                 <button class="btn btn-primary" data-toggle="modal" data-target="#edit" data-remote="{% url 'health:add_prescription' %}">Add a Prescription</button>
-            {% endif %}
             <hr />
             {% for user in user.active_patients %}
                 {% if user.prescription_set.all %}
@@ -52,6 +51,7 @@
                 {% endif %}
                 <hr />
             {% endfor %}
+            {% endif %}
         </div>
     {% else %}
         <h2 class="text-center"> No active patients in hospital. </h2>

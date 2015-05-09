@@ -551,7 +551,7 @@ def logs(request):
 
 @login_required
 def home(request):
-    return render(request, 'home.html', {'navbar': 'home',
+    return render(request, 'profile.html', {'navbar': 'home',
                                          'user': request.user})
 
 @login_required
