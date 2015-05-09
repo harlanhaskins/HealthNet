@@ -414,7 +414,7 @@ def messages(request):
     }
     return render(request, 'messages.html', context)
 
-
+@login_required
 def conversation(request, id):
     group = get_object_or_404(MessageGroup, pk=id)
     context = {
@@ -487,7 +487,7 @@ def handle_appointment_form(request, body, user, appointment=None):
         return None, "We could not create the appointment. Please try again."
     return appointment, None
 
-
+@login_required
 def appointment_form(request, appointment_id):
     appointment = None
     if appointment_id:
@@ -527,11 +527,11 @@ def schedule(request, error=None):
         context['error_message'] = error
     return render(request, 'schedule.html', context)
 
-
+@login_required
 def add_appointment_form(request):
     return appointment_form(request, None)
 
-
+@login_required
 def delete_appointment(request, appointment_id):
     a = get_object_or_404(Appointment, pk=appointment_id)
     a.delete()
@@ -554,8 +554,15 @@ def home(request):
                                          'user': request.user})
 
 @login_required
-def export(request):
-    json_object = json.dumps(request.user.json_object(), sort_keys=True,
+def export_me(request):
+    return export(request, request.user.pk)
+
+@login_required
+def export(request, id):
+    user = get_object_or_404(User, pk=id)
+    if user != request.user and not request.user.is_superuser:
+        raise PermissionDenied
+    json_object = json.dumps(user.json_object(), sort_keys=True,
         indent=4, separators=(',', ': '))
     return HttpResponse(json_object,
         content_type='application/json', mimetype='application/force-download')

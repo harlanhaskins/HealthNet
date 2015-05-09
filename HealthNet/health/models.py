@@ -236,9 +236,10 @@ class Appointment(models.Model):
 
     def json_object(self):
         return {
-            'doctor': self.doctor.get_full_name(),
             'date': self.date.isoformat(),
-            'end': self.end(),
+            'end': self.end().isoformat(),
+            'patient': self.patient.get_full_name(),
+            'doctor': self.doctor.get_full_name(),
         }
 
     def end(self):

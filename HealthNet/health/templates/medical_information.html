@@ -3,7 +3,7 @@
 {% block title %}{{ requested_user.get_full_name }}'s Medical Information{% endblock %}
 
 {% block content %}
-        {% if requested_user.is_patient and user == requested_user %}
+        {% if user.is_superuser or requested_user.is_patient %}
             <div class="modal fade" id="privacy" tabindex="-1" role="dialog" aria-labelledby="privacy" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -17,7 +17,7 @@
                                 <button class="btn btn-default close-modal">
                                     Cancel
                                 </button>
-                                <a class="btn btn-primary close-modal" href="{% url 'health:export' %}" >
+                                <a class="btn btn-primary close-modal" href="{% url 'health:export' requested_user.pk %}" >
                                     Okay
                                 </a>
                             </div>
