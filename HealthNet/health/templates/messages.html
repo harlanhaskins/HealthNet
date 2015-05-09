@@ -58,7 +58,7 @@
             Send Message
         </button>
         {% for group in user.messagegroup_set.all %}
-            <a href="#" class="list-group-item">
+            <a href="{% url 'health:conversation' group.pk %}" class="list-group-item">
                 <div class="row indent">
                     {% if group.latest_message %}
                         <span class="badge">{{ group.latest_message.date }}</span>
@@ -77,7 +77,6 @@
                         <span class="text-preview"><em>No Messages</em></span>
                     {% endif %}
                 </div>
-
             </a>
         {% endfor %}
     </div>

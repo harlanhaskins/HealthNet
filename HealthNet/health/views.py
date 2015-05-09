@@ -421,7 +421,18 @@ def conversation(request, id):
         "user": request.user,
         "group": group
     }
-    return render('conversation.html', context)
+    if request.POST:
+        message = request.POST.get('message')
+        if message:
+            msg = Message.objects.create(sender=request.user, group=group,
+                                         body=message, date=timezone.now())
+            group.messages.add(msg)
+            group.save()
+            # redirect to avoid the issues with reloading
+            # sending the message again.
+            return redirect('health:conversation', group.pk)
+    return render(request, 'conversation.html', context)
+
 
 def handle_appointment_form(request, body, user, appointment=None):
     """
