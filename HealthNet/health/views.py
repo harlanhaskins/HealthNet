@@ -228,7 +228,8 @@ def medical_information(request, user_id):
     """
     requested_user = get_object_or_404(User, pk=user_id)
     is_editing_own_medical_information = requested_user == request.user
-    if not is_editing_own_medical_information and not request.user.is_superuser:
+    if not is_editing_own_medical_information and not\
+            request.user.can_edit_user(requested_user):
         raise PermissionDenied
 
     if request.POST:

@@ -1,15 +1,44 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ user.get_full_name }}'s Medical Information{% endblock %}
+{% block title %}{{ requested_user.get_full_name }}'s Medical Information{% endblock %}
 
 {% block content %}
-    <div class="form-wrap">
-        <div class="col-md-offset-2">
-            <a class="btn btn-primary" href="{% url 'health:export' %}" download="{{ user.get_full_name }}_medical_information.json">
-                Export
-            </a>
-        </div>
-        <br />
+        {% if requested_user.is_patient and user == requested_user %}
+            <div class="modal fade" id="privacy" tabindex="-1" role="dialog" aria-labelledby="privacy" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                            <div class="modal-header">
+                                Warning
+                            </div>
+                            <div class="modal-body">
+                               This information is potentially sensitive, and Health<strong>Net</strong> assumes no liability for privacy breaches resulting from misuse of this exported data.
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn close-modal">
+                                    Cancel
+                                </button>
+                                <a class="btn btn-primary close-modal" href="{% url 'health:export' %}" >
+                                    Okay
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                // close the modal on click for any button with class close-modal
+                $('.close-modal').click(function(){
+                    $($(this).closest('.modal')).modal('hide');
+                })
+            </script>
+            <div class="container">
+            <div class="col-md-offset-2">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#privacy">
+                    Export
+                </button>
+            </div>
+            <br />
+        {% endif %}
         {% include 'edit_user.html' %}
     </div>
 {% endblock %}

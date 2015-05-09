@@ -121,6 +121,9 @@ class User(AbstractUser):
             # Users can only see themselves.
             return User.objects.filter(pk=self.pk)
 
+    def can_edit_user(self, user):
+        return self.is_superuser or self.is_doctor() or user == self
+
     def active_patients(self):
         """
         Same as all_patients, but only patients that are active.
