@@ -1,51 +1,85 @@
-Hello and thank you for choosing DjangoMaintained HealthNet.
-HealthNet is a web based program that helps keep track of the 
+Thank you for choosing DjangoMaintained: HealthNet!
+HealthNet is a web-based program that helps keep track of the 
 hospital you are currently a patient at. It records your schedule,
 prescriptions, doctors, and recent visits information.
 
-The following are requirements to use HealthNet:
-	1) Computer
-	2) Internet Access
-	3) Email
-	4) Insurance
-	5) Phone Number
+To effectively use HealthNet, a computer with internet access is
+required. Account creation requires valid insurance information.
 
-The HealthNet program is all web based. You can visit the website
-by going to "https://www.djangomaintained.com". Please note, the
-https:// is required for security reasons as opposed to http://.
+The HealthNet program is all web-based. You can visit the website
+by going to "https://www.djangomaintained.com". Please note that the
+"https://" is required for security reasons as opposed to "http://".
+
+If you are running HealthNet on your local machine, run the following
+commands:
+python manage.py syncdb
+python manage.py populatedb
+python manage.py runserver
 
 Once you are on the homepage, it should redirect you to a login page.
+
 If you have an existing account, please login, otherwise proceed to
 the next steps.
 
 If you do not have an existing account, then click on "Sign Up". This
-will bring you to a page to fill out some information. Complete the
+will bring you to a page to fill out some basic information. Complete the
 form and create your account. You should now be able to login with the
 information just created.
 
-For demonstration purposes, we provide an existing account for you.
+For demonstration purposes, we provide an existing account of each type 
+for you:
+
+Admin:
 Email: admin
 Password: SuperSecurePassword1234
 
-The home page is currently just a form with your information in it.
-This is going to change as we progress through the releases.
+Doctor:
+Email: turk@sacredheart.org
+Password: SuperSecurePassword1234
 
-The schedule is currently set with a date/time picker. You can request 
-the amount of time and doctor to have your appointment with. Once filled
-out, you can add the appointment. It will show up in a schedule table 
-below.
+Nurse:
+Email: carla@sacredheart.org
+Password: SuperSecurePassword1234
 
-The prescriptions page has a table similar to the schedule table. However,
-only a doctor can add prescriptions, so the patient can only view this table.
+Patient:
+Email: duwayne@theroc-johnson.com
+Password: SuperSecurePassword1234
 
-The Medical Information page houses the patient's medical information, test
-results, and other sensitive information.
+The Home tab displays a dashboard for easy daily use. This displays a 
+welcome message, a notification for new messages (if there are any),
+a list of upcoming appointments, and a list of prescriptions (if the
+user is a patient).
 
-System logs is just a recorded of changes/views from a person. 
+The Schedule tab displays a list of upcoming appointments as well as a list of
+past appointments. The "Add Appointment" button at the top of the page is
+only available to patients, doctors, and admins. It prompts for a date, time,
+duration, and a choice of patient (if you are a doctor) or a choice of doctor
+(if you are a patient). Appointments can be edited or deleted by patients,
+doctors, or admins if needed.
 
-Lastly, there is a Sign Out button in the top right corner to securely log 
-your account out.
+The Prescriptions tab displays a list of active prescriptions. A given patient
+will only be able to see their prescriptions. Doctors are able to view, edit,  
+and remove prescriptions of all patients. Nurses can view prescriptions of 
+patients from their hospital.
 
-For questions, please contact either of the test liaisons:
+The Medical Information tab displays the patient's basic profile information and 
+medical information. The "Export" button is used to export the medical information
+into a readable file that can be saved to the user's computer, and is only 
+available to patients. It displays a security warning before exporting the file.
+
+The Messages tab displays a list of active conversations the user is in. Selecting
+any of them will display the conversation. The "Send Message" is used to send a new
+message. Messages can be sent between any two types of users, except between patients.
+
+Admins can view two additional tabs: System Log and Add User.
+
+The System Log tab displays a list of all logged system activity.
+
+The Add User tab is used to add doctors, nurses, and other admins to the system.
+
+For questions, please contact:
+
+Project Manager:
 Harlan Haskins: harlan@harlanhaskins.com
+Test Liason:
 Stefani Grimaldi: sg4780@rit.edu
