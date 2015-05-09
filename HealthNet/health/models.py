@@ -223,6 +223,8 @@ class User(AbstractUser):
         if self.prescription_set.all():
             json['prescriptions'] = [p.json_object() for p in
                 self.prescription_set.all()]
+        if self.appointment:
+            json['appointments'] = [a.json_object() for a in self.schedule()]
         return json
 
 
@@ -232,11 +234,18 @@ class Appointment(models.Model):
     date = models.DateTimeField()
     duration = models.IntegerField()
 
+    def json_object(self):
+        return {
+            'doctor': self.doctor.get_full_name(),
+            'date': self.date.isoformat(),
+            'end': self.end(),
+        }
+
     def end(self):
         """
         :return: A datetime representing the end of the appointment.
         """
-        return self.date + timedelta(seconds=self.duration)
+        return self.date + timedelta(minutes=self.duration)
 
     def __repr__(self):
         return '{0} minutes on {1}, {2} with {3}'.format(self.duration, self.date,
