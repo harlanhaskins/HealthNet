@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h3>Welcome to <em>Health<strong>Net</strong></em></h3>
+    <h3>Welcome to <em>Health<strong>Net</strong></em>, {{ user.get_full_name }}!</h3>
     <hr />
     {% if user.upcoming_appointments.all %}
         <table class="table table-bordered table-striped">
