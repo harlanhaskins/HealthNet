@@ -197,9 +197,12 @@ class Prescription(models.Model):
         return '{0} of {1}: {2}'.format(self.dosage, self.name, self.directions)
 
 
+class MessageGroup(models.Model):
+    name = models.CharField(max_length=140)
+
+
 class Message(models.Model):
     sender = models.ForeignKey(User, related_name='sent_messages')
-    recipient = models.ForeignKey(User, related_name='received_messages')
-    subject = models.CharField(max_length=50)
+    group = models.ForeignKey(MessageGroup, related_name='messages')
     body = models.CharField(max_length=500)
     date = models.DateTimeField()

@@ -4,11 +4,13 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.http import HttpResponse
 from . import form_utilities
 from .form_utilities import *
 from . import checks
 from .models import *
 import datetime
+import json
 
 
 def login_view(request):
@@ -487,3 +489,7 @@ def logs(request):
 def home(request):
     return render(request, 'home.html', {'navbar': 'home',
                                          'user': request.user})
+
+@login_required
+def export(request):
+    return HttpResponse(request.user.json_object(), content_type='application/json')

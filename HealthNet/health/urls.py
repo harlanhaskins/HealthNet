@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'users/(\d+)/?$', views.medical_information, name='medical_information'),
     url(r'users/me/?$', views.my_medical_information, name='my_medical_information'),
     url(r'signup/?$', views.signup, name='signup'),
+    url(r'users/me/info.json/?$', views.export, name='export'),
     url(r'logs/?$', views.logs, name='logs'),
     url(r'^/?$', views.home, name='home'),
 )
