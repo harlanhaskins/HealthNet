@@ -72,7 +72,7 @@
                 </div>
                 <div class="row indent">
                     {% if group.latest_message %}
-                        <span class="text-preview"><em>{{ group.latest_message.preview_text }}</em></span>
+                        <span class="text-preview"><em>{% if group.latest_message.sender == user %}You: {% endif %}{{ group.latest_message.preview_text }}</em></span>
                     {% else %}
                         <span class="text-preview"><em>No Messages</em></span>
                     {% endif %}
