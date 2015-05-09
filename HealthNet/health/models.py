@@ -175,16 +175,15 @@ class User(AbstractUser):
             'phone_number': self.phone_number,
         }
         if self.hospital:
-            hospital = {
+            json['hospital'] = {
                 'name': self.hospital.name,
                 'address': self.hospital.address,
                 'city': self.hospital.city,
                 'state': self.hospital.state,
                 'zipcode': self.hospital.zipcode,
             }
-            json.update(hospital)
         if self.medical_information:
-            info = {
+            json['medical_information'] = {
                 'sex': self.medical_information.sex,
                 'insurance': {
                     'company': self.medical_information.insurance.company,
@@ -198,15 +197,13 @@ class User(AbstractUser):
                 'family_history': self.medical_information.family_history,
                 'additional_info': self.medical_information.additional_info,
             }
-            json.update(info)
         if self.emergency_contact:
-            contact = {
+            json['emergency_contact'] = {
                 'first_name': self.emergency_contact.first_name,
                 'last_name': self.emergency_contact.last_name,
                 'phone_number': self.emergency_contact.phone_number,
                 'relationship': self.emergency_contact.relationship,
             }
-            json.update(contact)
         return json
 
 
