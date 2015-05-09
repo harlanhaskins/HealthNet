@@ -21,11 +21,11 @@ class EmergencyContact(models.Model):
 
     def json_object(self):
         return {
-            'first_name': self.emergency_contact.first_name,
-            'last_name': self.emergency_contact.last_name,
-            'phone_number': self.emergency_contact.phone_number,
-            'relationship': self.emergency_contact.relationship,
-            }
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'phone_number': self.phone_number,
+            'relationship': self.relationship,
+        }
 
 
 class MedicalInformation(models.Model):
@@ -44,19 +44,19 @@ class MedicalInformation(models.Model):
 
     def json_object(self):
         return {
-            'sex': self.medical_information.sex,
+            'sex': self.sex,
             'insurance': {
-                'company': self.medical_information.insurance.company,
+                'company': self.insurance.company,
                 'policy_number':
-                    self.medical_information.insurance.policy_number
+                    self.insurance.policy_number
             },
-            'medications': self.medical_information.medications,
-            'allergies': self.medical_information.allergies,
+            'medications': self.medications,
+            'allergies': self.allergies,
             'medical_conditions':
-                self.medical_information.medical_conditions,
-            'family_history': self.medical_information.family_history,
-            'additional_info': self.medical_information.additional_info,
-            }
+                self.medical_conditions,
+            'family_history': self.family_history,
+            'additional_info': self.additional_info,
+        }
 
     def __repr__(self):
         return (("Sex: {0}, Insurance: {1}, Medications: {2}, Allergies: {3}, " +
@@ -77,12 +77,12 @@ class Hospital(models.Model):
 
     def json_object(self):
         return {
-            'name': self.hospital.name,
-            'address': self.hospital.address,
-            'city': self.hospital.city,
-            'state': self.hospital.state,
-            'zipcode': self.hospital.zipcode,
-            }
+            'name': self.name,
+            'address': self.ddress,
+            'city': self.city,
+            'state': self.state,
+            'zipcode': self.zipcode,
+        }
 
     def __repr__(self):
         # "St. Jude Hospital at 1 Hospital Road, Waterbury, CT 06470"
@@ -250,7 +250,7 @@ class Prescription(models.Model):
             'name': self.name,
             'dosage': self.dosage,
             'directions': self.directions,
-            }
+        }
 
     def __repr__(self):
         return '{0} of {1}: {2}'.format(self.dosage, self.name, self.directions)
