@@ -178,6 +178,7 @@ def signup(request):
                 return redirect('health:login')
         elif message:
             context['error_message'] = message
+    context['navbar'] = 'signup'
     return render(request, 'signup.html', context)
 
 
