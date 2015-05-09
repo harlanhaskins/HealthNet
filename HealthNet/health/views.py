@@ -5,6 +5,7 @@ from django.contrib.admin.models import LogEntry
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
+from django.db.models import Q
 from . import form_utilities
 from .form_utilities import *
 from . import checks
@@ -200,6 +201,40 @@ def full_signup_context(user):
             user.medical_information.sex not in MedicalInformation.SEX_CHOICES)
     }
 
+@login_required
+def add_group(request):
+    context = {}
+    if request.POST:
+        group, message = handle_add_group_form(request, request.POST)
+        if group:
+            addition(request, group)
+        elif message:
+            context['error_message'] = message
+    return redirect('health:messages')
+
+
+def handle_add_group_form(request, body):
+    name = request.POST.get('name')
+    recipient_id = request.POST.get('recipient')
+    message = request.POST.get('message')
+
+    if not all([name, recipient_id, message]):
+        return None, "All fields are required."
+    if not recipient_id.isdigit():
+        return None, "Invalid recipient."
+    group = MessageGroup.objects.create(
+        name=name
+    )
+    try:
+        recipient = User.objects.get(pk=int(recipient_id))
+    except User.DoesNotExist:
+        return None, "Could not find user."
+    group.members.add(request.user)
+    group.members.add(recipient)
+    group.save()
+    Message.objects.create(sender=request.user, body=message,
+                           group=group, date=timezone.now())
+    return group, None
 
 @login_required
 def my_medical_information(request):
@@ -366,14 +401,27 @@ def handle_user_form(request, body, user=None):
         group.user_set.add(user)
         return user, None
 
-
+@login_required
 def messages(request):
+    if request.user.is_patient():
+        recipients = Group.objects.filter(Q(name='Doctor') | Q(name='Nurse'))
+    else:
+        recipients = request.user.all_patients()
     context = {
         'navbar': 'messages',
-        'user': request.user
+        'user': request.user,
+        'recipients': recipients,
     }
     return render(request, 'messages.html', context)
 
+
+def conversation(request, id):
+    group = get_object_or_404(MessageGroup, pk=id)
+    context = {
+        "user": request.user,
+        "group": group
+    }
+    return render('conversation.html', context)
 
 def handle_appointment_form(request, body, user, appointment=None):
     """

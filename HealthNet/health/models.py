@@ -273,9 +273,21 @@ class MessageGroup(models.Model):
     name = models.CharField(max_length=140)
     members = models.ManyToManyField(User)
 
+    def other_user(self, user):
+        # TODO: Remove this workaround that prevents more than 2 users.
+        return self.members.filter(~Q(pk=user.pk)).first()
+
+    def latest_message(self):
+        if self.messages.count() == 0:
+            return None
+        return self.messages.order_by('-date').first()
+
 
 class Message(models.Model):
     sender = models.ForeignKey(User, related_name='sent_messages')
     group = models.ForeignKey(MessageGroup, related_name='messages')
     body = models.CharField(max_length=500)
     date = models.DateTimeField()
+
+    def preview_text(self):
+        return (self.body[:100] + "...") if len(self.body) > 100 else self.body

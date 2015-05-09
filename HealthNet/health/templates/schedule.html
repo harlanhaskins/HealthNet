@@ -7,11 +7,12 @@
             </div>
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#edit" data-remote="{% url 'health:add_appointment' %}">
-        Add an Appointment
-    </button>
-    <br />
+    {% if not user.is_nurse %}
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#edit" data-remote="{% url 'health:add_appointment' %}">
+            Add an Appointment
+        </button>
+        <br />
+    {% endif %}
     <hr />
     {% include 'error.html' %}
     {% if schedule_future %}
@@ -21,7 +22,9 @@
         </table>
     {% else %}
         <h2 class="text-center">No upcoming appointments.</h2>
-        <br /><br />
+    {% endif %}
+    {% if schedule_future and schedule_past %}
+            <br /><br />
     {% endif %}
     {% if schedule_past %}
         <table class="table table-bordered table-striped">

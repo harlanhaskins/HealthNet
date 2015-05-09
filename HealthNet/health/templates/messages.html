@@ -1,23 +1,83 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block extra %}
+    <link rel="stylesheet" href="{% static 'messages.css' %}">
+{% endblock %}
 
 {% block content %}
-    <div class="row">
-        <button class="btn btn-primary">
-            Send Message
-        </button>
+    <div class="modal fade" id="send" tabindex="-1" role="dialog" aria-labelledby="send" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{% url 'health:add_group' %}" method="post" accept-charset="utf-8" class="form" role="form">
+                {% csrf_token %}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Send Message
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="name">Conversation Name</label>
+                                    <input id="name" type="text" class="form-control" name="name" placeholder="Discussion about Test Results">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="recipient">Recipient</label>
+                                    <select id="recipient" name="recipient" class='form-control'>
+                                        {% for user in recipients %}
+                                            <option name="recipient" value="{{ user.pk }}">{{ user.get_full_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="message">Message</label>
+                                    <textarea class='form-control' name="message" placeholder="Dear Doctor, I have a question..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-default close-modal">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary close-modal">
+                            Okay
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
     <div class="list-group">
-        {% for group in user.message_group_set %}
+        <button class="btn btn-primary bottom-padded" data-toggle="modal" data-target="#send">
+            Send Message
+        </button>
+        {% for group in user.messagegroup_set.all %}
             <a href="#" class="list-group-item">
-                <span class="name">
-                    {{ group.messages.sender.get_full_name }}
-                </span>
-                <span>
-                    {{ message.body }}
-                </span>
-                <span class="badge">
-                    {{ message.date }}
-                </span>
+                <div class="row indent">
+                    {% if group.latest_message %}
+                        <span class="badge">{{ group.latest_message.date }}</span>
+                    {% endif %}
+                    {% for member in group.members.all %}
+                        {% if member != user %}
+                            <span class="name">{{ member.get_full_name }}</span>
+                        {% endif %}
+                    {% endfor %}
+                    - <em>{{ group.name }}</em>
+                </div>
+                <div class="row indent">
+                    {% if group.latest_message %}
+                        <span class="text-preview"><em>{{ group.latest_message.preview_text }}</em></span>
+                    {% else %}
+                        <span class="text-preview"><em>No Messages</em></span>
+                    {% endif %}
+                </div>
+
             </a>
         {% endfor %}
     </div>
