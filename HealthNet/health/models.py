@@ -169,6 +169,23 @@ class User(AbstractUser):
                 return False
         return True
 
+    def json_object(self):
+        json = {
+            'name': self.get_full_name(),
+            'email': self.email
+        }
+        if self.medical_information:
+            info = {
+                'insurance': {
+                    'company': self.medical_information.insurance.company,
+                    'policy_number':
+                        self.medical_information.insurance.policy_number
+                }
+
+            }
+            json.update(info)
+        return json
+
 
 class Appointment(models.Model):
     patient = models.ForeignKey(User, related_name='patient_appointments')
