@@ -146,12 +146,18 @@ class User(AbstractUser):
         :return: All appointments for which this person is needed.
         """
         if self.is_superuser:
-            return Appointment.objects.all()
+            return Appointment.objects
         elif self.is_doctor():
             # Doctors see all appointments for which they are needed.
             return Appointment.objects.filter(doctor=self)
         # Patients see all appointments
         return Appointment.objects.filter(patient=self)
+
+    def upcoming_appointments(self):
+        date = timezone.now()
+        start_week = date - timedelta(date.weekday())
+        end_week = start_week + timedelta(7)
+        return self.schedule().filter(date__range=[start_week, end_week])
 
     def is_patient(self):
         """
