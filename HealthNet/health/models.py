@@ -216,6 +216,9 @@ class User(AbstractUser):
             json['medical_information'] = self.medical_information.json_object()
         if self.emergency_contact:
             json['emergency_contact'] = self.emergency_contact.json_object()
+        if self.prescription_set:
+            json['prescription'] = [p.json_object() for p in
+                self.prescription_set]
         return json
 
 
@@ -241,6 +244,13 @@ class Prescription(models.Model):
     name = models.CharField(max_length=200)
     dosage = models.CharField(max_length=200)
     directions = models.CharField(max_length=1000)
+
+    def json_object(self):
+        return {
+            'name': self.presription.name,
+            'dosage': self.prescription.dosage,
+            'directions': self.prescription.directions,
+            }
 
     def __repr__(self):
         return '{0} of {1}: {2}'.format(self.dosage, self.name, self.directions)
