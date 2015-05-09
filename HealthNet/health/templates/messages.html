@@ -57,7 +57,6 @@
         <button class="btn btn-primary bottom-padded" data-toggle="modal" data-target="#send">
             Send Message
         </button>
-    {{ get_current_timezone }}
         {% for group in user.messagegroup_set.all %}
             <a href="#" class="list-group-item">
                 <div class="row indent">
