@@ -116,13 +116,17 @@ class User(AbstractUser):
             return Group.objects.get(name='Patient').user_set.all()
         elif self.is_nurse():
             # Nurses get all users inside their hospital.
-            return User.objects.filter(hospital=self.hospital)
+            return Group.objects.get(name='Patient').user_set.filter(hospital=self.hospital)
         else:
             # Users can only see themselves.
             return User.objects.filter(pk=self.pk)
 
     def can_edit_user(self, user):
-        return self.is_superuser or self.is_doctor() or user == self
+        return user == self      \
+            or self.is_superuser \
+            or user.is_patient() \
+            and self.is_doctor() or (self.is_nurse()
+             and self.hospital == user.hospital)
 
     def active_patients(self):
         """
