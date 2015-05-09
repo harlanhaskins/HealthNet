@@ -194,10 +194,7 @@ class User(AbstractUser):
         :return:
         """
         schedule = self.schedule()
-        date = timezone.make_aware(date,
-                                  timezone.get_current_timezone())
-        end = timezone.make_aware(date + timedelta(minutes=duration),
-                                  timezone.get_current_timezone())
+        end = date + timedelta(minutes=duration)
         for appointment in schedule:
             # If the dates intersect (meaning one starts while the other is
             # in progress) then the person is not free at the provided date

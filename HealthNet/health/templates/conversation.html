@@ -9,7 +9,7 @@
     <div class="row">
         <div class="list-group">
             {% for message in group.messages.all %}
-                <div class="list-group-item">
+                <div class="list-group-item {% if message.sender == user %}your-message{% endif %}">
                     <div class="message-content">
                         <div class="row">
                             <strong>{{ message.sender.get_full_name }}</strong>

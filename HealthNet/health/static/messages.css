@@ -1,5 +1,3 @@
-
-
 .indent {
     margin-left: 10px;
 }
@@ -21,4 +19,8 @@
 
 .message-content {
     margin: 5px 10px;
+}
+
+.your-message {
+    background-color: #f3f3f3;
 }
