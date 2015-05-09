@@ -171,7 +171,7 @@ class User(AbstractUser):
         json = {
             'name': self.get_full_name(),
             'email': self.email,
-            'date_of_birth': self.date_of_birth,
+            'date_of_birth': self.date_of_birth.isoformat(),
             'phone_number': self.phone_number,
         }
         if self.hospital:
