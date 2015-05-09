@@ -23,9 +23,7 @@
     {% else %}
         <h2 class="text-center">No upcoming appointments.</h2>
     {% endif %}
-    {% if schedule_future and schedule_past %}
-            <br /><br />
-    {% endif %}
+    <hr>
     {% if schedule_past %}
         <table class="table table-bordered table-striped">
             <legend>Past appointments for {% include 'user_link.html' %}</legend>
