@@ -71,12 +71,11 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-# This is bad!
-TIME_ZONE = 'EST'
-
 USE_I18N = True
 
 USE_L10N = True
+
+TIME_ZONE = 'US/Eastern'
 
 USE_TZ = True
 
