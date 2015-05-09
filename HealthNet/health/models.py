@@ -19,6 +19,14 @@ class EmergencyContact(models.Model):
     phone_number = models.CharField(max_length=30)
     relationship = models.CharField(max_length=30)
 
+    def json_object(self):
+        return {
+            'first_name': self.emergency_contact.first_name,
+            'last_name': self.emergency_contact.last_name,
+            'phone_number': self.emergency_contact.phone_number,
+            'relationship': self.emergency_contact.relationship,
+            }
+
 
 class MedicalInformation(models.Model):
     SEX_CHOICES = (
@@ -33,6 +41,22 @@ class MedicalInformation(models.Model):
     medical_conditions = models.CharField(max_length=200, null=True)
     family_history = models.CharField(max_length=200, null=True)
     additional_info = models.CharField(max_length=400, null=True)
+
+    def json_object(self):
+        return {
+            'sex': self.medical_information.sex,
+            'insurance': {
+                'company': self.medical_information.insurance.company,
+                'policy_number':
+                    self.medical_information.insurance.policy_number
+            },
+            'medications': self.medical_information.medications,
+            'allergies': self.medical_information.allergies,
+            'medical_conditions':
+                self.medical_information.medical_conditions,
+            'family_history': self.medical_information.family_history,
+            'additional_info': self.medical_information.additional_info,
+            }
 
     def __repr__(self):
         return (("Sex: {0}, Insurance: {1}, Medications: {2}, Allergies: {3}, " +
@@ -50,6 +74,15 @@ class Hospital(models.Model):
     city = models.CharField(max_length=200)
     state = models.CharField(max_length=2)
     zipcode = models.CharField(max_length=20)
+
+    def json_object(self):
+        return {
+            'name': self.hospital.name,
+            'address': self.hospital.address,
+            'city': self.hospital.city,
+            'state': self.hospital.state,
+            'zipcode': self.hospital.zipcode,
+            }
 
     def __repr__(self):
         # "St. Jude Hospital at 1 Hospital Road, Waterbury, CT 06470"
@@ -175,35 +208,11 @@ class User(AbstractUser):
             'phone_number': self.phone_number,
         }
         if self.hospital:
-            json['hospital'] = {
-                'name': self.hospital.name,
-                'address': self.hospital.address,
-                'city': self.hospital.city,
-                'state': self.hospital.state,
-                'zipcode': self.hospital.zipcode,
-            }
+            json['hospital'] = self.hospital.json_object()
         if self.medical_information:
-            json['medical_information'] = {
-                'sex': self.medical_information.sex,
-                'insurance': {
-                    'company': self.medical_information.insurance.company,
-                    'policy_number':
-                        self.medical_information.insurance.policy_number
-                },
-                'medications': self.medical_information.medications,
-                'allergies': self.medical_information.allergies,
-                'medical_conditions':
-                    self.medical_information.medical_conditions,
-                'family_history': self.medical_information.family_history,
-                'additional_info': self.medical_information.additional_info,
-            }
+            json['medical_information'] = self.medical_information.json_object()
         if self.emergency_contact:
-            json['emergency_contact'] = {
-                'first_name': self.emergency_contact.first_name,
-                'last_name': self.emergency_contact.last_name,
-                'phone_number': self.emergency_contact.phone_number,
-                'relationship': self.emergency_contact.relationship,
-            }
+            json['emergency_contact'] = self.emergency_contact.json_object()
         return json
 
 
