@@ -1,10 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <div class="row">
+        <button class="btn btn-primary">
+            Send Message
+        </button>
+    </div>
     <div class="list-group">
-        {% for message in user.latest_messages %}
+        {% for group in user.message_group_set %}
             <a href="#" class="list-group-item">
-                <span class="name">{{ message.sender.get_full_name }}</span><span>{{ message.body }}</span><span class="badge">{{ message.date }}</span>
+                <span class="name">
+                    {{ group.messages.sender.get_full_name }}
+                </span>
+                <span>
+                    {{ message.body }}
+                </span>
+                <span class="badge">
+                    {{ message.date }}
+                </span>
             </a>
         {% endfor %}
     </div>

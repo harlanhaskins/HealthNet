@@ -239,6 +239,7 @@ class Prescription(models.Model):
 
 class MessageGroup(models.Model):
     name = models.CharField(max_length=140)
+    members = models.ManyToManyField(User)
 
 
 class Message(models.Model):
