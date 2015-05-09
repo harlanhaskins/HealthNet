@@ -4,9 +4,14 @@
 
 {% block content %}
     <div class="row">
-        <a class="btn btn-primary" href="{% url 'health:export' %}" download="{{ user.get_full_name }}_medical_information.json">
-            Export
-        </a>
+        <div class="col-md-2"></div>
+        <div class="col-md-4">
+            <a class="btn btn-primary" href="{% url 'health:export' %}" download="{{ user.get_full_name }}_medical_information.json">
+                Export
+            </a>
+        </div>
+        <div class="col-md-6"></div>
     </div>
+    <br />
 {% include 'edit_user.html' %}
 {% endblock %}

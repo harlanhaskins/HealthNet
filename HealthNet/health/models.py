@@ -99,9 +99,7 @@ class User(AbstractUser):
         return self.is_superuser or self.is_doctor()
 
     def latest_messages(self):
-        return Message.objects.filter(
-            Q(sender=self) | Q(recipient=self)
-        ).order_by('-date')
+        return self.sent_messages.order_by('-date')
 
     def schedule(self):
         """
