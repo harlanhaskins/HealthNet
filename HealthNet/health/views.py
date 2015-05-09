@@ -492,4 +492,4 @@ def home(request):
 
 @login_required
 def export(request):
-    return HttpResponse(request.user.json_object(), content_type='application/json')
+    return HttpResponse(json.dumps(request.user.json_object()), content_type='application/json')
