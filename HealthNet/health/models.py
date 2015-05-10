@@ -277,10 +277,6 @@ class MessageGroup(models.Model):
     name = models.CharField(max_length=140)
     members = models.ManyToManyField(User)
 
-    def other_user(self, user):
-        # TODO: Remove this workaround that prevents more than 2 users.
-        return self.members.filter(~Q(pk=user.pk)).first()
-
     def latest_message(self):
         if self.messages.count() == 0:
             return None
