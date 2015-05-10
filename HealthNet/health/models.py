@@ -199,7 +199,7 @@ class User(AbstractUser):
         :param duration:
         :return:
         """
-        schedule = self.schedule()
+        schedule = self.schedule().all()
         end = date + timedelta(minutes=duration)
         for appointment in schedule:
             # If the dates intersect (meaning one starts while the other is
@@ -227,7 +227,7 @@ class User(AbstractUser):
             json['prescriptions'] = [p.json_object() for p in
                 self.prescription_set.all()]
         if self.schedule():
-            json['appointments'] = [a.json_object() for a in self.schedule()]
+            json['appointments'] = [a.json_object() for a in self.schedule().all()]
         return json
 
 
