@@ -4,7 +4,7 @@
     <hr />
     {% if user.upcoming_appointments.all %}
         <table class="table table-bordered table-striped">
-            <legend>Upcoming appointments for {% include 'user_link.html' %}</legend>
+            <legend>This week's appointments for {% include 'user_link.html' %}</legend>
             <thead>
             <tr>
                 {% if user.is_patient or user.is_nurse %}
@@ -33,7 +33,7 @@
             </tbody>
         </table>
     {% else %}
-        <h4>You have no upcoming appointments.</h4>
+        <h4>You have no appointments this week.</h4>
     {% endif %}
     <hr />
     {% if user.prescription_set.all and not user.can_add_prescription %}
