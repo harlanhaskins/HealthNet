@@ -291,8 +291,6 @@ class MessageGroup(models.Model):
         names = ", ".join([m.get_full_name() for m in members])
         if extras > 0 and not full:
             names += " and %d other%s" % (extras, "" if extras == 1 else "s")
-        else:
-
         return names
 
 
