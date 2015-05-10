@@ -13,6 +13,14 @@
     margin-bottom: 10px;
 }
 
+.confirm-password {
+    margin-top: 0;
+}
+
+.password {
+    margin-bottom: 0;
+}
+
 a {
     text-decoration: none;
 }
@@ -28,9 +36,8 @@ table a:not(.btn), .table a:not(.btn) {
 form {
     min-width: 320px;
     max-width: 900px;
-    padding: 15px 35px 45px;
+    padding: 15px;
     margin: 0 auto;
-    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .container {
