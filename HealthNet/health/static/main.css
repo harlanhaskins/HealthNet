@@ -36,3 +36,7 @@ form {
 .container {
     max-width: 900px;
 }
+
+td.nowrap {
+    white-space: nowrap;
+}
