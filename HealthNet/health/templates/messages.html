@@ -3,6 +3,8 @@
 
 {% block extra %}
     <link rel="stylesheet" href="{% static 'messages.css' %}">
+    <link rel="stylesheet" href="{% static 'multiselect.css' %}">
+    <script src="{% static 'multiselect.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -25,7 +27,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="recipient">Recipient</label>
-                                    <select id="recipient" name="recipient" class='form-control'>
+                                    <select multiple="multiple" id="recipient" name="recipient" class='form-control'>
                                         {% for user in recipients %}
                                             <option name="recipient" value="{{ user.pk }}">{{ user.get_full_name }}</option>
                                         {% endfor %}
@@ -64,11 +66,11 @@
                         {% if group.latest_message %}
                             <span class="badge">{{ group.latest_message.date }}</span>
                         {% endif %}
+                        <span class="name">
                         {% for member in group.members.all %}
-                            {% if member != user %}
-                                <span class="name">{{ member.get_full_name }}</span>
-                            {% endif %}
+                            {% if member != user %}{% if not forloop.first %}, {% endif %}{{ member.get_full_name }}{% endif %}
                         {% endfor %}
+                        </span>
                         - <em>{{ group.name }}</em>
                     </div>
                     <div class="row indent">
@@ -85,5 +87,8 @@
                 <h2 style="text-align: center">No messages.</h2>
             </div>
         {% endif %}
+    <script>
+        $('#recipient').multiselect()
+    </script>
     </div>
 {% endblock %}

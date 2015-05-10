@@ -215,23 +215,25 @@ def add_group(request):
 
 
 def handle_add_group_form(request, body):
-    name = request.POST.get('name')
-    recipient_id = request.POST.get('recipient')
-    message = request.POST.get('message')
+    name = body.get('name')
+    recipient_ids = body.getlist('recipient')
+    message = body.get('message')
 
-    if not all([name, recipient_id, message]):
+    if not all([name, recipient_ids, message]):
         return None, "All fields are required."
-    if not recipient_id.isdigit():
+    if not [r for r in recipient_ids if r.isdigit()]:
         return None, "Invalid recipient."
     group = MessageGroup.objects.create(
         name=name
     )
     try:
-        recipient = User.objects.get(pk=int(recipient_id))
+        ids = [int(r) for r in recipient_ids]
+        recipients = User.objects.filter(pk__in=ids)
     except User.DoesNotExist:
         return None, "Could not find user."
     group.members.add(request.user)
-    group.members.add(recipient)
+    for r in recipients:
+        group.members.add(r)
     group.save()
     Message.objects.create(sender=request.user, body=message,
                            group=group, date=timezone.now())
@@ -407,10 +409,11 @@ def handle_user_form(request, body, user=None):
 
 @login_required
 def messages(request):
-    if request.user.is_patient():
-        recipients = Group.objects.filter(Q(name='Doctor') | Q(name='Nurse'))
-    else:
-        recipients = request.user.all_patients()
+    other_groups = ['Patient', 'Doctor', 'Nurse']
+    if not request.user.is_superuser:
+        other_groups.remove(request.user.groups.first().name)
+    recipients = (User.objects.filter(groups__name__in=other_groups))
+    recipient_list = [r for r in recipients]
     context = {
         'navbar': 'messages',
         'user': request.user,
