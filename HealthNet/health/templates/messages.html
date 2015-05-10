@@ -57,27 +57,31 @@
         <button class="btn btn-primary bottom-padded" data-toggle="modal" data-target="#send">
             Send Message
         </button>
-        {% for group in user.messagegroup_set.all %}
-            <a href="{% url 'health:conversation' group.pk %}" class="list-group-item">
-                <div class="row indent">
-                    {% if group.latest_message %}
-                        <span class="badge">{{ group.latest_message.date }}</span>
-                    {% endif %}
-                    {% for member in group.members.all %}
-                        {% if member != user %}
-                            <span class="name">{{ member.get_full_name }}</span>
+        {% if user.messagegroup_set.all %}
+            {% for group in user.messagegroup_set.all %}
+                <a href="{% url 'health:conversation' group.pk %}" class="list-group-item">
+                    <div class="row indent">
+                        {% if group.latest_message %}
+                            <span class="badge">{{ group.latest_message.date }}</span>
                         {% endif %}
-                    {% endfor %}
-                    - <em>{{ group.name }}</em>
-                </div>
-                <div class="row indent">
-                    {% if group.latest_message %}
-                        <span class="text-preview"><em>{% if group.latest_message.sender == user %}You: {% endif %}{{ group.latest_message.preview_text }}</em></span>
-                    {% else %}
-                        <span class="text-preview"><em>No Messages</em></span>
-                    {% endif %}
-                </div>
-            </a>
-        {% endfor %}
+                        {% for member in group.members.all %}
+                            {% if member != user %}
+                                <span class="name">{{ member.get_full_name }}</span>
+                            {% endif %}
+                        {% endfor %}
+                        - <em>{{ group.name }}</em>
+                    </div>
+                    <div class="row indent">
+                        {% if group.latest_message %}
+                            <span class="text-preview"><em>{% if group.latest_message.sender == user %}You: {% endif %}{{ group.latest_message.preview_text }}</em></span>
+                        {% else %}
+                            <span class="text-preview"><em>No Messages</em></span>
+                        {% endif %}
+                    </div>
+                </a>
+            {% endfor %}
+        {% else %}
+            <h4>No messages.</h4>
+        {% endif %}
     </div>
 {% endblock %}
