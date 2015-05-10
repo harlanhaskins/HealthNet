@@ -7,6 +7,7 @@
 
 {% block content %}
     <div class="row">
+        <h4>Conversation with {{ message_names }}</h4>
         <div class="list-group">
             {% for message in group.messages.all %}
                 <div class="list-group-item {% if message.sender == user %}your-message{% endif %}">

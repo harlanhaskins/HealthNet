@@ -282,6 +282,19 @@ class MessageGroup(models.Model):
             return None
         return self.messages.order_by('-date').first()
 
+    def combined_names(self, full=False):
+        names_count = self.members.count()
+        extras = names_count - 3
+        members = self.members.all()
+        if not full:
+            members = members[:3]
+        names = ", ".join([m.get_full_name() for m in members])
+        if extras > 0 and not full:
+            names += " and %d other%s" % (extras, "" if extras == 1 else "s")
+        else:
+
+        return names
+
 
 class Message(models.Model):
     sender = models.ForeignKey(User, related_name='sent_messages')

@@ -6,6 +6,7 @@ from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
 from django.db.models import Q
+from django.db.models import Max
 from . import form_utilities
 from .form_utilities import *
 from . import checks
@@ -209,6 +210,7 @@ def add_group(request):
         group, message = handle_add_group_form(request, request.POST)
         if group:
             addition(request, group)
+            return redirect('health:conversation', group.pk)
         elif message:
             context['error_message'] = message
     return redirect('health:messages')
@@ -413,11 +415,12 @@ def messages(request):
     if not request.user.is_superuser:
         other_groups.remove(request.user.groups.first().name)
     recipients = (User.objects.filter(groups__name__in=other_groups))
-    recipient_list = [r for r in recipients]
+    message_groups = request.user.messagegroup_set.annotate(max_date=Max('messages__date')).order_by('-max_date')
     context = {
         'navbar': 'messages',
         'user': request.user,
         'recipients': recipients,
+        'groups': message_groups
     }
     return render(request, 'messages.html', context)
 
@@ -426,7 +429,8 @@ def conversation(request, id):
     group = get_object_or_404(MessageGroup, pk=id)
     context = {
         "user": request.user,
-        "group": group
+        "group": group,
+        "message_names": group.combined_names(full=True)
     }
     if request.POST:
         message = request.POST.get('message')

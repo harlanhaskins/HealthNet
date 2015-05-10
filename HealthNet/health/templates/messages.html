@@ -60,16 +60,14 @@
             Send Message
         </button>
         {% if user.messagegroup_set.all %}
-            {% for group in user.messagegroup_set.all %}
+            {% for group in groups %}
                 <a href="{% url 'health:conversation' group.pk %}" class="list-group-item">
                     <div class="row indent">
                         {% if group.latest_message %}
                             <span class="badge">{{ group.latest_message.date }}</span>
                         {% endif %}
                         <span class="name">
-                        {% for member in group.members.all %}
-                            {% if member != user %}{% if not forloop.first %}, {% endif %}{{ member.get_full_name }}{% endif %}
-                        {% endfor %}
+                            {{ group.combined_names }}
                         </span>
                         - <em>{{ group.name }}</em>
                     </div>
