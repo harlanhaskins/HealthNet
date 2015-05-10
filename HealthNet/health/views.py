@@ -205,15 +205,13 @@ def full_signup_context(user):
 
 @login_required
 def add_group(request):
-    context = {}
+    message = None
     if request.POST:
         group, message = handle_add_group_form(request, request.POST)
         if group:
             addition(request, group)
             return redirect('health:conversation', group.pk)
-        elif message:
-            context['error_message'] = message
-    return redirect('health:messages')
+    return messages(request, error=message)
 
 
 def handle_add_group_form(request, body):
@@ -410,7 +408,7 @@ def handle_user_form(request, body, user=None):
         return user, None
 
 @login_required
-def messages(request):
+def messages(request, error=None):
     other_groups = ['Patient', 'Doctor', 'Nurse']
     if not request.user.is_superuser:
         other_groups.remove(request.user.groups.first().name)
@@ -420,7 +418,8 @@ def messages(request):
         'navbar': 'messages',
         'user': request.user,
         'recipients': recipients,
-        'groups': message_groups
+        'groups': message_groups,
+        'error_message': error
     }
     return render(request, 'messages.html', context)
 
@@ -442,6 +441,7 @@ def conversation(request, id):
             # redirect to avoid the issues with reloading
             # sending the message again.
             return redirect('health:conversation', group.pk)
+
     return render(request, 'conversation.html', context)
 
 
