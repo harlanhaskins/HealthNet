@@ -273,11 +273,15 @@ def medical_information(request, user_id):
             request.user.can_edit_user(requested_user):
         raise PermissionDenied
 
-    if request.POST:
-        handle_user_form(request, request.POST, user=requested_user)
-        return redirect('health:medical_information', user_id)
-
     context = full_signup_context(requested_user)
+
+    if request.POST:
+        user, message = handle_user_form(request, request.POST, user=requested_user)
+        if user:
+            return redirect('health:medical_information', user.pk)
+        elif message:
+            context['error_message'] = message
+
     context["requested_user"] = requested_user
     context["user"] = request.user
     context['is_signup'] = False
@@ -327,7 +331,7 @@ def handle_user_form(request, body, user=None):
     email = email.lower()  # lowercase the email before adding it to the db.
     if not form_utilities.email_is_valid(email):
         return None, "Invalid email."
-    if (user and user.is_patient()) and not all([company, policy]):
+    if (user and user.is_patient() and not user.is_superuser) and not all([company, policy]):
         return None, "Insurance information is required."
     if user:
         user.email = email

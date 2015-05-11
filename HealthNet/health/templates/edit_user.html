@@ -3,6 +3,7 @@
     <form action="" method="post" accept-charset="utf-8" class="form" role="form">
         {% csrf_token %}
 
+        <label>Name</label>
         <div class="row">
             <div class="col-xs-6 col-md-6">
                 <input type="text" name="first_name" value="{{ requested_user.first_name }}" class="form-control" placeholder="First Name" required />
@@ -11,9 +12,13 @@
                 <input type="text" name="last_name" value="{{ requested_user.last_name }}" class="form-control" placeholder="Last Name"  required />
             </div>
         </div>
+        <label>Email</label>
         <input type="text" name="email" value="{{ requested_user.email }}" class="form-control" placeholder="Email" required = "" />
+
+        <label>Phone Number</label>
         <input type="text" name="phone_number" value="{{ requested_user.phone_number }}"  class="form-control" placeholder="Phone Number" required = "" />
         {% if is_signup %}
+            <label>Password</label>
             <input type="password" name="password" class="form-control password" placeholder="Password"  required = "" />
             <input type="password" name="confirm_password" class="form-control confirm-password" placeholder="Confirm Password" required = "" />
         {% endif %}

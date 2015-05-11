@@ -32,17 +32,20 @@ class Command(BaseCommand):
         admin = User.objects.create_superuser('admin', email=email, first_name="Administrator",
                 last_name="Jones", password="SuperSecurePassword1234", phone_number="8649189255",
                 hospital=h, date_of_birth=datetime.date(year=1995, month=4, day=27))
+        doctors.user_set.add(admin)
 
         email = "jd@sacredheart.org"
         doctor = User.objects.create_user(email, email=email, first_name="John",
                  last_name="Dorian", password="SuperSecurePassword1234", phone_number="18005553333",
                  hospital=h, date_of_birth=datetime.date(year=1980, month=6, day=7))
         doctors.user_set.add(doctor)
+
         email = "turk@sacredheart.org"
         doctor = User.objects.create_user(email, email=email, first_name="Christopher",
                  last_name="Turkleton", password="SuperSecurePassword1234", phone_number="18005553333",
                  hospital=h, date_of_birth=datetime.date(year=1980, month=6, day=7))
         doctors.user_set.add(doctor)
+
         email = "drcox@sacredheart.org"
         doctor = User.objects.create_user(email, email=email, first_name="Perry",
                  last_name="Cox", password="SuperSecurePassword1234", phone_number="18005553333",
@@ -65,7 +68,6 @@ class Command(BaseCommand):
         patient = User.objects.create_user(email, email=email, first_name="Duwayne",
                   last_name="Theroc-Johnson", password="SuperSecurePassword1234", phone_number="18005553333",
                   hospital=h, date_of_birth=datetime.date(year=1991, month=3, day=29), medical_information=medical_info)
-
         patients.user_set.add(patient)
 
     def handle(self, *args, **options):
