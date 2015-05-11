@@ -5,14 +5,14 @@ from django.contrib.admin.models import LogEntry
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
-from django.db.models import Q
-from django.db.models import Max
+from django.db.models import Max, Avg
 from . import form_utilities
 from .form_utilities import *
 from . import checks
 from .models import *
 import datetime
 import json
+import time
 
 
 def login_view(request):
@@ -30,7 +30,7 @@ def login_view(request):
     if request.POST:
         user, message = login_user_from_form(request, request.POST)
         if user:
-            return redirect('health:my_medical_information')
+            return redirect('health:home')
         elif message:
             context['error_message'] = message
     return render(request, 'login.html', context)
@@ -105,7 +105,8 @@ def handle_prescription_form(request, body, prescription=None):
         change(request, prescription, changed_fields)
     else:
         prescription = Prescription.objects.create(name=name, dosage=dosage,
-                                        patient=patient, directions=directions)
+                                        patient=patient, directions=directions,
+                                        prescribed=timezone.now(), active=True)
 
         if not prescription:
             return None, "We could not create that prescription. Please try again."
@@ -124,6 +125,7 @@ def prescriptions(request, error=None):
     context = {
         "navbar":"prescriptions",
         "logged_in_user": request.user,
+        "prescriptions": request.user.prescription_set.filter(active=True).all()
     }
     if error:
         context["error_message"] = error
@@ -153,7 +155,8 @@ def prescription_form(request, prescription_id):
 
 def delete_prescription(request, prescription_id):
     p = get_object_or_404(Prescription, pk=prescription_id)
-    p.delete()
+    p.active = False
+    p.save()
     deletion(request, p, repr(p))
     return redirect('health:prescriptions')
 
@@ -284,6 +287,7 @@ def medical_information(request, user_id):
 
     context["requested_user"] = requested_user
     context["user"] = request.user
+    context["requested_hospital"] = requested_user.hospital()
     context['is_signup'] = False
     context["navbar"] = "my_medical_information" if is_editing_own_medical_information else "medical_information"
     return render(request, 'medical_information.html', context)
@@ -326,7 +330,7 @@ def handle_user_form(request, body, user=None):
     family_history = body.get("family_history")
     additional_info = body.get("additional_info")
     if not all([first_name, last_name, email, phone,
-                month, day, year, date]):
+                month, day, year, date, hospital]):
         return None, "All fields are required."
     email = email.lower()  # lowercase the email before adding it to the db.
     if not form_utilities.email_is_valid(email):
@@ -373,8 +377,9 @@ def handle_user_form(request, body, user=None):
             )
             addition(request, user.medical_information)
             user.medical_information = medical_information
-        if user.hospital != hospital:
-            user.hospital = hospital
+        if not HospitalStay.objects.filter(patient=user, hospital=hospital,
+                                           discharge__isnull=True).exists():
+            hospital.admit(user)
         if user.is_superuser:
             if not user.groups.filter(pk=group.pk).exists():
                 for user_group in user.groups.all():
@@ -400,10 +405,11 @@ def handle_user_form(request, body, user=None):
         )
         user = User.objects.create_user(email, email=email,
             password=password, date_of_birth=date, phone_number=phone,
-            first_name=first_name, last_name=last_name, hospital=hospital,
+            first_name=first_name, last_name=last_name,
             medical_information=medical_information)
         if user is None:
             return None, "We could not create that user. Please try again."
+        hospital.admit(user)
         request.user = user
         addition(request, user)
         addition(request, medical_information)
@@ -513,11 +519,24 @@ def appointment_form(request, appointment_id):
             request.user, appointment=appointment
         )
         return schedule(request, error=message)
+    hospital = request.user.hospital()
+    doctors = list({stay.patient for stay in
+               HospitalStay.objects
+                           .filter(hospital=hospital, patient__groups__name='Doctor')
+                           .distinct()
+                           .order_by('patient__first_name', 'patient__last_name')
+                           .all()})
+    patients = list({stay.patient for stay in
+               HospitalStay.objects
+                           .filter(hospital=hospital, patient__groups__name='Patient')
+                           .distinct()
+                           .order_by('patient__first_name', 'patient__last_name')
+                           .all()})
     context = {
         "user": request.user,
         'appointment': appointment,
-        "doctors": Group.objects.get(name="Doctor").user_set.all().order_by('first_name', 'last_name'),
-        "patients": Group.objects.get(name="Patient").user_set.all().order_by('first_name', 'last_name')
+        "doctors": doctors,
+        "patients": patients
     }
     return render(request, 'edit_appointment.html', context)
 
@@ -529,12 +548,24 @@ def schedule(request, error=None):
     Also shows a table of the existing appointments for the logged-in user.
     """
     now = timezone.now()
-
+    hospital = request.user.hospital()
+    doctors = list({stay.patient for stay in
+               HospitalStay.objects
+                           .filter(hospital=hospital, patient__groups__name='Doctor')
+                           .distinct()
+                           .order_by('patient__first_name', 'patient__last_name')
+                           .all()})
+    patients = list({stay.patient for stay in
+               HospitalStay.objects
+                           .filter(hospital=hospital, patient__groups__name='Patient')
+                           .distinct()
+                           .order_by('patient__first_name', 'patient__last_name')
+                           .all()})
     context = {
         "navbar": "schedule",
         "user": request.user,
-        "doctors": Group.objects.get(name="Doctor").user_set.all().order_by('first_name', 'last_name'),
-        "patients": Group.objects.get(name="Patient").user_set.all().order_by('first_name', 'last_name'),
+        "doctors": doctors,
+        "patients": patients,
         "schedule_future": request.user.schedule().filter(date__gte=now).order_by('date'),
         "schedule_past": request.user.schedule().filter(date__lt=now).order_by('-date')
     }
@@ -559,19 +590,33 @@ def logs(request):
     group_count = MessageGroup.objects.count()
     average_count = 0
     message_count = Message.objects.count()
+    hospital = request.user.hospital()
     if group_count > 0 and message_count > 0:
         average_count = float(message_count) / float(group_count)
+    stays = HospitalStay.objects.filter(discharge__isnull=False)
+    average_stay = 0.0
+    if stays:
+        for stay in stays:
+            average_stay += float((stay.discharge - stay.admission).total_seconds())
+        average_stay /= len(stays)
+    average_stay_formatted = time.strftime('%H:%M:%S', time.gmtime(average_stay))
     context = {
         "navbar": "logs",
         "user": request.user,
         "logs": LogEntry.objects.all().order_by('-action_time'),
         "stats": {
-            "user_count": User.objects.filter(hospital=request.user.hospital).count(),
-            "patient_count": Group.objects.get(name='Patient').user_set.filter(hospital=request.user.hospital).count(),
-            "doctor_count": Group.objects.get(name='Doctor').user_set.filter(hospital=request.user.hospital).count(),
-            "nurse_count": Group.objects.get(name='Nurse').user_set.filter(hospital=request.user.hospital).count(),
+            "user_count": HospitalStay.objects.filter(hospital=hospital, discharge__isnull=True).count(),
+            "stay_count": HospitalStay.objects.filter(hospital=hospital).count(),
+            "discharge_count": HospitalStay.objects.filter(hospital=hospital, discharge__isnull=False).count(),
+            "average_stay": average_stay_formatted,
+            "patient_count": HospitalStay.objects.filter(hospital=hospital, patient__groups__name='Patient').distinct().count(),
+            "doctor_count": HospitalStay.objects.filter(hospital=hospital, patient__groups__name='Doctor').distinct().count(),
+            "nurse_count": HospitalStay.objects.filter(hospital=hospital, patient__groups__name='Nurse').distinct().count(),
             "admin_count": User.objects.filter(is_superuser=True).count(),
             "prescription_count": Prescription.objects.count(),
+            "active_prescription_count": Prescription.objects.filter(active=True).count(),
+            "expired_prescription_count": Prescription.objects.filter(active=False).count(),
+            "appointment_count": Appointment.objects.count(),
             "upcoming_appointment_count": Appointment.objects.filter(date__gte=timezone.now()).count(),
             "past_appointment_count": Appointment.objects.filter(date__lt=timezone.now()).count(),
             "conversation_count": group_count,
@@ -583,8 +628,11 @@ def logs(request):
 
 @login_required
 def home(request):
-    return render(request, 'home.html', {'navbar': 'home',
-                                         'user': request.user})
+    context = {
+        'navbar': 'home',
+        'user': request.user
+    }
+    return render(request, 'home.html', context)
 
 @login_required
 def export_me(request):

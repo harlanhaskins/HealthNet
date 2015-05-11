@@ -89,11 +89,28 @@ class Hospital(models.Model):
         return ("%s at %s, %s, %s %s" % self.name, self.address, self.city,
                 self.state, self.zipcode)
 
+    def admit(self, user):
+        current_hospital_query = HospitalStay.objects.filter(patient=user,
+            discharge__isnull=True)
+        if current_hospital_query.exists():
+            for stay in current_hospital_query.all():
+                stay.discharge = timezone.now()
+                stay.save()
+        HospitalStay.objects.create(patient=user, admission=timezone.now(),
+                           hospital=self)
+
+    def discharge(self, user):
+        user_query = HospitalStay.objects.filter(patient=user,
+                                                hospital=self)
+        if user_query.exists():
+            stay = user_query.first()
+            stay.discharge = timezone.now()
+            stay.save()
+
 
 class User(AbstractUser):
     date_of_birth = models.DateField()
     phone_number = models.CharField(max_length=30)
-    hospital = models.ForeignKey(Hospital, null=True)
     medical_information = models.ForeignKey(MedicalInformation, null=True)
     emergency_contact = models.ForeignKey(EmergencyContact, null=True)
 
@@ -210,6 +227,9 @@ class User(AbstractUser):
                 return False
         return True
 
+    def active_prescriptions(self):
+        return self.prescription_set.filter(active=True).all()
+
     def json_object(self):
         json = {
             'name': self.get_full_name(),
@@ -229,6 +249,14 @@ class User(AbstractUser):
         if self.schedule():
             json['appointments'] = [a.json_object() for a in self.schedule().all()]
         return json
+
+    def hospital(self):
+        patient_query = HospitalStay.objects.filter(patient=self,
+                                                    discharge__isnull=True)
+        if patient_query.exists():
+            stays = [x for x in patient_query.all()]
+            return stays[0].hospital
+        return None
 
 
 class Appointment(models.Model):
@@ -256,11 +284,20 @@ class Appointment(models.Model):
                                                          self.patient, self.doctor)
 
 
+class HospitalStay(models.Model):
+    patient = models.ForeignKey(User)
+    admission = models.DateTimeField()
+    discharge = models.DateTimeField(null=True)
+    hospital = models.ForeignKey(Hospital)
+
+
 class Prescription(models.Model):
     patient = models.ForeignKey(User)
     name = models.CharField(max_length=200)
     dosage = models.CharField(max_length=200)
     directions = models.CharField(max_length=1000)
+    prescribed = models.DateTimeField()
+    active = models.BooleanField()
 
     def json_object(self):
         return {

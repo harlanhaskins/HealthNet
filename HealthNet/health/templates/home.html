@@ -39,7 +39,7 @@
         <h4>You have no appointments this week.</h4>
     {% endif %}
     <hr />
-    {% if user.prescription_set.all and not user.can_add_prescription %}
+    {% if user.active_prescriptions and not user.can_add_prescription %}
         <table class="table table-bordered table-striped">
             <legend>Prescriptions for {% include 'user_link.html' %}</legend>
             <thead>
@@ -50,7 +50,7 @@
             </tr>
             </thead>
             <tbody>
-            {% for prescription in user.prescription_set.all %}
+            {% for prescription in user.active_prescriptions %}
                 <tr>
                     <td>{{ prescription.dosage }}</td>
                     <td>{{ prescription.name }}</td>

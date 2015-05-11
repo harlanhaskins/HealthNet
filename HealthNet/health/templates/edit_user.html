@@ -120,7 +120,7 @@
                     <label>Hospital</label>
                     <select name="hospital" class="form-control">
                         {% for hospital in hospitals %}
-                            <option value="{{ hospital.pk }}" {% if requested_user.hospital == hospital %}selected="selected"{% endif %}>{{ hospital.name }} at {{ hospital.address }}, {{ hospital.city }}, {{ hospital.state }} {{ hospital.zipcode }}</option>
+                            <option value="{{ hospital.pk }}" {% if requested_hospital == hospital %}selected="selected"{% endif %}>{{ hospital.name }} at {{ hospital.address }}, {{ hospital.city }}, {{ hospital.state }} {{ hospital.zipcode }}</option>
                         {% endfor %}
                     </select>
                 </div>
