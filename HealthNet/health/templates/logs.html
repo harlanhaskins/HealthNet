@@ -16,15 +16,15 @@
                 in your hospital, {{ user.hospital.name }}
             </li>
             <li class="list-group-item">
-                <strong>{{ stats.prescription_count }}</strong> active prescriptions.
+                <strong>{{ stats.prescription_count }}</strong> active prescription{% if stats.prescription_count != 1 %}s{% endif %}.
             </li>
             <li class="list-group-item">
-                <strong>{{ stats.appointment_count }}</strong> active appointments.
+                <strong>{{ stats.appointment_count }}</strong> active appointment{% if stats.appointment_count != 1 %}s{% endif %}.
             </li>
             <li class="list-group-item">
-                <strong>{{ stats.conversation_count }}</strong> conversations
-                (<strong>{{ stats.message_count }}</strong> total messages.
-                Average <strong>{{ stats.average_message_count }}</strong> messages per conversation.)
+                <strong>{{ stats.conversation_count }}</strong> conversation{% if stats.conversation_count != 1 %}s{% endif %}
+                (<strong>{{ stats.message_count }}</strong> total message{% if stats.messaget_count != 1 %}s{% endif %}.
+                Average <strong>{{ stats.average_message_count }}</strong> message{% if stats.average_message_count != 1 %}s{% endif %} per conversation.)
             </li>
         </ul>
     </div>
