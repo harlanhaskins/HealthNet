@@ -441,6 +441,35 @@ def messages(request, error=None):
     }
     return render(request, 'messages.html', context)
 
+def users(request):
+
+    hospital = request.user.hospital()
+    doctors = list({stay.patient for stay in
+               HospitalStay.objects
+                           .filter(hospital=hospital, patient__groups__name='Doctor')
+                           .distinct()
+                           .order_by('patient__first_name', 'patient__last_name')
+                           .all()})
+    patients = list({stay.patient for stay in
+               HospitalStay.objects
+                           .filter(hospital=hospital, patient__groups__name='Patient')
+                           .distinct()
+                           .order_by('patient__first_name', 'patient__last_name')
+                           .all()})
+    nurses = list({stay.patient for stay in
+               HospitalStay.objects
+                           .filter(hospital=hospital, patient__groups__name='Nurse')
+                           .distinct()
+                           .order_by('patient__first_name', 'patient__last_name')
+                           .all()})
+    context = {
+        'navbar': 'users',
+        'doctors': doctors,
+        'nurses': nurses,
+        'patients': patients
+    }
+    return render(request, 'users.html', context)
+
 @login_required
 def conversation(request, id):
     group = get_object_or_404(MessageGroup, pk=id)

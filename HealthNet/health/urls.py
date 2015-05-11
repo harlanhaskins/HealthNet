@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     url(r'signup/?$', views.signup, name='signup'),
     url(r'users/(\d+)/info.json/?$', views.export, name='export'),
     url(r'users/me/info.json/?$', views.export_me, name='export_me'),
+    url(r'users/?$', views.users, name='users'),
     url(r'logs/?$', views.logs, name='logs'),
     url(r'^/?$', views.home, name='home'),
 )

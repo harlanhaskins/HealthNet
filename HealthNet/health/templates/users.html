@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2 class="text-center">Users in {{ user.hospital.name }}</h2>
+    <h4>Doctors</h4>
+<ul class="list-group">
+    {% for user in doctors %}
+        <a href="{% url 'health:medical_information' user.pk %}"  class="list-group-item">
+            {{ user.get_full_name }}<br />
+        </a>
+    {% endfor %}
+</ul>
+    <h4>Nurses</h4>
+<ul class="list-group">
+    {% for user in nurses %}
+        <a href="{% url 'health:medical_information' user.pk %}"  class="list-group-item">
+            {{ user.get_full_name }}
+        </a>
+    {% endfor %}
+</ul>
+    <h4>Patients</h4>
+<ul class="list-group">
+    {% for user in patients %}
+        <a href="{% url 'health:medical_information' user.pk %}"  class="list-group-item">
+            {{ user.get_full_name }}
+        </a>
+    {% endfor %}
+</ul>
+{% endblock %}

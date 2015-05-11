@@ -22,6 +22,7 @@
                     {% if user.is_superuser %}
                         <li class="{% ifequal navbar 'logs'%}active{% endifequal %}"><a href="{% ifequal navbar 'logs'%}#{% else %}{% url 'health:logs' %}{% endifequal %}"><i class="fa fa-list"></i>&nbsp;System</a></li>
                         <li class="{% ifequal navbar 'signup'%}active{% endifequal %}"><a href="{% ifequal navbar 'signup'%}#{% else %}{% url 'health:signup' %}{% endifequal %}"><i class="fa fa-user-plus"></i>&nbsp;Add User</a></li>
+                        <li class="{% ifequal navbar 'users'%}active{% endifequal %}"><a href="{% ifequal navbar 'users'%}#{% else %}{% url 'health:users' %}{% endifequal %}"><i class="fa fa-user"></i>&nbsp;Users</a></li>
                     {% endif %}
                 {% endif %}
             </ul>
