@@ -9,6 +9,7 @@
 
 {% block content %}
     <div class="row">
+    <a class="btn btn-primary" href="{% url 'health:messages' %}"><i class="fa fa-chevron-left"></i>&nbsp;Back</a>
         <h4>Conversation with {{ message_names }}</h4>
         <div class="list-group">
             {% for message in group.messages.all %}

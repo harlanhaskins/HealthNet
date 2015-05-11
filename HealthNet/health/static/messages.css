@@ -24,3 +24,11 @@
 .your-message {
     background-color: #f3f3f3;
 }
+
+form {
+    margin-left: -15px;
+    padding-left: 0;
+    padding-right: 0;
+    border-right-width: 0;
+    margin-right: -15px;
+}
