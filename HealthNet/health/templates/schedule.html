@@ -5,8 +5,8 @@
         <div class="modal-dialog">
             <div class="modal-content">
             </div>
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+        </div>
+    </div>
     {% if not user.is_nurse %}
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#edit" data-remote="{% url 'health:add_appointment' %}">
             Add an Appointment

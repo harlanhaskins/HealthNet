@@ -556,16 +556,26 @@ def delete_appointment(request, appointment_id):
 @login_required
 @user_passes_test(checks.admin_check)
 def logs(request):
+    group_count = MessageGroup.objects.count()
+    average_count = 0
+    message_count = Message.objects.count()
+    if group_count > 0 and message_count > 0:
+        average_count = float(message_count) / float(group_count)
     context = {
         "navbar": "logs",
         "user": request.user,
         "logs": LogEntry.objects.all().order_by('-action_time'),
         "stats": {
-            "user_count": User.objects.count(),
-            "patient_count": Group.objects.get(name='Patient').user_set.count(),
-            "doctor_count": Group.objects.get(name='Doctor').user_set.count(),
-            "nurse_count": Group.objects.get(name='Nurse').user_set.count(),
-            "admin_count": User.objects.filter(is_superuser=True).count()
+            "user_count": User.objects.filter(hospital=request.user.hospital).count(),
+            "patient_count": Group.objects.get(name='Patient').user_set.filter(hospital=request.user.hospital).count(),
+            "doctor_count": Group.objects.get(name='Doctor').user_set.filter(hospital=request.user.hospital).count(),
+            "nurse_count": Group.objects.get(name='Nurse').user_set.filter(hospital=request.user.hospital).count(),
+            "admin_count": User.objects.filter(is_superuser=True).count(),
+            "prescription_count": Prescription.objects.count(),
+            "appointment_count": Appointment.objects.count(),
+            "conversation_count": group_count,
+            "average_message_count": average_count,
+            "message_count": message_count
         }
     }
     return render(request, 'logs.html', context)
