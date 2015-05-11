@@ -572,7 +572,8 @@ def logs(request):
             "nurse_count": Group.objects.get(name='Nurse').user_set.filter(hospital=request.user.hospital).count(),
             "admin_count": User.objects.filter(is_superuser=True).count(),
             "prescription_count": Prescription.objects.count(),
-            "appointment_count": Appointment.objects.count(),
+            "upcoming_appointment_count": Appointment.objects.filter(date__gte=timezone.now()).count(),
+            "past_appointment_count": Appointment.objects.filter(date__lt=timezone.now()).count(),
             "conversation_count": group_count,
             "average_message_count": average_count,
             "message_count": message_count

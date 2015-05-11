@@ -19,7 +19,8 @@
                 <strong>{{ stats.prescription_count }}</strong> active prescription{% if stats.prescription_count != 1 %}s{% endif %}.
             </li>
             <li class="list-group-item">
-                <strong>{{ stats.appointment_count }}</strong> active appointment{% if stats.appointment_count != 1 %}s{% endif %}.
+                <strong>{{ stats.upcoming_appointment_count }}</strong> upcoming appointment{% if stats.upcoming_appointment_count != 1 %}s{% endif %}.
+                <strong>{{ stats.past_appointment_count }}</strong> past appointment{% if stats.past_appointment_count != 1 %}s{% endif %}.
             </li>
             <li class="list-group-item">
                 <strong>{{ stats.conversation_count }}</strong> conversation{% if stats.conversation_count != 1 %}s{% endif %}
