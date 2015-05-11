@@ -341,7 +341,7 @@ class MessageGroup(models.Model):
 class Message(models.Model):
     sender = models.ForeignKey(User, related_name='sent_messages')
     group = models.ForeignKey(MessageGroup, related_name='messages')
-    body = models.CharField(max_length=500)
+    body = models.TextField()
     date = models.DateTimeField()
     read_members = models.ManyToManyField(User, related_name='read_messages')
 
