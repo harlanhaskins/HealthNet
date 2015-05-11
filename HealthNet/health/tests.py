@@ -9,6 +9,7 @@ class UserTestCase(TestCase):
         """
         Creates many users in the database.
         """
+        password = "p@ssword"
         h = Hospital.objects.create(name="University of Rochester Medical Center",
                                     address="601 Elmwood Ave", state="New York", city="Rochester",
                                     zipcode="14620")
@@ -27,30 +28,38 @@ class UserTestCase(TestCase):
 
         email = "admin@djangomaintained.com"
         admin = User.objects.create_superuser('admin', email=email, first_name="Administrator",
-                last_name="Jones", password="SuperSecurePassword1234", phone_number="8649189255",
-                hospital=h, date_of_birth=datetime.date(year=1995, month=4, day=27))
+                last_name="Jones", password=password, phone_number="8649189255",
+                date_of_birth=datetime.date(year=1995, month=4, day=27))
+        doctors.user_set.add(admin)
+        h.admit(admin)
 
         email = "jd@sacredheart.org"
-        doctor = User.objects.create_user(email, email=email, first_name="John",
-                 last_name="Dorian", password="SuperSecurePassword1234", phone_number="18005553333",
-                 hospital=h, date_of_birth=datetime.date(year=1980, month=6, day=7))
-        doctors.user_set.add(doctor)
+        self.doctor = User.objects.create_user(email, email=email, first_name="John",
+                 last_name="Dorian", password=password, phone_number="18005553333",
+                 date_of_birth=datetime.date(year=1980, month=6, day=7))
+        doctors.user_set.add(self.doctor)
+        h.admit(self.doctor)
+
         email = "turk@sacredheart.org"
         doctor = User.objects.create_user(email, email=email, first_name="Christopher",
-                 last_name="Turkleton", password="SuperSecurePassword1234", phone_number="18005553333",
-                 hospital=h, date_of_birth=datetime.date(year=1980, month=6, day=7))
+                 last_name="Turkleton", password=password, phone_number="18005553333",
+                 date_of_birth=datetime.date(year=1980, month=6, day=7))
         doctors.user_set.add(doctor)
+        h.admit(doctor)
+
         email = "drcox@sacredheart.org"
-        self.doctor = User.objects.create_user(email, email=email, first_name="Perry",
-                 last_name="Cox", password="SuperSecurePassword1234", phone_number="18005553333",
-                 hospital=h, date_of_birth=datetime.date(year=1980, month=6, day=7))
-        doctors.user_set.add(self.doctor)
+        doctor = User.objects.create_user(email, email=email, first_name="Perry",
+                 last_name="Cox", password=password, phone_number="18005553333",
+                 date_of_birth=datetime.date(year=1980, month=6, day=7))
+        doctors.user_set.add(doctor)
+        h.admit(doctor)
 
         email = "carla@sacredheart.org"
         self.nurse = User.objects.create_user(email, email=email, first_name="Carla",
-                last_name="Turkleton", password="SuperSecurePassword1234", phone_number="18005553333",
-                hospital=h, date_of_birth=datetime.date(year=1976, month=3, day=9))
+                last_name="Turkleton", password=password, phone_number="18005553333",
+                date_of_birth=datetime.date(year=1976, month=3, day=9))
         nurses.user_set.add(self.nurse)
+        h.admit(self.nurse)
 
         insurance = Insurance.objects.create(company="Hobo Sal's Used Needle Emporium",
                                              policy_number="8675309")
@@ -60,11 +69,10 @@ class UserTestCase(TestCase):
                                                          family_history=None, additional_info="Oh, you guys!")
         email = "duwayne@theroc-johnson.com"
         self.patient = User.objects.create_user(email, email=email, first_name="Duwayne",
-                  last_name="Theroc-Johnson", password="SuperSecurePassword1234", phone_number="18005553333",
-                  hospital=h, date_of_birth=datetime.date(year=1991, month=3, day=29), medical_information=medical_info)
-
+                  last_name="Theroc-Johnson", password=password, phone_number="18005553333",
+                  date_of_birth=datetime.date(year=1991, month=3, day=29), medical_information=medical_info)
         patients.user_set.add(self.patient)
-
+        h.admit(self.patient)
 
     def test_group_definitions(self):
         self.assertTrue(self.patient.is_patient())
