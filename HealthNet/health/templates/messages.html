@@ -69,10 +69,12 @@
                         {% if group.latest_message %}
                             <span class="badge">{{ group.latest_message.date }}</span>
                         {% endif %}
+                        {% if group.has_unread %}<strong>{% endif %}
                         <span class="name">
                             {{ group.combined_names }}
                         </span>
                         - <em>{{ group.name }}</em>
+                        {% if group.has_unread %}</strong>{% endif %}
                     </div>
                     <div class="row indent">
                         {% if group.latest_message %}
