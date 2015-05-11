@@ -67,7 +67,7 @@
                 <a href="{% url 'health:conversation' group.pk %}" class="list-group-item">
                     <div class="row indent">
                         {% if group.latest_message %}
-                            <span class="badge">{{ group.latest_message.date }}</span>
+                            <span class="badge date-badge">{{ group.latest_message.date }}</span>
                         {% endif %}
                         {% if group.has_unread %}<strong>{% endif %}
                         <span class="name">

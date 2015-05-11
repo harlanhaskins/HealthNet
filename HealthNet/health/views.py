@@ -640,12 +640,10 @@ def logs(request):
 
 @login_required
 def home(request):
-    msgs = Message.objects.exclude(read_members__pk=request.user.pk)
-    len_msgs = msgs.count()
     context = {
         'navbar': 'home',
         'user': request.user,
-        'unread_count': len_msgs
+        'unread_count': request.user.unread_message_count()
     }
     return render(request, 'home.html', context)
 

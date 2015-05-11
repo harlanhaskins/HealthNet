@@ -158,6 +158,9 @@ class User(AbstractUser):
     def latest_messages(self):
         return self.sent_messages.order_by('-date')
 
+    def unread_message_count(self):
+        return Message.objects.exclude(read_members__pk=self.pk).count()
+
     def schedule(self):
         """
         :return: All appointments for which this person is needed.
