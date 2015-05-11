@@ -58,10 +58,11 @@
         </div>
     </div>
     {% include 'error.html' %}
+    <button class="btn btn-primary bottom-padded" data-toggle="modal" data-target="#send">
+        Send Message
+    </button>
+    <hr />
     <div class="list-group">
-        <button class="btn btn-primary bottom-padded" data-toggle="modal" data-target="#send">
-            Send Message
-        </button>
         {% if groups %}
             {% for group in groups %}
                 <a href="{% url 'health:conversation' group.pk %}" class="list-group-item">
@@ -90,12 +91,13 @@
                 <h2 style="text-align: center">No messages.</h2>
             </div>
         {% endif %}
-    <script>
-        $('#recipient').multiselect();
+        <hr />
+        <script>
+            $('#recipient').multiselect();
 
-        function close_modal() {
-            $('#send').modal('hide');
-        }
-    </script>
+            function close_modal() {
+                $('#send').modal('hide');
+            }
+        </script>
     </div>
 {% endblock %}
