@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
+{% block title %}Users in {{ user.hospital.name }}{% endblock %}
 {% block content %}
     <h2 class="text-center">Users in {{ user.hospital.name }}</h2>
+    <a href="{% url 'health:signup' %}" class="btn btn-primary"><i class="fa fa-user-plus"></i>&nbsp;Add User</a>
     <h4>Doctors</h4>
 <ul class="list-group">
     {% for user in doctors %}

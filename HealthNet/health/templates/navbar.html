@@ -23,7 +23,6 @@
                     <li class="{% ifequal navbar 'messages'%}active{% endifequal %}"><a href="{% ifequal navbar 'messages'%}#{% else %}{% url 'health:messages' %}{% endifequal %}"><i class="fa fa-envelope"></i>&nbsp;Messages{% if user.unread_message_count > 0 %}<span style="margin-left: 5px;" class="badge">{{ user.unread_message_count }}</span>{% endif %}</a></li>
                     {% if user.is_superuser %}
                         <li class="{% ifequal navbar 'logs'%}active{% endifequal %}"><a href="{% ifequal navbar 'logs'%}#{% else %}{% url 'health:logs' %}{% endifequal %}"><i class="fa fa-list"></i>&nbsp;System</a></li>
-                        <li class="{% ifequal navbar 'signup'%}active{% endifequal %}"><a href="{% ifequal navbar 'signup'%}#{% else %}{% url 'health:signup' %}{% endifequal %}"><i class="fa fa-user-plus"></i>&nbsp;Add User</a></li>
                         <li class="{% ifequal navbar 'users'%}active{% endifequal %}"><a href="{% ifequal navbar 'users'%}#{% else %}{% url 'health:users' %}{% endifequal %}"><i class="fa fa-user"></i>&nbsp;Users</a></li>
                     {% endif %}
                 {% endif %}
