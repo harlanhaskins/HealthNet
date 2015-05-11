@@ -27,7 +27,7 @@
             </ul>
             {% if user.is_authenticated %}
                 <ul class="nav navbar-nav navbar-right">
-                    <li><p class="navbar-text">Signed in as {{ user.get_full_name }}</p></li>
+                    <li><p class="navbar-text">{{ user.get_full_name }}</p></li>
                     <li><a href="{% url 'health:logout' %}"><i class="fa fa-sign-out"></i>&nbsp;Sign Out</a></li>
                 </ul>
             {% elif navbar != 'login' %}
