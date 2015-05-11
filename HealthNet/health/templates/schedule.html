@@ -29,6 +29,14 @@
             <legend>Past appointments for {% include 'user_link.html' %}</legend>
             {% include 'appointment_table.html' with schedule=schedule_past editable=False %}
         </table>
+    {% else %}
+        <h2 class="text-center">No past appointments.</h2>
     {% endif %}
     <hr />
+    <script>
+        // Remove modal data when it's closed.
+        $(document).on('hidden.bs.modal', function (e) {
+            $(e.target).removeData('bs.modal');
+        });
+    </script>
 {% endblock %}
