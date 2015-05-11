@@ -304,6 +304,8 @@ class Prescription(models.Model):
             'name': self.name,
             'dosage': self.dosage,
             'directions': self.directions,
+            'prescribed': self.prescribed.isoformat(),
+            'active': self.active
         }
 
     def __repr__(self):
@@ -336,6 +338,7 @@ class Message(models.Model):
     group = models.ForeignKey(MessageGroup, related_name='messages')
     body = models.CharField(max_length=500)
     date = models.DateTimeField()
+    read_members = models.ManyToManyField(User, related_name='read_messages')
 
     def preview_text(self):
         return (self.body[:100] + "...") if len(self.body) > 100 else self.body

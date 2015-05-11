@@ -5,6 +5,8 @@
 {% block content %}
     <h3>Welcome to <em>Health<strong>Net</strong></em>, {{ user.get_full_name }}!</h3>
     <hr />
+    <h4>You have {{ unread_count }} unread message{% if unread_count != 1 %}s{% endif %}.</h4>
+    <hr />
     {% if user.upcoming_appointments.all %}
         <table class="table table-bordered table-striped">
             <legend>This week's appointments for {% include 'user_link.html' %}</legend>

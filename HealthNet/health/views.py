@@ -452,6 +452,10 @@ def conversation(request, id):
             # redirect to avoid the issues with reloading
             # sending the message again.
             return redirect('health:conversation', group.pk)
+    for message in group.messages.all():
+        if request.user not in message.read_members.all():
+            message.read_members.add(request.user)
+            message.save()
 
     return render(request, 'conversation.html', context)
 
@@ -629,9 +633,12 @@ def logs(request):
 
 @login_required
 def home(request):
+    msgs = Message.objects.exclude(read_members__pk=request.user.pk)
+    len_msgs = msgs.count()
     context = {
         'navbar': 'home',
-        'user': request.user
+        'user': request.user,
+        'unread_count': len_msgs
     }
     return render(request, 'home.html', context)
 
