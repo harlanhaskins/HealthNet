@@ -330,7 +330,7 @@ def handle_user_form(request, body, user=None):
     family_history = body.get("family_history")
     additional_info = body.get("additional_info")
     if not all([first_name, last_name, email, phone,
-                month, day, year, date, hospital]):
+                month, day, year, date]):
         return None, "All fields are required."
     email = email.lower()  # lowercase the email before adding it to the db.
     if not form_utilities.email_is_valid(email):
@@ -377,8 +377,9 @@ def handle_user_form(request, body, user=None):
             )
             addition(request, user.medical_information)
             user.medical_information = medical_information
-        if not HospitalStay.objects.filter(patient=user, hospital=hospital,
-                                           discharge__isnull=True).exists():
+        if (hospital and
+            not HospitalStay.objects.filter(patient=user, hospital=hospital,
+                                           discharge__isnull=True).exists()):
             hospital.admit(user)
         if user.is_superuser:
             if not user.groups.filter(pk=group.pk).exists():
