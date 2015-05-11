@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="{% static 'messages.css' %}">
 {% endblock %}
 
+{% block title %}{{ message_names }}{% endblock %}
+
 {% block content %}
     <div class="row">
         <h4>Conversation with {{ message_names }}</h4>

@@ -555,13 +555,20 @@ def logs(request):
     context = {
         "navbar": "logs",
         "user": request.user,
-        "logs": LogEntry.objects.all().order_by('-action_time')
+        "logs": LogEntry.objects.all().order_by('-action_time'),
+        "stats": {
+            "user_count": User.objects.count(),
+            "patient_count": Group.objects.get(name='Patient').user_set.count(),
+            "doctor_count": Group.objects.get(name='Doctor').user_set.count(),
+            "nurse_count": Group.objects.get(name='Nurse').user_set.count(),
+            "admin_count": User.objects.filter(is_superuser=True).count()
+        }
     }
     return render(request, 'logs.html', context)
 
 @login_required
 def home(request):
-    return render(request, 'profile.html', {'navbar': 'home',
+    return render(request, 'home.html', {'navbar': 'home',
                                          'user': request.user})
 
 @login_required

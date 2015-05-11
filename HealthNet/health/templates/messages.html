@@ -7,6 +7,8 @@
     <script src="{% static 'multiselect.js' %}"></script>
 {% endblock %}
 
+{% block title %}Messages{% endblock %}
+
 {% block content %}
     <div class="modal fade" id="send" tabindex="-1" role="dialog" aria-labelledby="send" aria-hidden="true">
         <div class="modal-dialog">
@@ -44,11 +46,11 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-default close-modal">
+                        <button type="button" data-dismiss="send" class="btn btn-default" onclick="close_modal()">
                             Cancel
                         </button>
                         <button type="submit" class="btn btn-primary close-modal">
-                            Okay
+                            Send
                         </button>
                     </div>
                 </div>
@@ -87,7 +89,11 @@
             </div>
         {% endif %}
     <script>
-        $('#recipient').multiselect()
+        $('#recipient').multiselect();
+
+        function close_modal() {
+            $('#send').modal('hide');
+        }
     </script>
     </div>
 {% endblock %}

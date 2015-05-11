@@ -1,6 +1,15 @@
 {% extends 'base.html' %}
+
 {% block title %}System Logs{% endblock %}
+
 {% block content %}
+    <div class="row">
+        <strong>{{ stats.user_count }}</strong> users
+        (<strong>{{ stats.patient_count }}</strong> patient{% if stats.patient_count != 1 %}s{% endif %},
+        <strong>{{ stats.doctor_count }}</strong> doctor{% if stats.doctor_count != 1 %}s{% endif %},
+        <strong>{{ stats.nurse_count }}</strong> nurse{% if stats.nurse_count != 1 %}s{% endif %},
+        <strong>{{ stats.admin_count }}</strong> administrator{% if stats.admin_count != 1 %}s{% endif %})
+    </div>
     <div class="table-responsive">
         <table class="table table-bordered table-striped">
             <thead></thead>
