@@ -324,6 +324,7 @@ def handle_user_form(request, body, user=None):
     company = body.get("company")
     sex = body.get("sex")
     other_sex = body.get("other_sex")
+    validated_sex = sex if sex in MedicalInformation.SEX_CHOICES else other_sex
     medications = body.get("medications")
     allergies = body.get("allergies")
     medical_conditions = body.get("medical_conditions")
@@ -344,10 +345,7 @@ def handle_user_form(request, body, user=None):
         user.last_name = last_name
         user.date_of_birth = date
         if is_patient and user.medical_information is not None:
-            user.medical_information.sex = \
-                sex \
-                if sex in MedicalInformation.SEX_CHOICES \
-                else other_sex
+            user.medical_information.sex = validated_sex
             user.medical_information.medical_conditions = medical_conditions
             user.medical_information.family_history = family_history
             user.medical_information.additional_info = additional_info
@@ -371,7 +369,7 @@ def handle_user_form(request, body, user=None):
             addition(request, insurance)
             medical_information = MedicalInformation.objects.create(
                 allergies=allergies, family_history=family_history,
-                sex=sex, medications=medications,
+                sex=validated_sex, medications=medications,
                 additional_info=additional_info, insurance=insurance,
                 medical_conditions=medical_conditions
             )
