@@ -159,7 +159,9 @@ class User(AbstractUser):
         return self.sent_messages.order_by('-date')
 
     def unread_message_count(self):
-        return Message.objects.exclude(read_members__pk=self.pk).count()
+        return Message.objects.filter(group__members__pk=self.pk)\
+                              .exclude(read_members__pk=self.pk)\
+                              .distinct().count()
 
     def schedule(self):
         """

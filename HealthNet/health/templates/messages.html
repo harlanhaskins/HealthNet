@@ -62,7 +62,7 @@
         <button class="btn btn-primary bottom-padded" data-toggle="modal" data-target="#send">
             Send Message
         </button>
-        {% if user.messagegroup_set.all %}
+        {% if groups %}
             {% for group in groups %}
                 <a href="{% url 'health:conversation' group.pk %}" class="list-group-item">
                     <div class="row indent">
