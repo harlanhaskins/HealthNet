@@ -46,7 +46,7 @@ Email: duwayne@theroc-johnson.com
 Password: p@ssword
 
 The Home tab displays a dashboard for easy daily use. This displays a 
-welcome message, a list of upcoming appointments, and a list of 
+welcome message, a notification of unread messages (if any), and a list of upcoming appointments, and a list of 
 prescriptions (if the user is a patient).
 
 The Schedule tab displays a list of upcoming appointments as well as a list of
