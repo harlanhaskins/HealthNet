@@ -31,24 +31,23 @@ for you:
 
 Admin:
 Email: admin
-Password: SuperSecurePassword1234
+Password: p@ssword
 
 Doctor:
 Email: turk@sacredheart.org
-Password: SuperSecurePassword1234
+Password: p@ssword
 
 Nurse:
 Email: carla@sacredheart.org
-Password: SuperSecurePassword1234
+Password: p@ssword
 
 Patient:
 Email: duwayne@theroc-johnson.com
-Password: SuperSecurePassword1234
+Password: p@ssword
 
 The Home tab displays a dashboard for easy daily use. This displays a 
-welcome message, a notification for new messages (if there are any),
-a list of upcoming appointments, and a list of prescriptions (if the
-user is a patient).
+welcome message, a list of upcoming appointments, and a list of 
+prescriptions (if the user is a patient).
 
 The Schedule tab displays a list of upcoming appointments as well as a list of
 past appointments. The "Add Appointment" button at the top of the page is
@@ -68,12 +67,13 @@ into a readable file that can be saved to the user's computer, and is only
 available to patients. It displays a security warning before exporting the file.
 
 The Messages tab displays a list of active conversations the user is in. Selecting
-any of them will display the conversation. The "Send Message" is used to send a new
-message. Messages can be sent between any two types of users, except between patients.
+any of them will display the conversation. The "Send Message" button is used to send 
+a new message. Messages can be sent between one or multiple users, except between
+patients only. 
 
-Admins can view two additional tabs: System Log and Add User.
+Admins can view two additional tabs: System and Add User.
 
-The System Log tab displays a list of all logged system activity.
+The System tab displays a list of system statistics and all logged system activity.
 
 The Add User tab is used to add doctors, nurses, and other admins to the system.
 
