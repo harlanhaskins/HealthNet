@@ -243,7 +243,7 @@ class User(AbstractUser):
             'phone_number': self.phone_number,
         }
         if self.hospital:
-            json['hospital'] = self.hospital.json_object()
+            json['hospital'] = self.hospital().json_object()
         if self.medical_information:
             json['medical_information'] = self.medical_information.json_object()
         if self.emergency_contact:
