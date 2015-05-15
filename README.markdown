@@ -37,21 +37,21 @@ information just created.
 For demonstration purposes, we provide an existing account of each type
 for you:
 
-Admin:
-Email: admin
-Password: p@ssword
+    Admin:
+    Email: admin
+    Password: p@ssword
 
-Doctor:
-Email: turk@sacredheart.org
-Password: p@ssword
+    Doctor:
+    Email: turk@sacredheart.org
+    Password: p@ssword
 
-Nurse:
-Email: carla@sacredheart.org
-Password: p@ssword
+    Nurse:
+    Email: carla@sacredheart.org
+    Password: p@ssword
 
-Patient:
-Email: duwayne@theroc-johnson.com
-Password: p@ssword
+    Patient:
+    Email: duwayne@theroc-johnson.com
+    Password: p@ssword
 
 The Home tab displays a dashboard for easy daily use. This displays a
 welcome message, a notification of unread messages (if any), and a list of upcoming appointments, and a list of
