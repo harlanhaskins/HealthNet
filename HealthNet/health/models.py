@@ -107,6 +107,14 @@ class Hospital(models.Model):
             stay.discharge = timezone.now()
             stay.save()
 
+    def users_in_group(self, group_name):
+        return list({stay.patient for stay in
+               HospitalStay.objects
+                           .filter(hospital=self, patient__groups__name=group_name)
+                           .distinct()
+                           .order_by('patient__first_name', 'patient__last_name')
+                           .all()})
+
 
 class User(AbstractUser):
     date_of_birth = models.DateField()

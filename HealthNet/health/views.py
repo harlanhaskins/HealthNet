@@ -442,24 +442,9 @@ def messages(request, error=None):
 def users(request):
 
     hospital = request.user.hospital()
-    doctors = list({stay.patient for stay in
-               HospitalStay.objects
-                           .filter(hospital=hospital, patient__groups__name='Doctor')
-                           .distinct()
-                           .order_by('patient__first_name', 'patient__last_name')
-                           .all()})
-    patients = list({stay.patient for stay in
-               HospitalStay.objects
-                           .filter(hospital=hospital, patient__groups__name='Patient')
-                           .distinct()
-                           .order_by('patient__first_name', 'patient__last_name')
-                           .all()})
-    nurses = list({stay.patient for stay in
-               HospitalStay.objects
-                           .filter(hospital=hospital, patient__groups__name='Nurse')
-                           .distinct()
-                           .order_by('patient__first_name', 'patient__last_name')
-                           .all()})
+    doctors = hospital.users_in_group('Doctor')
+    patients = hospital.users_in_group('Patient')
+    nurses = hospital.users_in_group('Nurse')
     context = {
         'navbar': 'users',
         'doctors': doctors,
@@ -559,23 +544,11 @@ def appointment_form(request, appointment_id):
         )
         return schedule(request, error=message)
     hospital = request.user.hospital()
-    doctors = list({stay.patient for stay in
-               HospitalStay.objects
-                           .filter(hospital=hospital, patient__groups__name='Doctor')
-                           .distinct()
-                           .order_by('patient__first_name', 'patient__last_name')
-                           .all()})
-    patients = list({stay.patient for stay in
-               HospitalStay.objects
-                           .filter(hospital=hospital, patient__groups__name='Patient')
-                           .distinct()
-                           .order_by('patient__first_name', 'patient__last_name')
-                           .all()})
     context = {
         "user": request.user,
         'appointment': appointment,
-        "doctors": doctors,
-        "patients": patients
+        "doctors": hospital.users_in_group('Doctor'),
+        "patients": hospital.users_in_group('Patient')
     }
     return render(request, 'edit_appointment.html', context)
 
@@ -588,25 +561,17 @@ def schedule(request, error=None):
     """
     now = timezone.now()
     hospital = request.user.hospital()
-    doctors = list({stay.patient for stay in
-               HospitalStay.objects
-                           .filter(hospital=hospital, patient__groups__name='Doctor')
-                           .distinct()
-                           .order_by('patient__first_name', 'patient__last_name')
-                           .all()})
-    patients = list({stay.patient for stay in
-               HospitalStay.objects
-                           .filter(hospital=hospital, patient__groups__name='Patient')
-                           .distinct()
-                           .order_by('patient__first_name', 'patient__last_name')
-                           .all()})
     context = {
         "navbar": "schedule",
         "user": request.user,
-        "doctors": doctors,
-        "patients": patients,
-        "schedule_future": request.user.schedule().filter(date__gte=now).order_by('date'),
-        "schedule_past": request.user.schedule().filter(date__lt=now).order_by('-date')
+        "doctors": hospital.users_in_group('Doctor'),
+        "patients": hospital.users_in_group('Patient'),
+        "schedule_future": request.user.schedule()
+                                       .filter(date__gte=now)
+                                       .order_by('date'),
+        "schedule_past": request.user.schedule()
+                                     .filter(date__lt=now)
+                                     .order_by('-date')
     }
     if error:
         context['error_message'] = error
