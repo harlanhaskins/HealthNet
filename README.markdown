@@ -13,6 +13,11 @@ development website [Here](https://www.djangomaintained.com).
 
 ## Installation
 
+HealthNet requires at least Django 1.6 and Python 3.2, but it has been
+tested on Python 3.4 and Django 1.8.1.
+
+We highly recommend using a virtual environment to run HealthNet.
+
 If you are running HealthNet on your local machine, run the following
 commands:
 
