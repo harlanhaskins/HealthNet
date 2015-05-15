@@ -47,3 +47,9 @@ form {
 td.nowrap {
     white-space: nowrap;
 }
+
+select {
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
+}
