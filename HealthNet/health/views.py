@@ -651,4 +651,4 @@ def export(request, id):
     json_object = json.dumps(user.json_object(), sort_keys=True,
         indent=4, separators=(',', ': '))
     return HttpResponse(json_object,
-        content_type='application/json', mimetype='application/force-download')
+        content_type='application/force-download')
